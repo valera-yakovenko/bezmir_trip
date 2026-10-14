@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7A2E2E">
+<meta name="robots" content="noindex, nofollow">
+<title>Кассандро, твоя подорож починається тут</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+:root{
+  --cream:#F4ECD8; --cream2:#FBF5E8; --paper:#EFE3C9;
+  --bordo:#7A2E2E; --bordo2:#5E2222; --bordo-soft:#A8443F;
+  --gold:#B8894A; --gold2:#D9B77A; --gold3:#8C6A3C; --gold-light:#EBD9B4;
+  --ink:#3B2A22; --muted:#7D6A58;
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  --body:'Lora',Georgia,'Times New Roman',serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+  --script:'Marck Script','Playfair Display',Georgia,cursive;
+  --dx:40px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:var(--body);color:var(--ink);line-height:1.5;
+  background-color:var(--cream);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.30 0 0 0 0 0.16 0.16 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(122,46,46,.10) 100%)}
+body.modal-open{overflow:hidden}
+.app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:14px 14px 120px}
+@media(min-width:680px){.app{padding:28px 24px 120px}}
+
+h1,h2,h3{font-family:var(--serif);font-weight:700;color:var(--bordo2);margin:0;line-height:1.15}
+h1{font-size:clamp(28px,7vw,46px)}
+h2{font-size:clamp(26px,6vw,38px)}
+.eyebrow{font-family:var(--serif);font-style:italic;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold3);margin:0 0 10px}
+.eyebrow::before,.eyebrow::after{content:'—';margin:0 8px;color:var(--gold2)}
+.lead{font-size:clamp(17px,4.4vw,21px);font-style:italic;color:var(--ink);margin:0 0 28px;line-height:1.55}
+.hint{font-style:italic;color:var(--muted);margin:8px 0 0;font-size:15px}
+.fine{font-size:13px;color:var(--muted);letter-spacing:.06em;margin:18px 0 0}
+.rule{display:flex;align-items:center;gap:12px;margin:16px auto 18px;max-width:280px;color:var(--gold)}
+.rule::before,.rule::after{content:'';flex:1;border-top:1px solid var(--gold2)}
+
+.ticket{position:relative;background:var(--cream2);padding:30px 20px 34px;text-align:center;border-radius:6px;
+  box-shadow:0 1px 0 rgba(140,106,60,.25),0 18px 40px -22px rgba(59,42,34,.45);border:7px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 7}
+.ticket::after{content:'';position:absolute;inset:8px;border:1px solid var(--gold2);pointer-events:none;border-radius:3px}
+@media(min-width:680px){.ticket{padding:46px 48px 50px}}
+.deco{position:absolute;pointer-events:none;opacity:.95}
+.deco.compass{width:64px;height:64px;left:16px;top:16px;opacity:.6}
+.deco.pstamp{width:62px;right:14px;top:12px;transform:rotate(7deg);filter:drop-shadow(0 2px 2px rgba(59,42,34,.2))}
+.deco.pstamp2{width:54px;left:18px;bottom:14px;transform:rotate(-9deg);filter:drop-shadow(0 2px 2px rgba(59,42,34,.2))}
+.deco.postmark{width:84px;height:84px;right:18px;bottom:8px;opacity:.55;transform:rotate(-12deg)}
+@media(max-width:679px){.deco.compass{width:44px;height:44px}.deco.pstamp{width:48px}.deco.pstamp2{display:none}.deco.postmark{width:64px;height:64px}#s-welcome .ticket{padding-bottom:88px}#s-final .ticket{padding-left:12px;padding-right:12px}}
+.welcome-inner{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-top:34px}
+@media(min-width:680px){.welcome-inner{padding-top:14px}}
+
+.btn{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:.02em;min-height:56px;padding:12px 28px;border-radius:999px;border:2px solid var(--bordo);
+  cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s ease,opacity .2s;display:inline-flex;align-items:center;justify-content:center;gap:10px;touch-action:manipulation}
+.btn.primary{background:var(--bordo);color:var(--cream2);box-shadow:0 8px 20px -6px rgba(122,46,46,.55)}
+.btn.primary:hover:not(:disabled){background:var(--bordo2)}
+.btn.primary:disabled{opacity:.42;box-shadow:none;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--bordo)}
+.btn.ghost:hover{background:rgba(122,46,46,.07)}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn.big{font-size:21px;min-height:62px;padding:14px 44px}
+.btn.small{min-height:44px;font-size:15px;padding:8px 18px}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+.screen{display:none}
+.screen.active{display:block;animation:screenIn .5s cubic-bezier(.22,.8,.3,1) both}
+.screen.leaving{animation:screenOut .26s ease both}
+@keyframes screenIn{from{opacity:0;transform:translateX(var(--dx))}to{opacity:1;transform:none}}
+@keyframes screenOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(calc(var(--dx) * -0.6))}}
+
+/* ---------- route progress (dynamic chain) ---------- */
+.route-wrap{display:none;margin:0 auto 18px;max-width:680px;padding:0 10px}
+.route-wrap.show{display:block;animation:screenIn .5s ease both}
+.route{position:relative;height:84px}
+.route-line{position:absolute;left:3%;right:3%;top:34px;border-top:3px dashed var(--gold);opacity:.7}
+.rn{position:absolute;top:34px;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:var(--cream2);border:2px solid var(--gold);
+  display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:11px;color:var(--gold3);transition:all .4s ease;z-index:1}
+.rn.done{background:var(--bordo);border-color:var(--bordo);color:var(--cream2)}
+.rn.current{border-color:var(--bordo);color:var(--bordo);box-shadow:0 0 0 5px rgba(122,46,46,.14);width:24px;height:24px}
+.rn.home{background:var(--gold2);border-color:var(--gold3)}
+.rn.q{border-style:dashed;background:var(--cream2);color:var(--gold3)}
+.rn.todo{opacity:.85}
+.rl{position:absolute;top:48px;transform:translateX(-50%);white-space:nowrap;font-family:var(--serif);font-style:italic;font-size:10px;color:var(--gold3);letter-spacing:.02em;line-height:1;transition:left .4s ease}
+.rl.alt{top:64px}
+.rl.done{color:var(--bordo2)}
+.rl.current{color:var(--bordo);font-weight:700}
+@media(min-width:600px){.rl{font-size:12px}}
+.route-plane{position:absolute;top:4px;width:38px;height:24px;transform:translateX(-50%);transition:left .8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 2px rgba(59,42,34,.25));z-index:2}
+.route-plane svg{width:100%;height:100%;animation:bob 2.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
+.route-label{text-align:center;margin:4px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:14px;letter-spacing:.06em}
+
+/* ---------- steps & cards ---------- */
+.step-head{text-align:center;margin:0 auto 20px;max-width:620px}
+.cards{display:grid;gap:14px;grid-template-columns:1fr;max-width:720px;margin:0 auto}
+@media(min-width:680px){.cards{grid-template-columns:repeat(2,1fr);gap:16px}.cards.one{grid-template-columns:1fr;max-width:520px}}
+.card{position:relative;display:flex;align-items:center;gap:14px;text-align:left;width:100%;min-height:104px;padding:14px 16px 14px 12px;background:var(--cream2);border:1.5px solid var(--gold2);border-radius:14px;
+  box-shadow:0 2px 0 rgba(140,106,60,.18),0 10px 24px -16px rgba(59,42,34,.4);cursor:pointer;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;touch-action:manipulation}
+.card::after{content:'';position:absolute;inset:5px;border:1px solid rgba(217,183,122,.55);border-radius:10px;pointer-events:none}
+.card .ill-wrap{flex:0 0 100px;width:100px;filter:drop-shadow(0 1px 0 rgba(140,106,60,.25))}
+.card .card-body{flex:1;min-width:0}
+@media(hover:hover){.card:not(.info):hover{transform:translateY(-3px);box-shadow:0 2px 0 rgba(140,106,60,.18),0 18px 30px -16px rgba(59,42,34,.5);border-color:var(--gold)}}
+.card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.card.selected{border-color:var(--bordo);background:#FAF0DD;box-shadow:0 0 0 3px rgba(122,46,46,.16),0 10px 24px -16px rgba(59,42,34,.4)}
+.card.info{cursor:default;background:#FAF2E2;border-style:dashed;border-color:var(--gold)}
+.card h3{font-size:19px;margin:0 0 3px;color:var(--bordo2)}
+.card .tag{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);border:1px solid var(--gold2);border-radius:4px;padding:2px 7px;margin:0 0 6px;background:rgba(235,217,180,.35);line-height:1.3;white-space:normal;text-align:left;max-width:calc(100% - 44px)}
+.card p{margin:0;font-size:14px;font-style:italic;color:var(--muted);line-height:1.4}
+.card.custom{cursor:text}
+.card.custom input{display:block;width:100%;margin:6px 0 8px;padding:10px 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--gold2);border-radius:8px;outline:none}
+.card.custom input:focus{border-color:var(--bordo);box-shadow:0 0 0 3px rgba(122,46,46,.14)}
+.card.custom input::placeholder{color:#B4A48E;font-style:italic}
+.card.compact{min-height:0;padding:10px 14px 10px 10px}
+.card.compact .ill-wrap{flex-basis:72px;width:72px}
+.card.compact h3{font-size:17px}
+
+.ill{width:100%;height:auto;display:block}
+.ill .s{fill:none;stroke:var(--bordo);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ill .t{fill:none;stroke:var(--gold3);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ill .cs{fill:none;stroke:var(--cream2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ill .g{fill:var(--gold2)} .ill .gl{fill:var(--gold-light)} .ill .b{fill:var(--bordo)} .ill .c{fill:var(--cream2)} .ill .sb{fill:var(--bordo-soft)}
+.ill .halo{fill:#EADFC6}
+.ill text{font-family:var(--serif);font-weight:700}
+
+.stamp{position:absolute;top:-12px;right:-8px;width:70px;height:70px;border-radius:50%;z-index:2;border:3px double var(--bordo);display:grid;place-items:center;text-align:center;
+  color:var(--bordo);font-family:var(--serif);font-weight:700;font-size:11px;line-height:1.1;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-14deg) scale(1.7);opacity:0;pointer-events:none;mix-blend-mode:multiply;
+  background:radial-gradient(circle,rgba(122,46,46,.10),rgba(122,46,46,.02) 70%,transparent 72%)}
+.stamp::before{content:'';position:absolute;inset:4px;border:1px solid var(--bordo);border-radius:50%;opacity:.8}
+.stamp small{display:block;font-size:9px;letter-spacing:.3em;margin-top:2px;opacity:.85}
+.card.selected .stamp,.chosen-box.show .stamp{animation:stampIn .4s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes stampIn{0%{transform:rotate(-14deg) scale(1.7);opacity:0}55%{opacity:.95}100%{transform:rotate(-14deg) scale(1);opacity:.92}}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(244,236,216,.98) 70%,rgba(244,236,216,0))}
+.nav.show{display:flex}
+.nav .inner{display:flex;gap:12px;justify-content:space-between;width:100%;max-width:620px;margin:0 auto}
+.nav .btn{flex:1;min-height:58px;font-size:17px;padding:10px 14px;white-space:nowrap}
+.nav .btn.primary{flex:1.7}
+
+/* ---------- map of Europe ---------- */
+.map-shell{max-width:860px;margin:0 auto}
+.map-box{position:relative;background:#F7F0DF;border:1.5px solid var(--gold2);border-radius:14px;overflow:hidden;box-shadow:0 2px 0 rgba(140,106,60,.18),0 12px 28px -18px rgba(59,42,34,.45);
+  background-image:repeating-linear-gradient(0deg,rgba(184,137,74,.06) 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,rgba(184,137,74,.06) 0 1px,transparent 1px 28px)}
+.map-box::after{content:'';position:absolute;inset:6px;border:1px solid rgba(217,183,122,.6);border-radius:9px;pointer-events:none}
+.map-box svg{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+.map-box svg:active{cursor:grabbing}
+.map-box .loading{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-style:italic;color:var(--gold3);text-align:center;padding:20px}
+.map-box .loading svg{width:54px;height:54px;animation:spin 6s linear infinite;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.grat{fill:none;stroke:rgba(140,106,60,.18);stroke-width:.5}
+.country{fill:#E6D9BA;stroke:none;transition:fill .2s}
+.country.ctx{fill:#EDE5D2}
+.country.act{cursor:pointer}
+.country.act:hover{fill:#D9C294}
+.country.sel{fill:#D2A864}
+.country.home{fill:#F1E2C0}
+.country.dead{fill:url(#hatch);pointer-events:none}
+.country.pale{fill:#E5E1D8;pointer-events:none}
+.borders{fill:none;stroke:#8C6A3C;stroke-width:.6;pointer-events:none;stroke-linejoin:round}
+.borders.dead{stroke:#B9B2A6;stroke-dasharray:2 2}
+.lbl{font-family:var(--serif);font-style:italic;fill:#5F4634;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#F7F0DF;stroke-width:2.5px;stroke-linejoin:round;letter-spacing:.02em}
+.lbl.sel{fill:var(--bordo2);font-weight:700}
+.lbl.ua{fill:var(--bordo);font-weight:700;font-style:italic}
+.lbl.pale{fill:#9D968A}
+.lbl.dead{fill:#6F6A62}
+.lbl404{font-family:var(--mono);fill:#8A857C;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#F7F0DF;stroke-width:2px;font-style:normal}
+.micro{fill:var(--cream2);stroke:var(--gold3);stroke-width:1;cursor:pointer}
+.micro-hit{fill:transparent;cursor:pointer}
+.micro.sel{fill:var(--bordo);stroke:var(--bordo)}
+.home-heart{fill:var(--bordo);pointer-events:none}
+.home-lbl{font-family:var(--serif);font-style:italic;fill:var(--bordo);pointer-events:none;paint-order:stroke;stroke:#F7F0DF;stroke-width:2.5px}
+.pin{pointer-events:none}
+.pin .pin-in{animation:pinDrop .55s cubic-bezier(.3,1.5,.5,1) both;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes pinDrop{0%{transform:translateY(-34px) scale(1.3);opacity:0}60%{transform:translateY(2px) scale(.95);opacity:1}100%{transform:none;opacity:1}}
+.pin .pin-shadow{animation:pinShadow .55s ease both;transform-box:fill-box;transform-origin:center}
+@keyframes pinShadow{0%{opacity:0;transform:scale(.2)}100%{opacity:.35;transform:scale(1)}}
+.zoom-ctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:3}
+.zoom-ctl button{width:44px;height:44px;border-radius:50%;border:2px solid var(--bordo);background:var(--cream2);color:var(--bordo);font-family:var(--serif);font-size:24px;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 4px 10px -4px rgba(59,42,34,.5);touch-action:manipulation;display:grid;place-items:center;padding:0 0 2px}
+.zoom-ctl button:active{transform:scale(.95)}
+.map-hint{text-align:center;font-size:13px;font-style:italic;color:var(--muted);margin:8px 0 0}
+.map-fallback{padding:16px;text-align:center;font-style:italic;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.chips button{font:inherit;font-size:14px;padding:8px 12px;border-radius:999px;border:1.5px solid var(--gold2);background:var(--cream2);color:var(--bordo2);cursor:pointer}
+.chips button.sel{background:var(--bordo);color:var(--cream2);border-color:var(--bordo)}
+
+/* search + custom under the map */
+.under-map{max-width:720px;margin:18px auto 0;display:grid;gap:14px}
+@media(min-width:680px){.under-map{grid-template-columns:1fr 1fr;align-items:start}}
+.field{position:relative;background:var(--cream2);border:1.5px solid var(--gold2);border-radius:14px;padding:12px 14px 14px;box-shadow:0 2px 0 rgba(140,106,60,.18),0 10px 24px -16px rgba(59,42,34,.4);text-align:left}
+.field label{display:block;font-family:var(--serif);font-weight:700;color:var(--bordo2);font-size:17px;margin-bottom:6px}
+.field input{display:block;width:100%;padding:11px 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--gold2);border-radius:8px;outline:none}
+.field input:focus{border-color:var(--bordo);box-shadow:0 0 0 3px rgba(122,46,46,.14)}
+.field input::placeholder{color:#B4A48E;font-style:italic}
+.field p{margin:6px 0 0;font-size:13px;font-style:italic;color:var(--muted)}
+.field.selected{border-color:var(--bordo);background:#FAF0DD;box-shadow:0 0 0 3px rgba(122,46,46,.16)}
+.sugg{position:absolute;left:14px;right:14px;top:calc(100% - 8px);background:#fff;border:1.5px solid var(--gold2);border-radius:10px;box-shadow:0 14px 30px -12px rgba(59,42,34,.5);z-index:15;max-height:240px;overflow:auto;display:none;text-align:left}
+.sugg.show{display:block}
+.sugg button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;font:inherit;font-size:16px;background:none;border:0;border-bottom:1px solid rgba(217,183,122,.4);cursor:pointer;color:var(--ink)}
+.sugg button:last-child{border-bottom:0}
+.sugg button:hover,.sugg button.hl{background:#FAF0DD}
+.sugg button small{margin-left:auto;color:var(--muted);font-size:12px;font-style:italic}
+.surprise-row{max-width:720px;margin:14px auto 0}
+.chosen-box{max-width:720px;margin:16px auto 0;position:relative;display:none;align-items:center;gap:12px;padding:12px 16px;background:#FAF0DD;border:1.5px solid var(--bordo);border-radius:14px;text-align:left}
+.chosen-box.show{display:flex}
+.chosen-box .ill-wrap{flex:0 0 72px;width:72px}
+.chosen-box b{font-family:var(--serif);font-size:18px;color:var(--bordo2);display:block}
+.chosen-box span{font-size:13px;font-style:italic;color:var(--muted)}
+
+/* ---------- country sheet ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(59,42,34,.45);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+.backdrop.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-height:88vh;max-height:88dvh;display:flex;flex-direction:column;background:var(--cream2);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px -10px rgba(59,42,34,.5);
+  transform:translateY(105%);visibility:hidden;transition:transform .35s cubic-bezier(.22,.8,.3,1),visibility 0s .35s;border-top:6px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
+.sheet.show{transform:none;visibility:visible;transition-delay:0s}
+@media(min-width:760px){.sheet{left:50%;right:auto;bottom:auto;top:50%;width:min(640px,92vw);max-height:86vh;border-radius:14px;transform:translate(-50%,-50%) scale(.96);opacity:0;transition:transform .3s,opacity .3s,visibility 0s .3s;border:6px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
+  .sheet.show{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible;transition-delay:0s}}
+.sheet-head{padding:18px 56px 10px 20px;position:relative;text-align:left}
+.sheet-head h3{font-size:26px;color:var(--bordo2)}
+.sheet-head p{margin:4px 0 0;font-style:italic;color:var(--muted);font-size:15px}
+.sheet-close{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold2);background:var(--cream2);color:var(--bordo);font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.sheet-body{overflow:auto;padding:4px 20px 10px;flex:1;-webkit-overflow-scrolling:touch;text-align:left}
+.sight{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--gold2)}
+.sight:first-child{border-top:0}
+.sight .ph{flex:0 0 96px;width:96px;height:96px;border-radius:8px;overflow:hidden;position:relative;background:#EADFC6;border:3px solid #fff;box-shadow:0 0 0 1px var(--gold2),0 4px 10px -4px rgba(59,42,34,.5);transform:rotate(-1.5deg)}
+.sight:nth-child(even) .ph{transform:rotate(1.5deg)}
+.sight .ph img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.22) contrast(.96) saturate(.9);opacity:0;transition:opacity .4s}
+.sight .ph img.in{opacity:1}
+.sight .ph .plh{position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(135deg,#EADFC6 0 6px,#E3D5B5 6px 12px)}
+.sight .ph .plh svg{width:48px;height:48px;opacity:.7}
+.sight .ph.loading .plh{animation:shimmer 1.6s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:1}50%{opacity:.55}}
+.sight .ph.none{display:none}
+.sight h4{font-family:var(--serif);font-size:17px;margin:0 0 3px;color:var(--bordo2)}
+.sight p{margin:0;font-size:14px;line-height:1.45;color:var(--ink)}
+.sight p.dim{color:var(--muted);font-style:italic}
+.sheet-foot{padding:10px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--gold2);background:var(--cream2);display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.sheet-foot .credit{font-size:11px;color:var(--muted);text-align:center;letter-spacing:.04em;margin:0}
+
+/* ---------- final ---------- */
+.final-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.final-text{font-family:var(--serif);font-style:italic;font-size:clamp(19px,5vw,25px);color:var(--bordo2);margin:30px 0 8px}
+.map-wrap{position:relative;margin:28px auto 6px;max-width:680px;text-align:left}
+.rmap{list-style:none;margin:0;padding:0;position:relative}
+.rmap::before{content:'';position:absolute;left:27px;top:0;bottom:0;border-left:3px dashed var(--gold2);opacity:.5}
+.rmap-line{position:absolute;left:27px;top:0;height:0;border-left:3px dashed var(--gold);transition:height 3.2s linear}
+.rmap.drawn .rmap-line{height:100%}
+.ri{position:relative;display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center;margin:0 0 14px;opacity:0;transform:translateY(12px)}
+.rmap.drawn .ri{animation:itemIn .55s ease forwards}
+@keyframes itemIn{to{opacity:1;transform:none}}
+.rnode{width:56px;height:56px;border-radius:50%;background:var(--bordo);color:var(--cream2);display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:20px;border:3px solid var(--cream2);box-shadow:0 0 0 2px var(--gold2),0 6px 14px -6px rgba(122,46,46,.6);position:relative;z-index:1}
+.ri.minor .rnode{width:36px;height:36px;margin-left:10px;background:var(--gold2);color:var(--bordo2);font-size:13px;box-shadow:0 0 0 2px var(--gold3)}
+.rcard{display:flex;align-items:center;gap:12px;background:var(--cream2);border:1.5px solid var(--gold2);border-radius:14px;padding:12px 14px 12px 10px;box-shadow:0 2px 0 rgba(140,106,60,.18),0 10px 24px -16px rgba(59,42,34,.4);position:relative}
+.rcard::after{content:'';position:absolute;inset:5px;border:1px solid rgba(217,183,122,.55);border-radius:10px;pointer-events:none}
+.rcard .ill-wrap{flex:0 0 86px;width:86px}
+.ri.minor .rcard{padding:8px 12px 8px 8px;background:#FAF2E2;border-style:dashed}
+.ri.minor .rcard .ill-wrap{flex-basis:56px;width:56px}
+.rcard .lbl2{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold3);margin-bottom:2px}
+.rcard h3{font-size:18px;margin:0 0 2px}
+.ri.minor .rcard h3{font-size:16px}
+.rcard p{margin:0;font-size:13px;font-style:italic;color:var(--muted);line-height:1.4}
+.rcard .mini-stamp{position:absolute;right:8px;top:-10px;width:44px;height:44px;border-radius:50%;border:2px double var(--bordo);color:var(--bordo);display:grid;place-items:center;font-size:7.5px;font-family:var(--serif);font-weight:700;letter-spacing:.1em;text-transform:uppercase;transform:rotate(12deg);opacity:.85;mix-blend-mode:multiply;background:var(--cream2)}
+.map-end{display:flex;align-items:center;gap:12px;padding-left:9px;color:var(--gold3);font-family:var(--serif);font-style:italic;opacity:0;transform:translateY(8px)}
+.rmap.drawn ~ .map-end{animation:itemIn .6s ease 3.4s forwards}
+.map-end .flag{width:38px;height:38px;flex:0 0 38px}
+@media(max-width:759px){.rmap::before,.rmap-line{left:21px}.ri{grid-template-columns:44px 1fr;gap:8px}.rnode{width:44px;height:44px;font-size:17px}.ri.minor .rnode{width:30px;height:30px;margin-left:7px;font-size:12px}.rcard{padding:12px 12px 12px 8px;gap:8px}.rcard .ill-wrap{flex:0 0 64px;width:64px}.rcard h3{font-size:17px}}
+@media(min-width:760px){
+  .rmap::before,.rmap-line{left:50%;margin-left:-1.5px}
+  .ri{grid-template-columns:1fr 56px 1fr;gap:18px;margin-bottom:10px}
+  .ri .rnode{grid-column:2;grid-row:1;justify-self:center;margin-left:0}
+  .ri:nth-child(odd) .rcard{grid-column:1;grid-row:1}
+  .ri:nth-child(even) .rcard{grid-column:3;grid-row:1}
+  .map-end{justify-content:center;padding:4px 0 0}
+}
+.letter{margin:22px auto 0;max-width:600px;padding:22px 20px 20px;background:#FFF9EC;border:2px dashed var(--gold);border-radius:8px;position:relative;font-size:17px;line-height:1.65;text-align:left}
+.letter::before{content:'✉';position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--cream2);padding:0 12px;color:var(--bordo);font-size:24px;line-height:1}
+.letter-placeholder{margin:0;color:var(--bordo);font-weight:600;font-family:var(--serif);background:rgba(217,183,122,.38);padding:14px 12px;border-radius:6px;text-align:center;font-size:16px}
+.letter-placeholder code{font-family:var(--mono);font-size:13px;background:rgba(255,255,255,.6);padding:1px 5px;border-radius:4px}
+.actions{display:flex;flex-direction:column;gap:12px;margin-top:28px;align-items:stretch}
+@media(min-width:560px){.actions{flex-direction:row;justify-content:center}}
+.summary-box{margin:18px auto 0;max-width:600px;text-align:left;background:#fff;border:1px solid var(--gold2);border-radius:8px;padding:12px 14px}
+.summary-box p{margin:0 0 8px;font-size:14px;color:var(--muted)}
+.summary-box pre{margin:0;white-space:pre-wrap;font-family:var(--body);font-size:15px;line-height:1.5;user-select:all;-webkit-user-select:all}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:60;background:var(--bordo);color:var(--cream2);font-family:var(--serif);font-size:16px;padding:12px 22px;border-radius:999px;box-shadow:0 10px 26px -8px rgba(59,42,34,.6);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}.ri{opacity:1;transform:none}.map-end{opacity:1;transform:none}}
+
+/* ---------- конверт на старті ---------- */
+#s-envelope{min-height:80vh;display:none;align-items:center;justify-content:center;text-align:center;flex-direction:column}
+#s-envelope.active{display:flex}
+.env-scene{position:relative;width:min(92vw,540px);aspect-ratio:3/2;perspective:1400px;margin:4vh auto 0;transition:opacity .45s ease,transform .45s ease}
+.env-scene.done{opacity:0;transform:scale(1.04)}
+.env-back{position:absolute;inset:0;background:#F6EEDD;border-radius:6px;box-shadow:0 20px 50px -24px rgba(59,42,34,.6),0 1px 0 rgba(140,106,60,.3);border:6px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
+.env-letter{position:absolute;left:7%;right:7%;top:6%;height:88%;background:#FFF9EC;border:1px solid var(--gold2);border-radius:3px;box-shadow:0 6px 18px -8px rgba(59,42,34,.5);
+  transition:transform 1s cubic-bezier(.2,.8,.3,1);padding:10% 8% 0;text-align:center;overflow:hidden;z-index:1}
+.env-letter h3{font-family:var(--serif);font-size:clamp(14px,3.6vw,20px);color:var(--bordo2);margin:0 0 6px}
+.env-letter i{display:block;height:2px;background:var(--gold-light);margin:8px auto;width:70%}
+.env-letter i:nth-of-type(2){width:85%}.env-letter i:nth-of-type(3){width:60%}
+.env-scene.lift .env-letter{transform:translateY(-78%) scale(1.03)}
+.env-pocket{position:absolute;inset:0;z-index:2;clip-path:polygon(0 0,50% 52%,100% 0,100% 100%,0 100%);background:linear-gradient(180deg,#F4EBD6 0%,#F8F1E1 100%);border-radius:6px;pointer-events:none}
+.env-pocket::before,.env-pocket::after{content:'';position:absolute;top:0;width:60%;height:62%;border-bottom:1px solid rgba(140,106,60,.35)}
+.env-pocket::before{left:0;transform:skewY(42deg);transform-origin:left top}
+.env-pocket::after{right:0;transform:skewY(-42deg);transform-origin:right top}
+.env-frame{position:absolute;inset:0;border-radius:6px;pointer-events:none;z-index:2;border:6px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
+.env-name{position:absolute;left:0;right:0;top:58%;z-index:3;font-family:var(--script);font-size:clamp(26px,7vw,42px);color:var(--bordo2);pointer-events:none;line-height:1}
+.env-stamp{position:absolute;right:5%;top:6%;width:min(14%,66px);z-index:3;transform:rotate(6deg);filter:drop-shadow(0 2px 2px rgba(59,42,34,.25));pointer-events:none}
+.env-flap{position:absolute;left:0;right:0;top:0;height:54%;z-index:4;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#EADFC6,#F2E7D0);transform-origin:50% 0;
+  transition:transform 1.1s cubic-bezier(.4,0,.2,1);backface-visibility:visible;border-radius:6px 6px 0 0}
+.env-flap::after{content:'';position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 40%)}
+.env-scene.open .env-flap{transform:rotateX(-180deg)}
+.env-scene.behind .env-flap{z-index:0}
+.env-seal{position:absolute;left:50%;top:54%;width:84px;height:84px;transform:translate(-50%,-50%);z-index:5;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.env-seal:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:50%}
+.seal-half{position:absolute;inset:0;transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .6s ease .15s}
+.seal-half svg{width:100%;height:100%;display:block;filter:drop-shadow(0 3px 4px rgba(59,42,34,.45))}
+.seal-half.l{clip-path:polygon(0 0,52% 0,46% 22%,56% 40%,44% 60%,54% 78%,48% 100%,0 100%)}
+.seal-half.r{clip-path:polygon(52% 0,100% 0,100% 100%,48% 100%,54% 78%,44% 60%,56% 40%,46% 22%)}
+.env-seal.cracked .seal-half.l{transform:translate(-26px,14px) rotate(-28deg);opacity:0}
+.env-seal.cracked .seal-half.r{transform:translate(26px,18px) rotate(24deg);opacity:0}
+.env-seal.cracked{pointer-events:none}
+.env-hint{margin:26px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:16px;letter-spacing:.06em;animation:hintPulse 2.2s ease-in-out infinite;transition:opacity .3s}
+@keyframes hintPulse{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}
+.env-scene.open ~ .env-hint{opacity:0;animation:none}
+
+/* ---------- маршрут польоту на карті ---------- */
+.rt-ground{fill:none;stroke:var(--bordo2);stroke-linecap:round;opacity:.85}
+.rt-air{fill:none;stroke:var(--bordo);stroke-linecap:round}
+.rt-airport{fill:var(--cream2);stroke:var(--bordo2)}
+.rt-plane{fill:var(--bordo);filter:drop-shadow(0 1px 1px rgba(59,42,34,.4))}
+.route-g{transition:opacity .45s ease}
+.route-g.fade{opacity:0}
+
+/* ---------- лайтбокс фото ---------- */
+.lb{position:fixed;inset:0;z-index:70;background:rgba(24,14,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.lb.show{opacity:1;visibility:visible;transition-delay:0s}
+.lb-stage{flex:1;width:100%;display:flex;align-items:center;justify-content:center;touch-action:none;overflow:hidden;position:relative;min-height:0}
+.lb-stage img{max-width:94vw;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);object-fit:contain;border:4px solid #FBF5E8;box-shadow:0 20px 60px -20px rgba(0,0,0,.8);transform-origin:center;will-change:transform;user-select:none;-webkit-user-drag:none;background:#2b2320}
+.lb-stage img.snap{transition:transform .25s ease}
+.lb-cap{padding:10px 16px calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--cream2);max-width:720px}
+.lb-title{font-family:var(--serif);font-size:19px;font-weight:700}
+.lb-count{font-size:12px;color:var(--gold2);letter-spacing:.14em;margin-top:2px}
+.lb-link{display:inline-block;margin-top:6px;font-size:13px;color:var(--gold2);text-decoration:underline dotted;text-underline-offset:3px}
+.lb-link:hover{color:#fff}
+.lb-close{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--gold2);background:rgba(251,245,232,.12);color:var(--cream2);font-size:26px;line-height:1;cursor:pointer;z-index:2;display:grid;place-items:center}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:64px;border:1.5px solid var(--gold2);background:rgba(251,245,232,.12);color:var(--cream2);font-size:34px;line-height:1;cursor:pointer;z-index:2;display:none;place-items:center;border-radius:10px;font-family:var(--serif)}
+.lb-nav.prev{left:12px}.lb-nav.next{right:12px}
+.lb-nav:disabled{opacity:.25;cursor:default}
+@media(hover:hover) and (min-width:760px){.lb-nav{display:grid}}
+.lb-hint{position:absolute;bottom:calc(126px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);font-size:11px;color:rgba(251,245,232,.55);letter-spacing:.08em;pointer-events:none;white-space:nowrap}
+@media(min-width:760px){.lb-hint{display:none}}
+.sight .ph.zoomable{cursor:zoom-in}
+
+/* ---------- табло вильотів ---------- */
+.board-wrap{margin:6px auto 0;max-width:640px;text-align:left}
+.board{background:linear-gradient(180deg,#2C2320,#1C1614);border:3px solid var(--gold3);border-radius:10px;padding:10px 10px 12px;box-shadow:inset 0 0 0 1px rgba(217,183,122,.25),0 18px 40px -22px rgba(0,0,0,.7)}
+.board-title{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--gold2);text-transform:uppercase;padding:2px 4px 8px;border-bottom:1px dashed rgba(217,183,122,.35);margin-bottom:8px}
+.board-title b{font-weight:400;color:#E8D5A6}
+.brow{display:grid;grid-template-columns:var(--lblw,92px) 1fr;align-items:center;gap:6px;margin:4px 0}
+.blbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--gold2);text-transform:uppercase;white-space:nowrap}
+.bcells{display:flex;gap:2px;overflow:hidden}
+.cell{position:relative;width:var(--cell,26px);height:calc(var(--cell,26px) * 1.4);background:#141010;border-radius:3px;color:#F4ECD8;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:700;font-size:calc(var(--cell,26px) * .98);line-height:calc(var(--cell,26px) * 1.4);text-align:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),inset 0 -2px 4px rgba(0,0,0,.6);flex:0 0 auto}
+.cell::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.85);box-shadow:0 1px 0 rgba(255,255,255,.07)}
+.cell span{display:block;transform-origin:50% 50%}
+.cell.tick span{animation:flapTick .09s linear}
+@keyframes flapTick{0%{transform:scaleY(1)}50%{transform:scaleY(.1);filter:brightness(1.6)}100%{transform:scaleY(1)}}
+.cell.blink{animation:cellBlink 1.6s ease-in-out infinite}
+@keyframes cellBlink{0%,100%{color:#F4ECD8;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}50%{color:#FFE9B0;box-shadow:inset 0 0 0 1px rgba(255,233,176,.5),0 0 10px rgba(255,210,120,.35)}}
+.final-rest{opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform .8s ease}
+.final-rest.show{opacity:1;transform:none}
+.sound-btn{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));right:12px;z-index:25;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--gold3);background:var(--cream2);color:var(--bordo);display:none;place-items:center;cursor:pointer;box-shadow:0 6px 14px -6px rgba(59,42,34,.5)}
+.sound-btn.show{display:grid}
+.sound-btn svg{width:22px;height:22px}
+.sound-btn .on{display:none}.sound-btn.active .on{display:block}.sound-btn.active .off{display:none}
+@media(max-width:420px){.brow{--lblw:78px}.blbl{font-size:9px;letter-spacing:.08em}}
+@media(prefers-reduced-motion:reduce){.env-hint{animation:none;opacity:1}.cell.blink{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="app">
+
+  <div class="route-wrap" id="route-wrap" aria-hidden="true">
+    <div class="route" id="route">
+      <div class="route-line"></div>
+      <div class="route-plane" id="route-plane" style="left:5%">
+        <svg viewBox="0 0 40 24"><path d="M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z" fill="#7A2E2E"/></svg>
+      </div>
+    </div>
+    <p class="route-label" id="route-label">Крок 1 із 4</p>
+  </div>
+
+  <!-- КОНВЕРТ (лише при першому відкритті) -->
+  <section class="screen" id="s-envelope">
+    <div class="env-scene" id="env-scene">
+      <div class="env-back"></div>
+      <div class="env-letter" aria-hidden="true"><h3>Кассандро 🐍, твоя подорож…</h3><i></i><i></i><i></i></div>
+      <div class="env-pocket"></div>
+      <div class="env-frame"></div>
+      <div class="env-stamp"><svg viewBox="0 0 80 100" aria-hidden="true"><rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#F6EEDD" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/><rect x="9" y="9" width="62" height="82" fill="#EADFC6" stroke="#7A2E2E" stroke-width="1.5"/><path d="M14 70q14-20 26-10t26-8" fill="none" stroke="#7A2E2E" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M62 36c0-1.5-1.5-2.2-4-2.2h-8l-6-6h-3l4 6h-7l-2-2h-1.5l.8 4.2-.8 4.2H36l2-2h7l-4 6h3l6-6h8c2.5 0 4-.7 4-2.2z" fill="#7A2E2E"/><text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#7A2E2E" letter-spacing="2">ПОШТА</text><text x="16" y="22" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#7A2E2E">50</text></svg></div>
+      <div class="env-name">Для Кассандри 🐍</div>
+      <div class="env-flap"></div>
+      <button class="env-seal" id="env-seal" type="button" aria-label="Відкрити конверт"><div class="seal-half l"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="sealg" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#A8443F"/><stop offset=".7" stop-color="#7A2E2E"/><stop offset="1" stop-color="#4E1C1C"/></radialGradient></defs><path d="M50 4c6 0 9 4 14 4s9-3 14 1 4 9 8 13 8 6 8 12-4 9-4 14 3 9-1 14-9 4-13 8-6 8-12 8-9-4-14-4-9 3-14-1-4-9-8-13-8-6-8-12 4-9 4-14-3-9 1-14 9-4 13-8 6-8 12-8z" fill="url(#sealg)"/><circle cx="50" cy="50" r="30" fill="none" stroke="#5E2222" stroke-width="1.5" opacity=".8"/><circle cx="50" cy="50" r="27" fill="none" stroke="#C9856F" stroke-width=".8" opacity=".6"/><g opacity=".9"><path d="M50 26L54 50 50 74 46 50z" fill="#5E2222"/><path d="M26 50L50 46 74 50 50 54z" fill="#C9856F"/><path d="M50 26L46 50h8z" fill="#C9856F"/><path d="M26 50l24-4v8z" fill="#5E2222"/><circle cx="50" cy="50" r="3" fill="#F4D7C8" stroke="#5E2222"/></g></svg></div><div class="seal-half r"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="sealg" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#A8443F"/><stop offset=".7" stop-color="#7A2E2E"/><stop offset="1" stop-color="#4E1C1C"/></radialGradient></defs><path d="M50 4c6 0 9 4 14 4s9-3 14 1 4 9 8 13 8 6 8 12-4 9-4 14 3 9-1 14-9 4-13 8-6 8-12 8-9-4-14-4-9 3-14-1-4-9-8-13-8-6-8-12 4-9 4-14-3-9 1-14 9-4 13-8 6-8 12-8z" fill="url(#sealg)"/><circle cx="50" cy="50" r="30" fill="none" stroke="#5E2222" stroke-width="1.5" opacity=".8"/><circle cx="50" cy="50" r="27" fill="none" stroke="#C9856F" stroke-width=".8" opacity=".6"/><g opacity=".9"><path d="M50 26L54 50 50 74 46 50z" fill="#5E2222"/><path d="M26 50L50 46 74 50 50 54z" fill="#C9856F"/><path d="M50 26L46 50h8z" fill="#C9856F"/><path d="M26 50l24-4v8z" fill="#5E2222"/><circle cx="50" cy="50" r="3" fill="#F4D7C8" stroke="#5E2222"/></g></svg></div></button>
+    </div>
+    <p class="env-hint" id="env-hint">Торкнися печатки</p>
+  </section>
+
+  <!-- ВІТАЛЬНИЙ ЕКРАН -->
+  <section class="screen" id="s-welcome">
+    <div class="ticket">
+      <svg class="deco compass" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#8C6A3C" stroke-width="1" stroke-dasharray="2 4"/>
+        <path d="M50 6L56 50 50 94 44 50z" fill="#7A2E2E"/><path d="M6 50L50 44 94 50 50 56z" fill="#B8894A"/><path d="M50 6L44 50h12z" fill="#A8443F"/><path d="M6 50l44-6v12z" fill="#D9B77A"/>
+        <circle cx="50" cy="50" r="4" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/>
+      </svg>
+      <svg class="deco pstamp" viewBox="0 0 80 100" aria-hidden="true">
+        <rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#F4ECD8" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/>
+        <rect x="9" y="9" width="62" height="82" fill="#EADFC6" stroke="#7A2E2E" stroke-width="1.5"/>
+        <path d="M14 70q14-20 26-10t26-8" fill="none" stroke="#7A2E2E" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <path d="M62 36c0-1.5-1.5-2.2-4-2.2h-8l-6-6h-3l4 6h-7l-2-2h-1.5l.8 4.2-.8 4.2H36l2-2h7l-4 6h3l6-6h8c2.5 0 4-.7 4-2.2z" fill="#7A2E2E"/>
+        <text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#7A2E2E" letter-spacing="2">ПОШТА</text>
+        <text x="16" y="22" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#7A2E2E">50</text>
+      </svg>
+      <svg class="deco pstamp2" viewBox="0 0 80 100" aria-hidden="true">
+        <rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#F4ECD8" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/>
+        <rect x="9" y="9" width="62" height="82" fill="#F3E4C6" stroke="#8C6A3C" stroke-width="1.5"/>
+        <path d="M14 66l12-20 8 10 10-16 12 20 8-8 6 14z" fill="#D9B77A" stroke="#8C6A3C" stroke-width="1.2"/><circle cx="58" cy="30" r="6" fill="#A8443F"/>
+        <text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#8C6A3C" letter-spacing="2">ЄВРОПА</text>
+      </svg>
+      <svg class="deco postmark" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#7A2E2E" stroke-width="2"/><circle cx="50" cy="50" r="33" fill="none" stroke="#7A2E2E" stroke-width="1"/>
+        <path d="M22 50h56M22 56h56M22 44h56" stroke="#7A2E2E" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M78 46q14 2 20 0M78 54q14 2 20 0M78 50q14 2 22 0" stroke="#7A2E2E" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <text x="50" y="35" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-weight="700" fill="#7A2E2E" letter-spacing="1">З ЛЮБОВ'Ю</text>
+        <text x="50" y="72" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#7A2E2E" letter-spacing="1">ДЕНЬ НАРОДЖЕННЯ</text>
+      </svg>
+      <div class="welcome-inner">
+        <p class="eyebrow">Подорож на твій вибір</p>
+        <h1>Кассандро 🐍, твоя подорож починається тут</h1>
+        <div class="rule"><span>✦</span></div>
+        <p class="lead">Куди, як і де — вирішуєш тільки ти.<br>Обирай не поспішаючи.</p>
+        <button class="btn primary big" id="btn-start" type="button">Почати</button>
+        <p class="fine">чотири кроки · один маршрут · безліч вражень</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- КРОКИ 1, 3, 4 генеруються скриптом -->
+  <div id="steps"></div>
+
+  <!-- КРОК 2: КАРТА -->
+  <section class="screen" id="s-where">
+    <header class="step-head"><p class="eyebrow">Крок 2 із 4</p><h2>Куди</h2><p class="hint">Торкнись країни на карті, знайди її в пошуку або впиши своє місце.</p></header>
+    <div class="map-shell">
+      <div class="map-box" id="map-box">
+        <div class="loading" id="map-loading"><div>
+          <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#8C6A3C" stroke-width="1" stroke-dasharray="2 4"/><path d="M50 6L56 50 50 94 44 50z" fill="#7A2E2E"/><path d="M6 50L50 44 94 50 50 56z" fill="#B8894A"/><circle cx="50" cy="50" r="4" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/></svg>
+          <div>Розгортаємо карту Європи…</div></div></div>
+        <div class="zoom-ctl" id="zoom-ctl" hidden><button type="button" id="zoom-in" aria-label="Збільшити">+</button><button type="button" id="zoom-out" aria-label="Зменшити">−</button></div>
+      </div>
+      <p class="map-hint" id="map-hint">Карту можна тягнути й масштабувати двома пальцями.</p>
+      <div class="chips" id="chips" hidden></div>
+    </div>
+    <div class="under-map">
+      <div class="field" id="search-field">
+        <label for="search-input">Знайти країну</label>
+        <input id="search-input" type="search" autocomplete="off" placeholder="Мальта, Монако, Андорра…" aria-label="Пошук країни">
+        <p>Для маленьких країн, у які важко влучити пальцем.</p>
+        <div class="sugg" id="sugg" role="listbox"></div>
+      </div>
+      <div class="field" id="custom-field">
+        <label for="custom-input">Або впиши своє місце</label>
+        <input id="custom-input" type="text" maxlength="60" autocomplete="off" placeholder="Наприклад, Азорські острови…">
+        <p>Своє місце замінить країну на карті.</p>
+        <span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span>
+      </div>
+    </div>
+    <div class="surprise-row"><button class="card compact" type="button" id="surprise-where" aria-pressed="false"><div class="ill-wrap" id="surprise-ill"></div><div class="card-body"><span class="tag">обирає чоловік</span><h3>Сюрприз</h3><p>Дізнаєшся лише в аеропорту… або на вокзалі.</p></div><span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span></button></div>
+    <div class="chosen-box" id="chosen-box"><div class="ill-wrap" id="chosen-ill"></div><div><b id="chosen-name"></b><span id="chosen-cap"></span></div><span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span></div>
+  </section>
+
+  <!-- ФІНАЛ -->
+  <section class="screen" id="s-final">
+    <div class="ticket">
+      <svg class="deco compass" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#8C6A3C" stroke-width="1" stroke-dasharray="2 4"/>
+        <path d="M50 6L56 50 50 94 44 50z" fill="#7A2E2E"/><path d="M6 50L50 44 94 50 50 56z" fill="#B8894A"/><path d="M50 6L44 50h12z" fill="#A8443F"/><path d="M6 50l44-6v12z" fill="#D9B77A"/>
+        <circle cx="50" cy="50" r="4" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/>
+      </svg>
+      <div class="final-inner">
+        <div class="board-wrap" aria-live="polite"><div class="board" id="board"><div class="board-title"><span>✈ Вильоти</span><b id="board-clock"></b></div></div></div>
+        <div class="final-rest" id="final-rest">
+        <p class="eyebrow">Квиток у мрію</p>
+        <h2>Твій маршрут</h2>
+        <div class="map-wrap">
+          <ol class="rmap" id="rmap"><div class="rmap-line"></div></ol>
+          <div class="map-end">
+            <svg class="flag" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 38V4" stroke="#7A2E2E" stroke-width="2.5" stroke-linecap="round"/><path d="M8 5h22l-5 7 5 7H8z" fill="#A8443F" stroke="#7A2E2E" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 12h8" stroke="#FBF5E8" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Пункт призначення — щастя</span>
+          </div>
+        </div>
+        <p class="final-text">Маршрут складено. Решту я беру на себе.</p>
+        <!-- ======================================================== -->
+        <!--  ОСОБИСТЕ ПОСЛАННЯ: заміни вміст цього блоку своїм текстом  -->
+        <!-- ======================================================== -->
+        <div class="letter" id="personal-message">
+          <p class="letter-placeholder">✎ ТУТ БУДЕ ТВОЄ ОСОБИСТЕ ПОСЛАННЯ.<br>Заміни цей текст у файлі — блок <code>id="personal-message"</code>.</p>
+        </div>
+        <!-- ======================================================== -->
+        <div class="actions">
+          <button class="btn primary" id="btn-copy" type="button">Скопіювати мій маршрут</button>
+          <button class="btn ghost" id="btn-change" type="button">Змінити вибір</button>
+        </div>
+        <div class="summary-box" id="summary-box" hidden><p>Не вдалося скопіювати автоматично. Виділи й скопіюй текст нижче:</p><pre id="summary-pre"></pre></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="nav" id="nav"><div class="inner">
+  <button class="btn ghost" id="btn-back" type="button">← Назад</button>
+  <button class="btn primary" id="btn-next" type="button" disabled>Далі →</button>
+</div></div>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-head"><h3 id="sheet-title"></h3><p id="sheet-cap"></p><button class="sheet-close" id="sheet-close" type="button" aria-label="Закрити">×</button></div>
+  <div class="sheet-body" id="sheet-body"></div>
+  <div class="sheet-foot"><button class="btn primary" id="sheet-pick" type="button">Обрати цю країну</button><p class="credit">Фото й описи з Вікіпедії</p></div>
+</div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Перегляд фото">
+  <button class="lb-close" id="lb-close" type="button" aria-label="Закрити">×</button>
+  <button class="lb-nav prev" id="lb-prev" type="button" aria-label="Попереднє фото">‹</button>
+  <button class="lb-nav next" id="lb-next" type="button" aria-label="Наступне фото">›</button>
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt="" draggable="false"></div>
+  <div class="lb-hint">← → гортати · ↓ закрити</div>
+  <div class="lb-cap"><div class="lb-title" id="lb-title"></div><div class="lb-count" id="lb-count"></div><a class="lb-link" id="lb-link" href="#" target="_blank" rel="noopener">Детальніше у Вікіпедії</a></div>
+</div>
+<button class="sound-btn" id="sound-btn" type="button" aria-pressed="false" aria-label="Звук табло">
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M23 9l-6 6M17 9l6 6"/></svg>
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  'use strict';
+  /* ------------------------------------------------------------------ */
+  /*  Ілюстрації (SVG, viewBox 0 0 120 90)                               */
+  /* ------------------------------------------------------------------ */
+  const ill = inner => `<svg class="ill" viewBox="0 0 120 90" aria-hidden="true" focusable="false">${inner}</svg>`;
+  const HALO = '<circle cx="60" cy="44" r="34" class="halo"/>';
+  const I = {
+    train: ill(HALO+`<path d="M8 74H112" class="s"/><path d="M14 79H106" class="t" stroke-dasharray="6 5"/><path d="M18 46h48v22H18z" class="s g"/><path d="M66 34h26a4 4 0 0 1 4 4v30H66z" class="s b"/><rect x="72" y="40" width="14" height="12" rx="1.5" class="s c"/><rect x="26" y="30" width="9" height="16" rx="1" class="s b"/><rect x="24" y="27" width="13" height="4" rx="1" class="s b"/><circle cx="14" cy="52" r="3" class="s g"/><path d="M44 52h10M44 58h16" class="t"/><circle cx="30" cy="70" r="5.5" class="s c"/><circle cx="48" cy="70" r="5.5" class="s c"/><circle cx="84" cy="70" r="5.5" class="s c"/><path d="M18 60l-8 10h8" class="s c"/><circle cx="30" cy="19" r="4" class="t"/><circle cx="23" cy="12" r="3" class="t"/><circle cx="34" cy="10" r="2.4" class="t"/>`),
+    bus: ill(HALO+`<path d="M12 78H108" class="t" stroke-dasharray="6 5"/><rect x="14" y="26" width="92" height="42" rx="8" class="s g"/><path d="M14 50h92" class="s"/><rect x="22" y="33" width="14" height="12" rx="2" class="s c"/><rect x="42" y="33" width="14" height="12" rx="2" class="s c"/><rect x="62" y="33" width="14" height="12" rx="2" class="s c"/><rect x="82" y="33" width="16" height="12" rx="2" class="s c"/><rect x="50" y="52" width="12" height="16" rx="1" class="s c"/><circle cx="32" cy="70" r="6" class="s c"/><circle cx="88" cy="70" r="6" class="s c"/><circle cx="19" cy="58" r="2.5" class="b"/><circle cx="101" cy="58" r="2.5" class="b"/><rect x="44" y="17" width="32" height="9" rx="2" class="s b"/><path d="M50 21.5h20" class="cs"/>`),
+    transfer: ill(HALO+`<path d="M10 74H110" class="t" stroke-dasharray="6 5"/><path d="M14 64V52q0-6 6-6h8l10-14h36l10 14h10q6 0 6 6v12z" class="s b"/><path d="M36 46l8-11h12v11zM60 35h12l8 11H60z" class="s c"/><circle cx="34" cy="66" r="8" class="s c"/><circle cx="34" cy="66" r="3" class="b"/><circle cx="88" cy="66" r="8" class="s c"/><circle cx="88" cy="66" r="3" class="b"/><circle cx="20" cy="57" r="3" class="s g"/><path d="M50 56h20" class="cs"/><path d="M96 20l2.5 5.5 6 .6-4.5 4 1.4 6-5.4-3.2-5.4 3.2 1.4-6-4.5-4 6-.6z" class="s g"/>`),
+    plane: ill(HALO+`<path d="M2 50h14" class="t" stroke-dasharray="3 4"/><path d="M20 26h14a5 5 0 0 0-2-9 7 7 0 0 0-13 2 4 4 0 0 0 1 7z" class="t"/><path d="M72 40l12-18h10l-8 18z" class="s b"/><path d="M50 52l-14 14h12l14-14z" class="s g"/><path d="M14 46q0-6 8-6h66q14 0 18 6-4 6-18 6H22q-8 0-8-6z" class="s c"/><path d="M58 40l6-9h10l-6 9z" class="s g"/><path d="M22 46h78" class="t"/><circle cx="42" cy="44" r="1.6" class="b"/><circle cx="52" cy="44" r="1.6" class="b"/><circle cx="62" cy="44" r="1.6" class="b"/><circle cx="72" cy="44" r="1.6" class="b"/><circle cx="82" cy="44" r="1.6" class="b"/><path d="M98 42.5q4 1 6 3.5" class="s"/>`),
+    airport: ill(HALO+`<path d="M8 78H112" class="s"/><path d="M50 78V40l10-8 10 8v38" class="s c"/><path d="M44 40h32l-4-10H48z" class="s b"/><rect x="54" y="44" width="12" height="8" rx="1" class="s g"/><path d="M60 30V20M56 22l4-4 4 4" class="s"/><path d="M14 66h20l6-8h6l-4 8h12l2-4h3l-1 6 1 6h-3l-2-4H42l4 8h-6l-6-8H14q-4 0-4-4t4-4z" class="s g"/><path d="M84 64h22" class="t"/><path d="M78 72h30" class="t" stroke-dasharray="4 4"/><circle cx="96" cy="22" r="6" class="s g"/>`),
+    odesa: ill(HALO+`<path d="M60 18v46" class="s"/><circle cx="60" cy="14" r="5" class="s c"/><path d="M46 30h28" class="s"/><path d="M30 50q0 22 30 24 30-2 30-24l-8 4 4-8M30 50l8 4-4-8" class="s"/><path d="M8 80q8-5 16 0t16 0 16 0 16 0 16 0 16 0 16 0" class="t"/><path d="M14 72l5-14h4l5 14z" class="s g"/><path d="M16 66h10" class="t"/><circle cx="21" cy="55" r="2.5" class="sb"/>`),
+    border: ill(HALO+`<path d="M10 78h100" class="t"/><path d="M60 78V22" class="s"/><path d="M60 26h34l6 6-6 6H60z" class="s c"/><path d="M60 44H28l-6 6 6 6h32z" class="s c"/><text x="76" y="36" font-size="8" fill="#7A2E2E" text-anchor="middle" font-style="italic">Європа</text><text x="44" y="54" font-size="8" fill="#7A2E2E" text-anchor="middle" font-style="italic">Одеса</text><rect x="18" y="64" width="18" height="14" rx="1" class="s b"/><rect x="36" y="64" width="18" height="14" rx="1" class="s c"/><rect x="54" y="64" width="18" height="14" rx="1" class="s b"/><rect x="72" y="64" width="18" height="14" rx="1" class="s c"/>`),
+    krakow: ill(HALO+`<path d="M14 78h92" class="t"/><rect x="36" y="38" width="16" height="40" class="s c"/><path d="M36 38l8-20 8 20z" class="s b"/><path d="M44 18v-6" class="s"/><rect x="66" y="46" width="16" height="32" class="s c"/><path d="M66 46l8-14 8 14z" class="s b"/><path d="M52 56h14v22H52z" class="s g"/><path d="M56 78V68a3 3 0 0 1 6 0v10" class="s b"/><path d="M40 50h8M40 60h8M70 56h8M70 66h8" class="t"/><path d="M16 78V60l4-4 4 4v18M96 78V62l4-4 4 4v16" class="s gl"/><circle cx="22" cy="24" r="6" class="s g"/>`),
+    warsaw: ill(HALO+`<path d="M12 78h96" class="t"/><rect x="48" y="34" width="24" height="44" class="s c"/><path d="M52 34V22h16v12" class="s c"/><path d="M60 22V8" class="s"/><rect x="30" y="52" width="18" height="26" class="s g"/><rect x="72" y="52" width="18" height="26" class="s g"/><path d="M52 40h16M52 48h16M52 56h16M52 64h16M34 58h10M34 66h10M76 58h10M76 66h10" class="t"/><path d="M18 78V64l6-6 6 6v14M90 78V66l6-6 6 6v12" class="s gl"/><path d="M14 22l8 6-8 6" class="sb"/><circle cx="96" cy="22" r="6" class="s g"/>`),
+    tag: ill(HALO+`<g transform="rotate(-12 60 48)"><path d="M34 30h40l10 10v30a4 4 0 0 1-4 4H38a4 4 0 0 1-4-4z" class="s g"/><circle cx="76" cy="40" r="3.5" class="s c"/><path d="M78 36q2-14 14-16" class="t"/><path d="M40 66h18" class="t"/><text x="55" y="62" font-size="28" fill="#7A2E2E" text-anchor="middle">?</text></g>`),
+    envelope: ill(HALO+`<rect x="22" y="28" width="76" height="48" rx="3" class="s c"/><path d="M22 30l38 28 38-28" class="s"/><path d="M22 76l28-24M98 76L70 52" class="t"/><circle cx="60" cy="56" r="8" class="s sb"/><text x="60" y="60.5" font-size="12" fill="#FBF5E8" text-anchor="middle">?</text>`),
+    key: ill(HALO+`<g transform="rotate(-28 60 48)"><circle cx="38" cy="50" r="12" class="s g"/><circle cx="38" cy="50" r="4" class="s c"/><path d="M50 50h42M80 50v8M90 50v10M70 50v6" class="s"/></g><g transform="rotate(10 84 26)"><rect x="70" y="16" width="28" height="20" rx="3" class="s c"/><text x="84" y="31" font-size="15" fill="#7A2E2E" text-anchor="middle">?</text></g>`),
+    gift: ill(HALO+`<rect x="28" y="44" width="64" height="34" rx="2" class="s g"/><rect x="24" y="34" width="72" height="12" rx="2" class="s b"/><rect x="55" y="34" width="10" height="44" class="s c"/><path d="M60 34c-12 0-20-4-18-10s14-2 18 10c4-12 16-16 18-10s-6 10-18 10z" class="s c"/><path d="M36 60h12M72 60h12" class="t"/>`),
+    custom: ill(HALO+`<path d="M18 26l26-8 32 8 26-8v50l-26 8-32-8-26 8z" class="s c"/><path d="M44 18v50M76 26v50" class="t"/><path d="M26 56q14-10 26-2t24-4" class="t" stroke-dasharray="4 4"/><path d="M60 20c-8 0-13 6-13 13 0 10 13 23 13 23s13-13 13-23c0-7-5-13-13-13z" class="s sb"/><circle cx="60" cy="33" r="4.5" class="s c"/>`),
+    chalet: ill(HALO+`<path d="M4 72L30 34l14 18 20-32 22 30 10-12 20 34z" class="s gl"/><path d="M18 76l-8 0 4-8-3 0 4-8-3 0 6-10 6 10-3 0 4 8-3 0 4 8z" class="s b"/><path d="M106 76l-8 0 4-8-3 0 4-8-3 0 6-10 6 10-3 0 4 8-3 0 4 8z" class="s b"/><rect x="70" y="36" width="6" height="14" class="s b"/><circle cx="76" cy="28" r="3" class="t"/><circle cx="80" cy="22" r="2.4" class="t"/><path d="M60 30L28 76h64z" class="s g"/><path d="M60 40L42 76h36z" class="s c"/><rect x="56" y="48" width="8" height="7" class="s g"/><path d="M60 48v7M56 51.5h8" class="s"/><rect x="54" y="60" width="12" height="16" rx="1" class="s b"/><path d="M8 78h104" class="t"/>`),
+    seaside: ill(HALO+`<circle cx="92" cy="22" r="7" class="s g"/><path d="M12 30q5-5 10 0q5-5 10 0" class="t"/><path d="M30 40l24-18 24 18z" class="s b"/><rect x="34" y="40" width="40" height="30" class="s c"/><rect x="50" y="52" width="10" height="18" class="s b"/><rect x="38" y="46" width="8" height="8" class="s g"/><rect x="62" y="46" width="8" height="8" class="s g"/><path d="M26 70h68" class="t"/><path d="M18 70V52" class="s"/><path d="M6 52q12-12 24 0z" class="s sb"/><path d="M12 52q6-7 12-6" class="cs"/><path d="M6 78q8-5 16 0t16 0 16 0 16 0 16 0 16 0 16 0" class="s"/><path d="M14 85q8-5 16 0t16 0 16 0 16 0 16 0" class="t"/>`),
+    oldtown: ill(HALO+`<rect x="30" y="16" width="60" height="60" rx="2" class="s c"/><rect x="36" y="22" width="48" height="48" class="s gl"/><path d="M36 70V56l8-6 8 6v14M52 70V50l10-10 10 10v20M72 70V58l6-4 6 4v12" class="t"/><path d="M54 50q8-14 16 0z" class="s b"/><path d="M62 36l4-4 4 4" class="t"/><path d="M36 46h48M60 22v48" class="s"/><rect x="20" y="20" width="10" height="52" class="s b"/><rect x="90" y="20" width="10" height="52" class="s b"/><path d="M22 28h6M22 36h6M22 44h6M22 52h6M22 60h6M92 28h6M92 36h6M92 44h6M92 52h6M92 60h6" class="cs"/><rect x="26" y="74" width="68" height="8" rx="1" class="s g"/><circle cx="36" cy="72" r="3" class="sb"/><circle cx="48" cy="70" r="3" class="sb"/><circle cx="60" cy="72" r="3" class="sb"/><circle cx="72" cy="70" r="3" class="sb"/><circle cx="84" cy="72" r="3" class="sb"/>`),
+    hotel: ill(HALO+`<path d="M14 76h92" class="t"/><path d="M30 62a30 30 0 0 1 60 0z" class="s g"/><rect x="24" y="62" width="72" height="7" rx="2" class="s b"/><rect x="56" y="24" width="8" height="7" rx="2" class="s b"/><path d="M60 31v2" class="s"/><path d="M42 50q4-10 14-13" class="cs"/><g transform="rotate(-24 90 30)"><circle cx="86" cy="22" r="7" class="s c"/><circle cx="86" cy="22" r="2.5" class="s g"/><path d="M92 26l14 14M100 34l4-4M105 39l4-4" class="s"/></g><path d="M10 38l6 0M8 44h8" class="t"/>`),
+    slow: ill(HALO+`<circle cx="22" cy="22" r="7" class="s g"/><path d="M8 78h104" class="t"/><path d="M88 78V34" class="s"/><path d="M60 36q28-20 56 0z" class="s sb"/><path d="M74 36q6-10 14-13M102 36q-4-10-14-13" class="cs"/><path d="M30 42l10 22h26l-4-22z" class="s g"/><path d="M40 44l8 18M48 44l6 18M56 44l4 18" class="cs"/><path d="M22 76l12-34M66 76L48 42M34 64h30" class="s"/><rect x="70" y="70" width="14" height="8" rx="1" class="s c"/><path d="M77 70v8" class="t"/>`),
+    nature: ill(HALO+`<path d="M4 62L26 36l16 16 18-26 22 26 10-10 24 20v10H4z" class="s gl"/><path d="M42 90q0-16 16-22t8-18" class="s" stroke-dasharray="5 4"/><path d="M22 80V62" class="s"/><circle cx="22" cy="52" r="11" class="s g"/><circle cx="14" cy="58" r="6" class="g"/><circle cx="30" cy="58" r="6" class="g"/><path d="M94 80V50" class="s"/><path d="M94 50h20l4 4-4 4H94z" class="s c"/><path d="M94 62H74l-4 4 4 4h20z" class="s c"/><path d="M98 54h10M80 66h10" class="t"/><path d="M4 80h112" class="t"/>`),
+    museum: ill(HALO+`<path d="M40 16L60 6l20 10" class="t"/><rect x="22" y="16" width="76" height="58" rx="2" class="s g"/><rect x="30" y="24" width="60" height="42" class="s c"/><path d="M30 60l12-16 10 10 10-14 16 20v6H30z" class="s gl"/><circle cx="76" cy="34" r="4" class="sb"/><circle cx="26" cy="20" r="2" class="b"/><circle cx="94" cy="20" r="2" class="b"/><circle cx="26" cy="70" r="2" class="b"/><circle cx="94" cy="70" r="2" class="b"/><path d="M44 20q16-6 32 0M44 70q16 6 32 0" class="t"/><path d="M36 82h48" class="t"/>`),
+    food: ill(HALO+`<path d="M10 80h100" class="t"/><path d="M38 80V46q0-6 4-8V20h8v18q4 2 4 8v34z" class="s b"/><rect x="40" y="54" width="12" height="12" class="s c"/><path d="M40 16h8v4h-8z" class="s g"/><path d="M64 30h24q0 20-12 24-12-4-12-24z" class="s c"/><path d="M66 40h20q-2 12-10 14-8-2-10-14z" class="sb"/><path d="M76 54v18M68 74h16" class="s"/><path d="M92 80l-6-16 24-4v20z" class="s g"/><circle cx="102" cy="70" r="2" class="s c"/><circle cx="97" cy="75" r="1.6" class="s c"/><circle cx="16" cy="66" r="4" class="s sb"/><circle cx="24" cy="66" r="4" class="s sb"/><circle cx="20" cy="72" r="4" class="s sb"/><circle cx="12" cy="72" r="4" class="s sb"/><circle cx="28" cy="72" r="4" class="s sb"/><circle cx="16" cy="78" r="4" class="s sb"/><circle cx="24" cy="78" r="4" class="s sb"/><path d="M20 62v-8" class="s"/><path d="M20 56q-8-6-12 2z" class="s g"/>`)
+  };
+  const PLACEHOLDER_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="6" width="40" height="36" rx="2" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><path d="M8 36l10-12 7 8 6-8 9 12z" fill="#D9B77A" stroke="#8C6A3C" stroke-width="1.2" stroke-linejoin="round"/><circle cx="33" cy="15" r="3.5" fill="#A8443F"/></svg>';
+
+  /* ------------------------------------------------------------------ */
+  /*  Крок 1 (розгалужений), кроки 3 і 4                                 */
+  /* ------------------------------------------------------------------ */
+  const SUB = {
+    origin: { title:'Звідки летимо?', hint:'З України зараз не літають, тож спершу — дорога до аеропорту в сусідній країні.', key:'origin',
+      options:[
+        { id:'kishinev', title:'Аеропорт Кишинева', tag:'найближчий до Одеси', short:'Кишинів', text:'Кілька годин дороги — і ти вже біля трапа.', svg:I.airport },
+        { id:'poland', title:'Аеропорт у Польщі', tag:'більше напрямків, дорога довша', short:'Польща', text:'Шлях довший, зате звідси літають майже всюди.', svg:I.plane }
+      ]},
+    kish: { title:'Як дістатися до Кишинева?', hint:'Дорога коротка, тож можна обрати настрій, а не швидкість.', key:'kishTransfer',
+      options:[
+        { id:'premium', title:'Преміальний трансфер', tag:'їздить просто з Одеси', short:'Трансфер', text:'Комфортне авто від дверей до терміналу — без зайвих турбот.', svg:I.transfer },
+        { id:'bus', title:'Звичайний автобус', tag:'просто і по-мандрівничому', short:'Автобус', text:'Рюкзак, вікно й дорога — як у справжніх мандрівників.', svg:I.bus }
+      ]},
+    pltrain: { title:'Потяг з Одеси до Польщі', hint:'Цей етап уже вирішено — просто насолоджуйся дорогою.', info:true,
+      options:[
+        { id:'train', title:'Потяг з Одеси до Польщі', tag:'фіксований етап', short:'Потяг', text:'Заснути в Одесі — прокинутися в Європі.', svg:I.train }
+      ]},
+    plairport: { title:'Звідки вилітаємо?', hint:'Два аеропорти, два міста — і обидва варті окремого дня.', key:'plAirport',
+      options:[
+        { id:'krakow', title:'Краків', short:'Краків', text:'Королівське місто з драконом під Вавелем.', svg:I.krakow },
+        { id:'warsaw', title:'Варшава', short:'Варшава', text:'Столиця, що відбудувала себе з попелу й не втратила усмішки.', svg:I.warsaw }
+      ]},
+    placcess: { title:'Як дістатися до аеропорту?', hint:'Останній відрізок перед небом.', key:'plAccess',
+      options:[
+        { id:'bus', title:'Автобус', short:'Автобус', text:'Прямий рейс до терміналу без пересадок.', svg:I.bus },
+        { id:'train', title:'Потяг', short:'Потяг', text:'Зручно, швидко і з кавою у вагоні-ресторані.', svg:I.train }
+      ]},
+    stay: { title:'Де жити', hint:'Місце, куди захочеться повертатися щовечора.', key:'stay', step:3,
+      options:[
+        { id:'chalet', title:'Шале в горах', short:'Шале', text:'Дерев’яні стіни, камін і тиша, що дзвенить.', svg:I.chalet },
+        { id:'seaside', title:'Будиночок біля моря', short:'Море', text:'Прокидатися під шум хвиль і запах солі.', svg:I.seaside },
+        { id:'oldtown', title:'Квартира в старому місті', tag:'з видом на архітектуру', short:'Старе місто', text:'Вікно на дахи й дзвони старовинного собору.', svg:I.oldtown },
+        { id:'hotel', title:'Затишний бутік-готель', short:'Готель', text:'Свіжі квіти, м’які рушники й сніданок у ліжко.', svg:I.hotel },
+        { id:'surprise', title:'Сюрприз', tag:'обирає чоловік', short:'Сюрприз', text:'Нехай адреса залишиться таємницею до останнього.', svg:I.key }
+      ]},
+    rhythm: { title:'Ритм подорожі', hint:'Яким буде настрій твоїх днів?', key:'rhythm', step:4,
+      options:[
+        { id:'slow', title:'Повільний відпочинок', short:'Спокій', text:'Жодних планів, лише книга, сонце й довгі сніданки.', svg:I.slow },
+        { id:'nature', title:'Прогулянки й природа', short:'Природа', text:'Стежки, озера й повітря, яким хочеться дихати глибше.', svg:I.nature },
+        { id:'museum', title:'Музеї та мистецтво', short:'Музеї', text:'Зали, де час зупиняється перед кожним полотном.', svg:I.museum },
+        { id:'food', title:'Гастрономія і вино', short:'Смаки', text:'Ринки, крихітні ресторанчики й келих місцевого вина.', svg:I.food },
+        { id:'surprise', title:'Сюрприз', tag:'обирає чоловік', short:'Сюрприз', text:'Нехай кожен день буде маленькою несподіванкою.', svg:I.gift }
+      ]}
+  };
+  const STEP_OF = { origin:1, kish:1, pltrain:1, plairport:1, placcess:1, where:2, stay:3, rhythm:4 };
+  const STEP_TITLE = { 1:'Як дістатися', 2:'Куди', 3:'Де жити', 4:'Ритм подорожі' };
+
+  /* ------------------------------------------------------------------ */
+  /*  Країни Європи: назва, координати підпису/шпильки, підпис,          */
+  /*  пам'ятки = [назва статті укрвікі, назва статті енвікі]              */
+  /*  tier: 0 — підпис завжди, 1 — від zoom 1.6, 2 — від 3, 3 — мікро    */
+  /* ------------------------------------------------------------------ */
+  const C = {
+    AL:{ name:'Албанія', en:'Albania', atlas:'008', c:[20.1,41.0], tier:2, cap:'Гори, що спускаються просто до Іонічного моря.', sights:[['Берат (місто)','Berat'],['Саранда','Saranda'],['Гірокастра','Gjirokastër'],['Ксаміл','Ksamil']] },
+    AD:{ name:'Андорра', en:'Andorra', atlas:'020', c:[1.55,42.55], tier:3, cap:'Крихітне князівство, сховане серед піренейських вершин.', sights:[['Андорра-ла-Велья','Andorra la Vella'],['Ордіно','Ordino'],['Пас-де-ла-Каса','Pas de la Casa']] },
+    AT:{ name:'Австрія', en:'Austria', atlas:'040', c:[14.3,47.5], tier:1, cap:'Віденська кава, вальси та альпійські краєвиди.', sights:[['Шенбрунн','Schönbrunn Palace'],['Гальштат','Hallstatt'],['Собор Святого Стефана (Відень)',"St. Stephen's Cathedral, Vienna"],['Зальцбург','Salzburg']] },
+    BE:{ name:'Бельгія', en:'Belgium', atlas:'056', c:[4.6,50.6], tier:2, cap:'Шоколад, мереживо і площі, залиті золотим світлом.', sights:[['Гран-Плас','Grand-Place'],['Брюгге','Bruges'],['Атоміум','Atomium'],['Гент','Ghent']] },
+    BA:{ name:'Боснія і Герцеговина', short:'Боснія', en:'Bosnia and Herzegovina', atlas:'070', c:[17.8,44.2], tier:2, cap:'Міст над смарагдовою річкою і кава по-турецьки на старому базарі.', sights:[['Старий міст (Мостар)','Stari Most'],['Сараєво','Sarajevo'],['Яйце','Jajce'],['Требинє','Trebinje']] },
+    BG:{ name:'Болгарія', en:'Bulgaria', atlas:'100', c:[25.3,42.7], tier:1, cap:'Трояндові долини, монастирі в горах і тепле Чорне море.', sights:[['Рильський монастир','Rila Monastery'],['Несебир','Nesebar'],['Пловдив','Plovdiv'],['Велико-Тирново','Veliko Tarnovo']] },
+    HR:{ name:'Хорватія', en:'Croatia', atlas:'191', c:[15.9,45.3], tier:2, cap:'Прозора Адріатика і міста з каменю й сонця.', sights:[['Дубровник','Dubrovnik'],['Плітвіцькі озера','Plitvice Lakes National Park'],['Палац Діоклетіана',"Diocletian's Palace"],['Хвар','Hvar']] },
+    CY:{ name:'Кіпр', en:'Cyprus', atlas:'196', atlasNames:['N. Cyprus'], c:[33.2,35.1], tier:2, cap:'Острів Афродіти, де літо триває майже цілий рік.', sights:[['Пафос','Paphos'],['Айя-Напа','Ayia Napa'],['Троодос','Troodos Mountains'],['Кіренія','Kyrenia']] },
+    CZ:{ name:'Чехія', en:'Czechia', atlas:'203', c:[15.5,49.8], tier:1, cap:'Черепичні дахи, мости й пиво у старовинній пивниці.', sights:[['Карлів міст','Charles Bridge'],['Празький Град','Prague Castle'],['Чеський Крумлов','Český Krumlov'],['Карлові Вари','Karlovy Vary']] },
+    DK:{ name:'Данія', en:'Denmark', atlas:'208', c:[9.3,56.1], tier:2, cap:'Кольорові будиночки біля води й затишок, який тут називають «хюґе».', sights:[['Нюхавн','Nyhavn'],['Русалонька (статуя)','The Little Mermaid (statue)'],['Тіволі (парк)','Tivoli Gardens'],['Крістіансборг (палац)','Christiansborg Palace']] },
+    EE:{ name:'Естонія', en:'Estonia', atlas:'233', c:[25.5,58.7], tier:2, cap:'Середньовічні вежі, соснові ліси й море з присмаком півночі.', sights:[['Таллінн','Tallinn'],['Тарту','Tartu'],['Сааремаа','Saaremaa'],['Національний парк Лахемаа','Lahemaa National Park']] },
+    FI:{ name:'Фінляндія', en:'Finland', atlas:'246', c:[26.5,63.5], tier:0, cap:'Тисяча озер, сауна й тиша, яку чути.', sights:[['Суоменлінна','Suomenlinna'],['Гельсінкі','Helsinki'],['Рованіемі','Rovaniemi'],['Лапландія','Lapland (Finland)']] },
+    FR:{ name:'Франція', en:'France', atlas:'250', c:[2.4,46.8], tier:0, cap:'Круасан на світанку і набережні, створені для прогулянок.', sights:[['Ейфелева вежа','Eiffel Tower'],['Лувр','Louvre'],['Мон-Сен-Мішель','Mont-Saint-Michel'],['Версальський палац','Palace of Versailles']] },
+    DE:{ name:'Німеччина', en:'Germany', atlas:'276', c:[10.3,51.1], tier:0, cap:'Казкові замки, різдвяні ярмарки й дороги без обмежень.', sights:[['Нойшванштайн','Neuschwanstein Castle'],['Бранденбурзькі ворота','Brandenburg Gate'],['Кельнський собор','Cologne Cathedral'],['Берлінський мур','Berlin Wall']] },
+    GR:{ name:'Греція', en:'Greece', atlas:'300', c:[22.0,39.4], tier:1, cap:'Білі будинки, сині двері та море кольору неба.', sights:[['Афінський акрополь','Acropolis of Athens'],['Санторіні','Santorini'],['Метеора','Meteora'],['Дельфи','Delphi']] },
+    HU:{ name:'Угорщина', en:'Hungary', atlas:'348', c:[19.4,47.1], tier:1, cap:'Термальні купальні, паприка й Дунай у вогнях.', sights:[['Будівля угорського парламенту','Hungarian Parliament Building'],['Рибальський бастіон',"Fisherman's Bastion"],['Будайський замок','Buda Castle'],['Балатон','Lake Balaton']] },
+    IS:{ name:'Ісландія', en:'Iceland', atlas:'352', c:[-18.5,64.9], tier:1, cap:'Вулкани, гейзери й північне сяйво над чорним піском.', sights:[['Гейсір','Geysir'],['Гюдльфосс','Gullfoss'],["Рейк'явік",'Reykjavík'],['Ватнайокутль','Vatnajökull']] },
+    IE:{ name:'Ірландія', en:'Ireland', atlas:'372', c:[-8.0,53.3], tier:1, cap:'Смарагдові пагорби, скелі над океаном і музика в кожному пабі.', sights:[['Скелі Могер','Cliffs of Moher'],['Трініті-коледж (Дублін)','Trinity College Dublin'],['Голвей','Galway'],['Дублінський замок','Dublin Castle']] },
+    IT:{ name:'Італія', en:'Italy', atlas:'380', c:[12.4,42.9], tier:0, cap:'Еспресо на площі й вечір, що пахне базиліком.', sights:[['Колізей','Colosseum'],['Венеція','Venice'],['Пізанська вежа','Leaning Tower of Pisa'],['Амальфітанське узбережжя','Amalfi Coast']] },
+    XK:{ name:'Косово', en:'Kosovo', atlasNames:['Kosovo'], c:[20.9,42.6], tier:2, cap:'Молода країна зі старими монастирями й гостинними кав’ярнями.', sights:[['Призрен','Prizren'],['Приштина','Pristina'],['Монастир Грачаниця','Gračanica Monastery']] },
+    LV:{ name:'Латвія', en:'Latvia', atlas:'428', c:[25.0,56.9], tier:2, cap:'Югендстиль Риги і довгі піщані пляжі Юрмали.', sights:[['Рига','Riga'],['Юрмала','Jūrmala'],['Рундальський палац','Rundāle Palace'],['Сігулда','Sigulda']] },
+    LI:{ name:'Ліхтенштейн', en:'Liechtenstein', atlas:'438', c:[9.55,47.15], tier:3, cap:'Князівство завбільшки з прогулянку, зате з власними Альпами.', sights:[['Вадуц','Vaduz'],['Замок Вадуц','Vaduz Castle'],['Мальбун','Malbun']] },
+    LT:{ name:'Литва', en:'Lithuania', atlas:'440', c:[23.9,55.3], tier:2, cap:'Бароко Вільнюса, замок на острові й дюни над Балтикою.', sights:[['Вільнюс','Vilnius'],['Тракайський замок','Trakai Island Castle'],['Куршська коса','Curonian Spit'],['Гора Хрестів','Hill of Crosses']] },
+    LU:{ name:'Люксембург', en:'Luxembourg', atlas:'442', c:[6.1,49.75], tier:3, cap:'Фортеця над ущелиною і замки в зелених долинах.', sights:[['Люксембург (місто)','Luxembourg City'],['Віанден','Vianden'],['Ехтернах','Echternach']] },
+    MT:{ name:'Мальта', en:'Malta', atlas:'470', c:[14.4,35.9], tier:3, cap:'Медове каміння, лицарські фортеці й лазурні бухти.', sights:[['Валлетта','Valletta'],['Мдіна','Mdina'],['Гоцо','Gozo'],['Коміно','Comino']] },
+    MD:{ name:'Молдова', en:'Moldova', atlas:'498', c:[28.5,47.2], tier:2, cap:'Винні підвали завдовжки з місто й монастирі в скелях.', sights:[['Крикова','Cricova'],['Старий Орхей','Orheiul Vechi'],['Кишинів','Chișinău'],['Сороцька фортеця','Soroca Fort']] },
+    MC:{ name:'Монако', en:'Monaco', atlas:'492', c:[7.42,43.73], tier:3, cap:'Яхти, казино і скеля над найсинішим морем.', sights:[['Монте-Карло','Monte Carlo'],['Монте-Карло (казино)','Monte Carlo Casino'],['Океанографічний музей (Монако)','Oceanographic Museum']] },
+    ME:{ name:'Чорногорія', en:'Montenegro', atlas:'499', c:[19.3,42.8], tier:2, cap:'Фіорд Адріатики й гори, що дивляться у воду.', sights:[['Котор','Kotor'],['Будва','Budva'],['Светі-Стефан','Sveti Stefan'],['Дурмітор','Durmitor']] },
+    NL:{ name:'Нідерланди', en:'Netherlands', atlas:'528', c:[5.3,52.3], tier:2, cap:'Канали, велосипеди й тюльпани в кожному вікні.', sights:[['Амстердам','Amsterdam'],['Кіндердейк','Kinderdijk'],['Кекенгоф','Keukenhof'],['Рейксмузей','Rijksmuseum']] },
+    MK:{ name:'Північна Македонія', short:'Пн. Македонія', en:'North Macedonia', atlas:'807', c:[21.7,41.6], tier:2, cap:'Озеро, якому три мільйони років, і місто з сотнею церков.', sights:[['Охрид','Ohrid'],['Охридське озеро','Lake Ohrid'],["Скоп'є",'Skopje'],['Матка (каньйон)','Matka Canyon']] },
+    NO:{ name:'Норвегія', en:'Norway', atlas:'578', c:[9.5,61.5], tier:0, cap:'Фіорди, дерев’яні церкви й сонце, що не заходить.', sights:[['Гейрангер-фіорд','Geirangerfjord'],['Берген','Bergen'],['Лофотенські острови','Lofoten'],['Прекестулен','Preikestolen']] },
+    PL:{ name:'Польща', en:'Poland', atlas:'616', c:[19.4,52.1], tier:0, cap:'Королівський Краків, бурштин Гданська і запах свіжих пончиків.', sights:[['Краків','Kraków'],['Вавель','Wawel'],['Вроцлав','Wrocław'],['Гданськ','Gdańsk']] },
+    PT:{ name:'Португалія', en:'Portugal', atlas:'620', c:[-8.2,39.6], tier:1, cap:'Жовті трамваї, океан і пісні фаду.', sights:[['Лісабон','Lisbon'],['Сінтра','Sintra'],['Порту','Porto'],['Торре-де-Белен','Belém Tower']] },
+    RO:{ name:'Румунія', en:'Romania', atlas:'642', c:[25.0,45.9], tier:0, cap:'Карпатські замки, дерев’яні церкви й дорога через хмари.', sights:[['Замок Бран','Bran Castle'],['Замок Пелеш','Peleș Castle'],['Сігішоара','Sighișoara'],['Брашов','Brașov']] },
+    SM:{ name:'Сан-Марино', en:'San Marino', atlas:'674', c:[12.45,43.94], tier:3, cap:'Три вежі на скелі й найстаріша республіка світу.', sights:[['Сан-Марино (місто)','City of San Marino'],['Гуаїта','Guaita'],['Монте-Титано','Monte Titano']] },
+    RS:{ name:'Сербія', en:'Serbia', atlas:'688', c:[20.9,44.2], tier:1, cap:'Фортеці над Дунаєм, гучні кафани й гостинність без міри.', sights:[['Калемегдан','Belgrade Fortress'],['Нові-Сад','Novi Sad'],['Джердап (національний парк)','Đerdap National Park'],['Суботиця','Subotica']] },
+    SK:{ name:'Словаччина', en:'Slovakia', atlas:'703', c:[19.5,48.7], tier:2, cap:'Татри, печери й замки на кожному пагорбі.', sights:[['Братиславський Град','Bratislava Castle'],['Списький град','Spiš Castle'],['Високі Татри','High Tatras'],['Банська Штявниця','Banská Štiavnica']] },
+    SI:{ name:'Словенія', en:'Slovenia', atlas:'705', c:[14.8,46.1], tier:2, cap:'Озеро з церквою на острові й Альпи за годину від моря.', sights:[['Блед','Bled'],['Любляна','Ljubljana'],['Постойна','Postojna Cave'],['Піран','Piran']] },
+    ES:{ name:'Іспанія', en:'Spain', atlas:'724', c:[-3.7,40.2], tier:0, cap:'Сієста, спекотні вулички та вечеря опівночі.', sights:[['Храм Святого Сімейства','Sagrada Família'],['Альгамбра','Alhambra'],['Парк Гуель','Park Güell'],['Музей Прадо','Museo del Prado']] },
+    SE:{ name:'Швеція', en:'Sweden', atlas:'752', c:[15.5,62.5], tier:0, cap:'Острови, булочки з корицею й червоні будиночки біля води.', sights:[['Старе місто (Стокгольм)','Gamla stan'],['Стокгольмська ратуша','Stockholm City Hall'],['Дроттнінгхольм','Drottningholm Palace'],['Готланд','Gotland']] },
+    CH:{ name:'Швейцарія', en:'Switzerland', atlas:'756', c:[8.2,46.8], tier:1, cap:'Озера як дзеркала, гори як на листівках.', sights:[['Маттергорн','Matterhorn'],['Юнгфрау','Jungfraujoch'],['Люцерн','Lucerne'],['Женевське озеро','Lake Geneva']] },
+    TR:{ name:'Туреччина', en:'Turkey', atlas:'792', c:[35.0,39.0], tier:0, cap:'Повітряні кулі на світанку, базари й чай у маленьких склянках.', sights:[['Каппадокія','Cappadocia'],['Айя-Софія','Hagia Sophia'],['Памуккале','Pamukkale'],['Ефес','Ephesus']] },
+    GB:{ name:'Велика Британія', short:'Британія', en:'United Kingdom', atlas:'826', c:[-1.8,53.0], tier:0, cap:'Чай о п’ятій, замки в тумані й червоні автобуси.', sights:[['Біг-Бен','Big Ben'],['Стоунхендж','Stonehenge'],['Единбурзький замок','Edinburgh Castle'],['Тауерський міст','Tower Bridge']] },
+    VA:{ name:'Ватикан', en:'Vatican City', atlas:'336', c:[12.453,41.903], tier:3, cap:'Найменша держава світу з найбільшим собором.', sights:[['Собор Святого Петра',"St. Peter's Basilica"],['Сікстинська капела','Sistine Chapel'],['Музеї Ватикану','Vatican Museums']] },
+    GE:{ name:'Грузія', en:'Georgia', atlas:'268', c:[43.5,42.2], tier:1, cap:'Гори до неба, вино з глечика й тости до ранку.', sights:[['Тбілісі','Tbilisi'],['Сванетія','Svaneti'],['Мцхета','Mtskheta'],['Казбек','Mount Kazbek']] }
+  };
+  const HOME = { atlas:'804', c:[31.5,49.0], odesa:[30.73,46.48] };
+  const DEAD = { atlas:'643', c:[41.0,56.6] };           // росія
+  const PALE = { atlas:'112', c:[28.0,53.6], name:'Білорусь' };
+  const ATLAS_INDEX = {}; Object.keys(C).forEach(k => { const d = C[k]; if (d.atlas) ATLAS_INDEX['id:'+d.atlas] = k; (d.atlasNames||[]).forEach(n => ATLAS_INDEX['name:'+n] = k); });
+  const ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json';
+
+  /* ------------------------------------------------------------------ */
+  /*  Стан (лише в пам’яті) і допоміжне                                  */
+  /* ------------------------------------------------------------------ */
+  const state = { screen:'welcome', origin:null, kishTransfer:null, plAirport:null, plAccess:null, country:null, customText:'', stay:null, rhythm:null };
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STAMP = '<span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span>';
+  const nav = $('nav'), btnBack = $('btn-back'), btnNext = $('btn-next'), routeWrap = $('route-wrap'), routeEl = $('route'), routePlane = $('route-plane'), routeLabel = $('route-label'), toastEl = $('toast');
+  const optOf = (sub, id) => SUB[sub].options.find(o => o.id === id) || null;
+  const flow = () => ['origin', ...(state.origin === 'kishinev' ? ['kish'] : state.origin === 'poland' ? ['pltrain','plairport','placcess'] : []), 'where', 'stay', 'rhythm'];
+  const cName = code => C[code] ? (C[code].short || C[code].name) : '';
+
+  /* ---------- екрани кроків 1, 3, 4 ---------- */
+  ['origin','kish','pltrain','plairport','placcess','stay','rhythm'].forEach(key => {
+    const st = SUB[key];
+    const sec = document.createElement('section');
+    sec.className = 'screen'; sec.id = 's-' + key;
+    sec.innerHTML = `<header class="step-head"><p class="eyebrow">Крок ${STEP_OF[key]} із 4</p><h2>${esc(st.title)}</h2><p class="hint">${esc(st.hint)}</p></header><div class="cards${st.info ? ' one' : ''}" role="group" aria-label="${esc(st.title)}"></div>`;
+    const grid = sec.querySelector('.cards');
+    st.options.forEach(op => {
+      const body = `<div class="card-body">${op.tag ? `<span class="tag">${esc(op.tag)}</span>` : ''}<h3>${esc(op.title)}</h3><p>${esc(op.text)}</p></div>`;
+      let el;
+      if (st.info) { el = document.createElement('div'); el.className = 'card info'; el.innerHTML = `<div class="ill-wrap">${op.svg}</div>${body}`; }
+      else {
+        el = document.createElement('button'); el.type = 'button'; el.className = 'card'; el.setAttribute('aria-pressed', 'false');
+        el.innerHTML = `<div class="ill-wrap">${op.svg}</div>${body}${STAMP}`;
+        el.addEventListener('click', () => { state[st.key] = op.id; refreshCards(key); updateNext(); updateRoute(); });
+      }
+      el.dataset.id = op.id; grid.appendChild(el);
+    });
+    $('steps').appendChild(sec);
+  });
+  function refreshCards(key) {
+    const val = state[SUB[key].key];
+    document.querySelectorAll(`#s-${key} .card`).forEach(c => { const on = c.dataset.id === val; c.classList.toggle('selected', on); if (c.tagName === 'BUTTON') c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  }
+  function valid(screen) {
+    switch (screen) {
+      case 'origin': return !!state.origin;
+      case 'kish': return !!state.kishTransfer;
+      case 'pltrain': return true;
+      case 'plairport': return !!state.plAirport;
+      case 'placcess': return !!state.plAccess;
+      case 'where': return state.country === 'custom' ? state.customText.trim().length > 0 : !!state.country;
+      case 'stay': return !!state.stay;
+      case 'rhythm': return !!state.rhythm;
+    }
+    return false;
+  }
+  function updateNext() {
+    btnNext.disabled = !valid(state.screen);
+    btnNext.textContent = state.screen === 'rhythm' ? 'Скласти маршрут' : 'Далі →';
+  }
+
+  /* ---------- перемикання екранів ---------- */
+  let switching = false;
+  function show(id, dir, after) {
+    const cur = document.querySelector('.screen.active'), nxt = $(id);
+    if (switching || cur === nxt) return;
+    switching = true;
+    document.documentElement.style.setProperty('--dx', dir < 0 ? '-40px' : '40px');
+    const swap = () => { if (cur) cur.classList.remove('active','leaving'); nxt.classList.add('active'); window.scrollTo(0, 0); switching = false; if (after) after(); };
+    if (cur && !reduced) { cur.classList.add('leaving'); setTimeout(swap, 250); } else swap();
+  }
+  function goScreen(key, dir) {
+    const f = flow(), from = f.indexOf(state.screen), to = f.indexOf(key);
+    if (dir == null) dir = (from === -1 || to >= from) ? 1 : -1;
+    state.screen = key; updateNext();
+    $('sound-btn').classList.remove('show');
+    show('s-' + key, dir, () => { nav.classList.add('show'); if (key === 'where') initMap().then(() => syncRoute(false)); });
+    updateRoute();
+  }
+  function goWelcome() { state.screen = 'welcome'; nav.classList.remove('show'); routeWrap.classList.remove('show'); $('sound-btn').classList.remove('show'); show('s-welcome', -1); }
+  function goFinal() {
+    state.screen = 'final'; nav.classList.remove('show');
+    buildFinal();
+    show('s-final', 1, () => {
+      $('sound-btn').classList.add('show');
+      runBoard(() => {
+        $('final-rest').classList.add('show');
+        requestAnimationFrame(() => $('rmap').classList.add('drawn'));
+        if (!reduced) setTimeout(confetti, 350);
+      });
+    });
+    updateRoute();
+  }
+  /* ---------- конверт при першому відкритті ---------- */
+  (function envelope() {
+    const scene = $('env-scene'), seal = $('env-seal');
+    if (reduced) { $('s-welcome').classList.add('active'); return; }
+    $('s-envelope').classList.add('active');
+    let opened = false;
+    seal.addEventListener('click', () => {
+      if (opened) return; opened = true;
+      seal.classList.add('cracked');                                   // печатка тріскається
+      setTimeout(() => scene.classList.add('open'), 350);              // клапан розгортається (rotateX)
+      setTimeout(() => scene.classList.add('behind'), 900);            // клапан іде за лист
+      setTimeout(() => scene.classList.add('lift'), 1150);             // лист виїжджає
+      setTimeout(() => scene.classList.add('done'), 2050);             // сцена тане
+      setTimeout(() => show('s-welcome', 1), 2350);                    // і стає повним листом
+    });
+  })();
+  function next() { if (!valid(state.screen)) return; const f = flow(), i = f.indexOf(state.screen); if (i < f.length - 1) goScreen(f[i+1], 1); else goFinal(); }
+  function back() { const f = flow(), i = f.indexOf(state.screen); if (i > 0) goScreen(f[i-1], -1); else goWelcome(); }
+  $('btn-start').addEventListener('click', () => goScreen('origin', 1));
+  btnNext.addEventListener('click', next); btnBack.addEventListener('click', back);
+  $('btn-change').addEventListener('click', () => { $('rmap').classList.remove('drawn'); $('summary-box').hidden = true; goScreen('origin', -1); });
+  $('btn-copy').addEventListener('click', copyRoute);
+
+  /* ---------- ланцюжок маршруту ---------- */
+  function chain() {
+    const f = flow(), st = s => f.indexOf(s), n = [], o = state.origin;
+    n.push({ id:'odesa', label:'Одеса', stage:-1, home:true, fixed:{ title:'Одеса', text:'Звідси все починається.', svg:I.odesa } });
+    if (!o) n.push({ id:'origin', label:'Звідки?', q:true, stage:st('origin'), screen:'origin' });
+    else if (o === 'kishinev') {
+      const t = optOf('kish', state.kishTransfer);
+      n.push({ id:'kish', label:t ? t.short : 'Як?', q:!t, stage:st('kish'), opt:t, step:'Дорога', screen:'kish' });
+      n.push({ id:'kishinev', label:'Кишинів', stage:st('origin'), fixed:{ title:'Аеропорт Кишинева', text:'Найближчий аеропорт до дому.', svg:I.airport } });
+    } else {
+      n.push({ id:'pltrain', label:'Потяг', stage:st('pltrain'), fixed:optOf('pltrain','train'), screen:'pltrain' });
+      n.push({ id:'poland', label:'Польща', stage:st('pltrain') + 0.5, fixed:{ title:'Польща', text:'Кордон позаду — Європа попереду.', svg:I.border } });
+      const a = optOf('placcess', state.plAccess);
+      n.push({ id:'placcess', label:a ? a.short : 'Як?', q:!a, stage:st('placcess'), opt:a, step:'До аеропорту', screen:'placcess' });
+      const p = optOf('plairport', state.plAirport);
+      n.push({ id:'plairport', label:p ? p.short : 'Аеропорт?', q:!p, stage:st('plairport'), opt:p, step:'Аеропорт', screen:'plairport' });
+    }
+    n.push({ id:'flight', label:'Літак', stage:st('where') - 0.5, fixed:{ title:'Літак', text:'Кілька годин у хмарах — і ти вже в іншому світі.', svg:I.plane } });
+    const cl = state.country === 'custom' ? state.customText.trim() : state.country === 'surprise' ? 'Сюрприз' : cName(state.country);
+    n.push({ id:'country', label:cl || 'Куди?', q:!cl, stage:st('where'), step:'Куди', screen:'where' });
+    const s = optOf('stay', state.stay), r = optOf('rhythm', state.rhythm);
+    n.push({ id:'stay', label:s ? s.short : 'Житло?', q:!s, stage:st('stay'), opt:s, step:'Де жити', screen:'stay' });
+    n.push({ id:'rhythm', label:r ? r.short : 'Ритм?', q:!r, stage:st('rhythm'), opt:r, step:'Ритм', screen:'rhythm' });
+    return n;
+  }
+  function updateRoute() {
+    if (state.screen === 'welcome') return;
+    routeWrap.classList.add('show');
+    const final = state.screen === 'final';
+    const nodes = chain(), N = nodes.length;
+    const ci = final ? N : nodes.findIndex(nd => nd.screen === state.screen);
+    routeEl.querySelectorAll('.rn,.rl').forEach(e => e.remove());
+    let curX = null;
+    nodes.forEach((nd, i) => {
+      const x = (3 + (i + 0.5) / N * 94).toFixed(2) + '%';
+      // поточна точка — та, що відповідає екрану; все ліворуч і всі вже відповідані питання — пройдені;
+      // невідповідані питання показують «?» незалежно від місця в ланцюжку; фіксовані етапи праворуч — порожні
+      let status;
+      if (i === ci) status = 'current';
+      else if (nd.q) status = 'q';
+      else if (i < ci || nd.screen) status = 'done';
+      else status = 'todo';
+      if (status === 'current') curX = x;
+      const dot = document.createElement('span'); dot.className = `rn ${status}${nd.home ? ' home' : ''}`; dot.style.left = x;
+      dot.textContent = status === 'q' || (status === 'current' && nd.q) ? '?' : (nd.home ? '⌂' : '');
+      const lbl = document.createElement('span'); lbl.className = `rl ${status}${i % 2 ? ' alt' : ''}`; lbl.style.left = x;
+      lbl.textContent = nd.label.length > 12 ? nd.label.slice(0, 11) + '…' : nd.label;
+      routeEl.appendChild(dot); routeEl.appendChild(lbl);
+    });
+    routePlane.style.left = final ? (3 + (N - 0.5) / N * 94).toFixed(2) + '%' : (curX || '5%');
+    routeLabel.textContent = final ? 'Маршрут складено ✦' : `Крок ${STEP_OF[state.screen]} із 4 · ${STEP_TITLE[STEP_OF[state.screen]]}`;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Карта Європи (D3 + TopoJSON, world-atlas countries-50m)            */
+  /* ------------------------------------------------------------------ */
+  let M = null;
+  const atlasPromise = (window.d3 && window.topojson) ? fetch(ATLAS_URL).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }) : Promise.reject(new Error('d3 not loaded'));
+  atlasPromise.catch(() => {});
+  const TIER_ZOOM = [0, 1.6, 3, 4.5];
+
+  async function initMap() {
+    if (M !== null) return;
+    M = { pending:true };
+    let topo;
+    try { topo = await atlasPromise; } catch (e) { M = false; mapFallback(); return; }
+    const box = $('map-box');
+    const W = Math.max(box.clientWidth, 300), H = Math.round(W * (W < 600 ? 1.0 : 0.64));
+    const feats = topojson.feature(topo, topo.objects.countries).features;
+    feats.forEach(f => { f.code = ATLAS_INDEX['id:' + f.id] || ATLAS_INDEX['name:' + f.properties.name] || null; });
+    const projection = d3.geoConicConformal().parallels([40, 65]).rotate([-18, 0]);
+    const ring = [];
+    for (let x = -12; x <= 44; x += 2) ring.push([x, 34]); for (let y = 34; y <= 71; y += 2) ring.push([44, y]);
+    for (let x = 44; x >= -12; x -= 2) ring.push([x, 71]); for (let y = 71; y >= 34; y -= 2) ring.push([-12, y]); ring.push([-12, 34]); ring.reverse(); // за годинниковою стрілкою — так D3 розуміє, що всередині саме Європа
+    projection.fitExtent([[6, 6], [W - 6, H - 6]], { type:'Polygon', coordinates:[ring] });
+    const path = d3.geoPath(projection);
+    const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Карта Європи');
+    const defs = svg.append('defs');
+    const pat = defs.append('pattern').attr('id', 'hatch').attr('width', 7).attr('height', 7).attr('patternUnits', 'userSpaceOnUse');
+    pat.append('rect').attr('width', 7).attr('height', 7).attr('fill', '#E3E0D8');
+    pat.append('path').attr('d', 'M0 3.5h7').attr('stroke', '#C6C0B4').attr('stroke-width', 1).attr('stroke-dasharray', '2 2');
+    const g = svg.append('g');
+    g.append('path').datum(d3.geoGraticule10()).attr('class', 'grat').attr('d', path);
+    g.selectAll('path.country').data(feats).join('path')
+      .attr('class', f => 'country ' + (f.code ? 'act' : f.id === HOME.atlas ? 'home' : f.id === DEAD.atlas ? 'dead' : f.id === PALE.atlas ? 'pale' : 'ctx'))
+      .attr('d', path)
+      .on('click', (e, f) => { if (f.code) openCountry(f.code); });
+    g.append('path').datum(topojson.mesh(topo, topo.objects.countries, (a, b) => a !== b && a.id !== DEAD.atlas && b.id !== DEAD.atlas)).attr('class', 'borders').attr('d', path);
+    g.append('path').datum(topojson.mesh(topo, topo.objects.countries, (a, b) => a !== b && (a.id === DEAD.atlas || b.id === DEAD.atlas))).attr('class', 'borders dead').attr('d', path);
+    const lblLayer = g.append('g');
+    Object.keys(C).forEach(code => {
+      const d = C[code], [x, y] = projection(d.c);
+      lblLayer.append('text').attr('class', 'lbl').attr('x', x).attr('y', y + 3).attr('data-tier', d.tier).attr('data-code', code).text(d.short || d.name);
+    });
+    { const [x, y] = projection(HOME.c); lblLayer.append('text').attr('class', 'lbl ua').attr('x', x).attr('y', y + 3).attr('data-tier', 0).text('Україна 🇺🇦 💛💙'); }
+    { const [x, y] = projection(PALE.c); lblLayer.append('text').attr('class', 'lbl pale').attr('x', x).attr('y', y).attr('data-tier', 1).text(PALE.name); }
+    { const [x, y] = projection(DEAD.c);
+      lblLayer.append('text').attr('class', 'lbl dead').attr('x', x).attr('y', y).attr('data-tier', 0).text('Країна гній');
+      lblLayer.append('text').attr('class', 'lbl404').attr('x', x).attr('y', y).attr('data-dy', 1.15).text('404 Not Found'); }
+    const microLayer = g.append('g');
+    Object.keys(C).filter(k => C[k].tier === 3).forEach(code => {
+      const [x, y] = projection(C[code].c);
+      microLayer.append('circle').attr('class', 'micro-hit').attr('cx', x).attr('cy', y).attr('data-code', code).on('click', () => openCountry(code));
+      microLayer.append('circle').attr('class', 'micro').attr('cx', x).attr('cy', y).attr('data-code', code).on('click', () => openCountry(code));
+    });
+    const homeLayer = g.append('g');
+    { const [x, y] = projection(HOME.odesa);
+      homeLayer.append('g').attr('class', 'home-g').attr('data-x', x).attr('data-y', y)
+        .html(`<path class="home-heart" d="M0 4C-1.5 1-6-1-6-4.5a3.5 3.5 0 0 1 6-2.2 3.5 3.5 0 0 1 6 2.2C6-1 1.5 1 0 4z"/><text class="home-lbl" x="8" y="2">Дім</text>`); }
+    const routeLayer = g.append('g').attr('class', 'route-layer');
+    const pinLayer = g.append('g').attr('class', 'pin');
+    const zoom = d3.zoom().scaleExtent([1, 12]).translateExtent([[-W * 0.4, -H * 0.4], [W * 1.4, H * 1.4]])
+      .on('zoom', e => { g.attr('transform', e.transform); applyZoom(e.transform.k); });
+    svg.call(zoom);
+    M = { svg, g, projection, path, zoom, feats, W, H, k:1, pinLayer, lblLayer, microLayer, homeLayer, routeLayer, routeKey:null, plane:null };
+    applyZoom(1);
+    $('map-loading').remove(); $('zoom-ctl').hidden = false;
+    $('zoom-in').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 1.7));
+    $('zoom-out').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.7));
+    if (state.country && C[state.country]) syncRoute(false);
+  }
+  function applyZoom(k) {
+    M.k = k;
+    M.lblLayer.selectAll('.lbl').attr('font-size', (11 / k).toFixed(2))
+      .attr('display', function () { return k >= TIER_ZOOM[+this.dataset.tier] ? null : 'none'; });
+    M.lblLayer.selectAll('.lbl404').attr('font-size', (7 / k).toFixed(2)).attr('dy', (9 / k).toFixed(2));
+    M.g.selectAll('.borders').attr('stroke-width', (0.6 / k).toFixed(3));
+    M.g.selectAll('.grat').attr('stroke-width', (0.5 / k).toFixed(3));
+    M.microLayer.selectAll('.micro').attr('r', (4.5 / k).toFixed(2)).attr('stroke-width', (1 / k).toFixed(2));
+    M.microLayer.selectAll('.micro-hit').attr('r', (16 / k).toFixed(2));
+    M.homeLayer.select('.home-g').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1.6 / k).toFixed(3)})`; });
+    M.homeLayer.select('.home-lbl').attr('font-size', 7);
+    M.pinLayer.select('.pin-g').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1 / k).toFixed(3)})`; });
+    M.routeLayer.selectAll('.rt-ground').attr('stroke-width', (1.6 / k).toFixed(3)).attr('stroke-dasharray', `${(2 / k).toFixed(2)} ${(3.2 / k).toFixed(2)}`);
+    M.routeLayer.selectAll('.rt-air').attr('stroke-width', (2 / k).toFixed(3)).attr('stroke-dasharray', `${(7 / k).toFixed(2)} ${(5 / k).toFixed(2)}`);
+    M.routeLayer.selectAll('.rt-airport').attr('r', (3.5 / k).toFixed(2)).attr('stroke-width', (1.4 / k).toFixed(2));
+    M.routeLayer.selectAll('.rt-mask').attr('stroke-width', (14 / k).toFixed(2));
+    if (M.plane) M.plane.el.attr('transform', `translate(${M.plane.x},${M.plane.y}) scale(${(0.6 / k).toFixed(3)}) rotate(${M.plane.a}) translate(-20,-12)`);
+  }
+  /* ---------- маршрут польоту: Одеса → аеропорт → країна ---------- */
+  const AIRPORTS = { kishinev:[28.93, 46.93], krakow:[19.79, 50.08], warsaw:[20.97, 52.17] };
+  function airportKey() { return state.origin === 'kishinev' ? 'kishinev' : state.origin === 'poland' ? (state.plAirport || null) : null; }
+  const PLANE_D = 'M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z';
+  let routeAnim = 0;
+  function clearRoute(immediate) {
+    if (!M || !M.svg) return;
+    routeAnim++; M.plane = null; M.routeKey = null;
+    const old = M.routeLayer.selectAll('.route-g');
+    if (immediate || reduced) old.remove(); else { old.classed('fade', true); setTimeout(() => old.remove(), 500); }
+  }
+  function drawRoute(code, animate) {
+    if (!M || !M.svg) return;
+    const ak = airportKey(), key = (ak || 'odesa') + ':' + code;
+    if (M.routeKey === key && M.pinLayer.select('.pin-g').size()) return;
+    clearRoute(!animate);
+    M.pinLayer.html(''); M.g.selectAll('.country.sel').classed('sel', false);
+    M.routeKey = key;
+    const myAnim = ++routeAnim;
+    const pr = M.projection, odesa = pr(HOME.odesa), apt = ak ? pr(AIRPORTS[ak]) : null, dest = pr(C[code].c);
+    const from = apt || odesa;
+    // дуга: квадратична Безьє, опукла перпендикулярно до хорди
+    const dx = dest[0] - from[0], dy = dest[1] - from[1], len = Math.hypot(dx, dy) || 1;
+    let nx = -dy / len, ny = dx / len; if (ny > 0) { nx = -nx; ny = -ny; }           // нормаль, спрямована вгору екрана
+    const bulge = Math.min(len * 0.3, 110);
+    const cx = (from[0] + dest[0]) / 2 + nx * bulge, cy = (from[1] + dest[1]) / 2 + ny * bulge;
+    const arcD = `M${from[0]},${from[1]} Q${cx},${cy} ${dest[0]},${dest[1]}`;
+    const rg = M.routeLayer.append('g').attr('class', 'route-g');
+    const mid = 'rtm' + Date.now();
+    const defs = rg.append('defs'); const mask = defs.append('mask').attr('id', mid).attr('maskUnits', 'userSpaceOnUse').attr('x', -1e5).attr('y', -1e5).attr('width', 2e5).attr('height', 2e5);
+    const groundMask = mask.append('path').attr('class', 'rt-mask').attr('d', apt ? `M${odesa[0]},${odesa[1]} L${apt[0]},${apt[1]}` : `M${odesa[0]},${odesa[1]}`).attr('fill', 'none').attr('stroke', '#fff').attr('pathLength', 1).attr('stroke-dasharray', 1).attr('stroke-dashoffset', animate && !reduced ? 1 : 0);
+    const airMask = mask.append('path').attr('class', 'rt-mask').attr('d', arcD).attr('fill', 'none').attr('stroke', '#fff').attr('pathLength', 1).attr('stroke-dasharray', 1).attr('stroke-dashoffset', animate && !reduced ? 1 : 0);
+    const lines = rg.append('g').attr('mask', `url(#${mid})`);
+    if (apt) lines.append('path').attr('class', 'rt-ground').attr('d', `M${odesa[0]},${odesa[1]} L${apt[0]},${apt[1]}`);
+    const air = lines.append('path').attr('class', 'rt-air').attr('d', arcD);
+    if (apt) rg.append('circle').attr('class', 'rt-airport').attr('cx', apt[0]).attr('cy', apt[1]);
+    applyZoom(M.k);
+    if (!animate || reduced) { placePin(code, false); return; }
+    const planeEl = rg.append('path').attr('class', 'rt-plane').attr('d', PLANE_D);
+    const airNode = air.node(), L = airNode.getTotalLength();
+    const ease = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    const T0 = performance.now(), TG = apt ? 500 : 0, TA = 1700;
+    const setPlane = (x, y, a) => { M.plane = { el: planeEl, x, y, a }; planeEl.attr('transform', `translate(${x},${y}) scale(${(0.6 / M.k).toFixed(3)}) rotate(${a}) translate(-20,-12)`); };
+    const p0 = airNode.getPointAtLength(0), p1 = airNode.getPointAtLength(Math.min(2, L));
+    setPlane(p0.x, p0.y, Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI);
+    planeEl.attr('opacity', 0);
+    function frame(now) {
+      if (routeAnim !== myAnim) return;
+      const t = now - T0;
+      if (apt) groundMask.attr('stroke-dashoffset', 1 - Math.min(1, t / TG));
+      if (t >= TG) {
+        const u = ease(Math.min(1, (t - TG) / TA));
+        airMask.attr('stroke-dashoffset', 1 - u);
+        const p = airNode.getPointAtLength(u * L), q = airNode.getPointAtLength(Math.min(L, u * L + 1.5)), b = airNode.getPointAtLength(Math.max(0, u * L - 1.5));
+        setPlane(p.x, p.y, Math.atan2(q.y - b.y, q.x - b.x) * 180 / Math.PI);
+        planeEl.attr('opacity', u < 0.97 ? 1 : (1 - u) / 0.03);
+      }
+      if (t < TG + TA) requestAnimationFrame(frame);
+      else { planeEl.remove(); M.plane = null; placePin(code, true); }
+    }
+    requestAnimationFrame(frame);
+  }
+  function syncRoute(animate) {
+    if (!M || !M.svg) return;
+    if (state.country && C[state.country]) drawRoute(state.country, animate); else clearRoute(true);
+  }
+  function placePin(code, animate) {
+    if (!M || !M.svg) return;
+    const [x, y] = M.projection(C[code].c);
+    M.pinLayer.html('');
+    const gp = M.pinLayer.append('g').attr('class', 'pin-g').attr('data-x', x).attr('data-y', y).attr('transform', `translate(${x},${y}) scale(${(1 / M.k).toFixed(3)})`);
+    gp.append('ellipse').attr('class', 'pin-shadow').attr('cx', 1).attr('cy', 2).attr('rx', 7).attr('ry', 3).attr('fill', '#3B2A22');
+    const inner = gp.append('g').attr('class', 'pin-in');
+    inner.append('path').attr('d', 'M0 0C-3-6-11-10-11-18a11 11 0 0 1 22 0c0 8-8 12-11 18z').attr('fill', '#7A2E2E').attr('stroke', '#FBF5E8').attr('stroke-width', 1.5);
+    inner.append('circle').attr('cy', -18).attr('r', 4).attr('fill', '#FBF5E8');
+    if (animate === false || reduced) { inner.style('animation', 'none'); gp.select('.pin-shadow').style('animation', 'none').style('opacity', .35); }
+    M.g.selectAll('.country').classed('sel', f => f.code === code);
+    M.microLayer.selectAll('.micro').classed('sel', function () { return this.dataset.code === code; });
+    M.lblLayer.selectAll('.lbl').classed('sel', function () { return this.dataset.code === code; });
+    document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('sel', b.dataset.code === code));
+  }
+  function clearPin() {
+    clearRoute(false);
+    if (M && M.svg) { M.pinLayer.html(''); M.g.selectAll('.country.sel').classed('sel', false); M.microLayer.selectAll('.micro.sel').classed('sel', false); M.lblLayer.selectAll('.lbl.sel').classed('sel', false); }
+    document.querySelectorAll('#chips button.sel').forEach(b => b.classList.remove('sel'));
+  }
+  function zoomTo(code) {
+    if (!M || !M.svg) return;
+    const d = C[code], [x, y] = M.projection(d.c), k = [2.2, 3, 4.5, 7][d.tier];
+    M.svg.transition().duration(650).call(M.zoom.transform, d3.zoomIdentity.translate(M.W / 2, M.H / 2).scale(k).translate(-x, -y));
+  }
+  function mapFallback() {
+    $('map-loading').innerHTML = '<div class="map-fallback">Карта не завантажилась (потрібен інтернет).<br>Обери країну зі списку нижче або впиши своє місце.</div>';
+    const chips = $('chips'); chips.hidden = false;
+    Object.keys(C).sort((a, b) => C[a].name.localeCompare(C[b].name, 'uk')).forEach(code => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = C[code].name; b.dataset.code = code; b.addEventListener('click', () => openCountry(code)); chips.appendChild(b);
+    });
+    $('map-hint').textContent = '';
+  }
+  function countryThumb(code) {
+    const d = C[code];
+    try {
+      if (M && M.feats) {
+        const f = M.feats.find(f => f.code === code);
+        if (f) {
+          let geom = f.geometry;
+          if (geom.type === 'MultiPolygon') {
+            const polys = geom.coordinates.map(c => ({ type:'Polygon', coordinates:c }));
+            const area = p => { const a = d3.geoArea(p); return a > 2 * Math.PI ? 4 * Math.PI - a : a; };
+            geom = polys.find(p => d3.geoContains(p, d.c)) || polys.reduce((a, b) => area(b) > area(a) ? b : a);
+          }
+          const pr = d3.geoMercator().fitExtent([[14, 10], [106, 80]], geom);
+          const [cx, cy] = pr(d.c);
+          return `<svg class="ill" viewBox="0 0 120 90" aria-hidden="true"><circle cx="60" cy="44" r="34" class="halo"/><path d="${d3.geoPath(pr)(geom)}" class="s g" stroke-width="1.6"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="3.5" class="s sb"/></svg>`;
+        }
+      }
+    } catch (e) {}
+    return I.custom;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Картка країни з пам’ятками (Вікіпедія REST API)                    */
+  /* ------------------------------------------------------------------ */
+  let sheetCode = null; const wikiCache = {};
+  const sheet = $('sheet'), backdrop = $('backdrop'), sheetBody = $('sheet-body');
+  function openCountry(code) {
+    const d = C[code]; if (!d) return;
+    sheetCode = code;
+    $('sheet-title').textContent = d.name; $('sheet-cap').textContent = d.cap;
+    sheetBody.innerHTML = d.sights.map((s, i) => `<div class="sight" data-i="${i}"><div class="ph loading"><div class="plh">${PLACEHOLDER_SVG}</div></div><div><h4>${esc(s[0].replace(/\s*\([^)]*\)\s*$/, ''))}</h4><p class="dim">Завантажуємо…</p></div></div>`).join('');
+    $('sheet-pick').textContent = state.country === code ? 'Це моя країна ✓' : 'Обрати цю країну';
+    backdrop.classList.add('show'); sheet.classList.add('show'); document.body.classList.add('modal-open');
+    sheetBody.scrollTop = 0;
+    d.sights.forEach((s, i) => loadSight(code, s, i));
+  }
+  function closeSheet() { sheetCode = null; backdrop.classList.remove('show'); sheet.classList.remove('show'); document.body.classList.remove('modal-open'); }
+  backdrop.addEventListener('click', closeSheet); $('sheet-close').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetCode && !lbOpen) closeSheet(); });
+  $('sheet-pick').addEventListener('click', () => { if (sheetCode) pickCountry(sheetCode); });
+  async function wikiSummary(lang, title) {
+    const r = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, '_'))}`, { headers:{ Accept:'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+  const isNotFound = e => /HTTP 404/.test(String(e && e.message));
+  async function fetchSight(uk, en) {
+    let desc = '', img = '', url = '', failed = false;
+    try { const d = await wikiSummary('uk', uk); if (d.type === 'standard') { desc = cleanExtract(d.extract || ''); img = (d.thumbnail && d.thumbnail.source) || ''; url = (d.content_urls && d.content_urls.desktop && d.content_urls.desktop.page) || ''; } }
+    catch (e) { if (!isNotFound(e)) failed = true; }
+    if (!img || !url) {
+      try { const d = await wikiSummary('en', en); if (!img) img = (d.thumbnail && d.thumbnail.source) || ''; if (!url) url = (d.content_urls && d.content_urls.desktop && d.content_urls.desktop.page) || ''; }
+      catch (e) { if (!isNotFound(e)) failed = true; }
+    }
+    if (!url) url = `https://uk.wikipedia.org/wiki/${encodeURIComponent(uk.replace(/ /g, '_'))}`;
+    const big = img ? img.replace(/\/(\d{2,4})px-/, '/480px-') : '', huge = img ? img.replace(/\/(\d{2,4})px-/, '/1280px-') : '';
+    return { desc, img, big, huge, url, failed };
+  }
+  function cleanExtract(t) {
+    t = t.replace(/[́̀]/g, '');
+    for (let i = 0; i < 3; i++) t = t.replace(/\s*\([^()]*\)/g, '');
+    t = t.replace(/\s*\[[^\]]*\]/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim();
+    const sentences = t.match(/[^.!?…]+[.!?…]+(?=\s|$)/g) || [t];
+    let out = sentences.slice(0, 2).join(' ').replace(/\s+/g, ' ').trim();
+    if (out.length > 230) out = sentences[0].trim();
+    if (out.length > 260) out = out.slice(0, 257).replace(/\s+\S*$/, '') + '…';
+    return out;
+  }
+  async function loadSight(code, pair, i) {
+    const key = code + ':' + i;
+    let info = wikiCache[key];
+    if (!info) { info = await fetchSight(pair[0], pair[1]); if (!info.failed) wikiCache[key] = info; } // невдалі запити не кешуємо
+    info.title = pair[0].replace(/\s*\([^)]*\)\s*$/, '');
+    if (sheetCode !== code) return;
+    const row = sheetBody.querySelector(`.sight[data-i="${i}"]`); if (!row) return;
+    const ph = row.querySelector('.ph'), p = row.querySelector('p');
+    if (info.desc) { p.textContent = info.desc; p.classList.remove('dim'); } else p.remove();
+    if (info.img) {
+      const img = new Image(); img.alt = ''; let triedSmall = false;
+      img.onload = () => { ph.classList.remove('loading'); img.classList.add('in'); ph.classList.add('zoomable'); ph.setAttribute('role', 'button'); ph.setAttribute('aria-label', 'Збільшити фото'); ph.dataset.loaded = img.src; ph.addEventListener('click', () => openLightbox(code, i)); };
+      img.onerror = () => { if (!triedSmall && info.big !== info.img) { triedSmall = true; img.src = info.img; } else ph.classList.add('none'); };
+      img.src = info.big || info.img; ph.appendChild(img);
+    } else ph.classList.add('none');
+  }
+
+
+  /* ------------------------------------------------------------------ */
+  /*  Лайтбокс: повноекранний перегляд фото пам'яток                     */
+  /* ------------------------------------------------------------------ */
+  const lb = $('lb'), lbImg = $('lb-img'), lbStage = $('lb-stage');
+  let lbItems = [], lbIdx = 0, lbOpen = false, lbToken = 0;
+  const Z = { s:1, x:0, y:0 };
+  function applyZ(snap) { lbImg.classList.toggle('snap', !!snap); lbImg.style.transform = `translate(${Z.x}px,${Z.y}px) scale(${Z.s})`; }
+  function openLightbox(code, i) {
+    const d = C[code]; if (!d) return;
+    lbItems = d.sights.map((s, j) => ({ j, info: wikiCache[code + ':' + j] })).filter(it => it.info && it.info.img);
+    const pos = lbItems.findIndex(it => it.j === i); if (pos < 0) return;
+    lbOpen = true; lb.classList.add('show');
+    showLb(pos);
+  }
+  function showLb(pos) {
+    lbIdx = (pos + lbItems.length) % lbItems.length;
+    const { info } = lbItems[lbIdx], token = ++lbToken;
+    Z.s = 1; Z.x = 0; Z.y = 0; applyZ(false);
+    const ph = sheetBody.querySelector(`.sight[data-i="${lbItems[lbIdx].j}"] .ph`);
+    lbImg.src = (ph && ph.dataset.loaded) || info.big || info.img;          // спершу вже завантажене мале фото
+    if (info.huge) { const big = new Image(); big.onload = () => { if (token === lbToken) lbImg.src = info.huge; }; big.src = info.huge; }  // потім 1280px, якщо є
+    $('lb-title').textContent = info.title || '';
+    $('lb-count').textContent = lbItems.length > 1 ? `${lbIdx + 1} / ${lbItems.length}` : '';
+    $('lb-link').href = info.url;
+    $('lb-prev').disabled = $('lb-next').disabled = lbItems.length < 2;
+  }
+  function closeLightbox() { lbOpen = false; lb.classList.remove('show'); lbToken++; }
+  $('lb-close').addEventListener('click', closeLightbox);
+  $('lb-prev').addEventListener('click', () => showLb(lbIdx - 1));
+  $('lb-next').addEventListener('click', () => showLb(lbIdx + 1));
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lbOpen) return;
+    if (e.key === 'Escape') { e.stopImmediatePropagation(); closeLightbox(); }
+    else if (e.key === 'ArrowLeft') showLb(lbIdx - 1);
+    else if (e.key === 'ArrowRight') showLb(lbIdx + 1);
+  }, true);
+  // дотики: пінч-зум, панорамування, свайп ліворуч/праворуч між фото, свайп униз — закрити
+  const ptrs = new Map(); let pinch = null, swipe = null, lastTap = 0;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  lbStage.addEventListener('pointerdown', e => {
+    if (e.target !== lbImg && e.target !== lbStage) return;
+    lbStage.setPointerCapture(e.pointerId);
+    ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d0:dist(a, b), s0:Z.s, mx:(a.x + b.x) / 2, my:(a.y + b.y) / 2, x0:Z.x, y0:Z.y }; swipe = null; }
+    else if (ptrs.size === 1) swipe = { x0:e.clientX, y0:e.clientY, zx:Z.x, zy:Z.y, moved:false, t0:performance.now() };
+  });
+  lbStage.addEventListener('pointermove', e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if (pinch && ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()];
+      Z.s = Math.min(4, Math.max(1, pinch.s0 * dist(a, b) / pinch.d0));
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      Z.x = pinch.x0 + (mx - pinch.mx); Z.y = pinch.y0 + (my - pinch.my);
+      applyZ(false);
+    } else if (swipe && ptrs.size === 1) {
+      const dx = e.clientX - swipe.x0, dy = e.clientY - swipe.y0;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) swipe.moved = true;
+      if (Z.s > 1) { Z.x = swipe.zx + dx; Z.y = swipe.zy + dy; applyZ(false); }
+      else { Z.x = dx * 0.9; Z.y = dy > 0 ? dy * 0.6 : 0; lbImg.style.opacity = dy > 0 ? String(Math.max(.3, 1 - dy / 400)) : '1'; applyZ(false); }
+    }
+  });
+  const endPtr = e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.delete(e.pointerId);
+    if (pinch && ptrs.size < 2) { pinch = null; if (Z.s <= 1.02) { Z.s = 1; Z.x = 0; Z.y = 0; applyZ(true); } if (ptrs.size === 1) { const p = [...ptrs.values()][0]; swipe = { x0:p.x, y0:p.y, zx:Z.x, zy:Z.y, moved:true, t0:performance.now() }; } return; }
+    if (swipe && ptrs.size === 0) {
+      const dx = e.clientX - swipe.x0, dy = e.clientY - swipe.y0, dt = performance.now() - swipe.t0;
+      if (Z.s <= 1) {
+        lbImg.style.opacity = '1';
+        if (dy > 90 && dy > Math.abs(dx)) { closeLightbox(); Z.x = 0; Z.y = 0; applyZ(false); }
+        else if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) && lbItems.length > 1) { showLb(lbIdx + (dx < 0 ? 1 : -1)); }
+        else { Z.x = 0; Z.y = 0; applyZ(true); }
+        if (!swipe.moved && dt < 300) { const now = performance.now(); if (now - lastTap < 320) { Z.s = Z.s > 1 ? 1 : 2.5; Z.x = 0; Z.y = 0; applyZ(true); } lastTap = now; }  // подвійний тап — зум
+      }
+      swipe = null;
+    }
+  };
+  lbStage.addEventListener('pointerup', endPtr); lbStage.addEventListener('pointercancel', endPtr);
+  lbStage.addEventListener('dblclick', e => { if (e.pointerType === 'mouse' || !('ontouchstart' in window)) { Z.s = Z.s > 1 ? 1 : 2.5; Z.x = 0; Z.y = 0; applyZ(true); } });
+
+  /* ---------- вибір країни / свого місця / сюрпризу ---------- */
+  const customInput = $('custom-input'), customField = $('custom-field'), surpriseBtn = $('surprise-where'), chosenBox = $('chosen-box');
+  $('surprise-ill').innerHTML = I.envelope;
+  function pickCountry(code) {
+    state.country = code; state.customText = ''; customInput.value = '';
+    drawRoute(code, true); refreshWhere(); closeSheet();
+    toast(`${C[code].name} — чудовий вибір ✈`);
+  }
+  function refreshWhere() {
+    const code = state.country;
+    const isC = !!(code && C[code]);
+    customField.classList.toggle('selected', code === 'custom' && state.customText.trim().length > 0);
+    surpriseBtn.classList.toggle('selected', code === 'surprise'); surpriseBtn.setAttribute('aria-pressed', code === 'surprise' ? 'true' : 'false');
+    chosenBox.classList.remove('show');
+    if (isC) { $('chosen-ill').innerHTML = countryThumb(code); $('chosen-name').textContent = C[code].name; $('chosen-cap').textContent = C[code].cap; void chosenBox.offsetWidth; chosenBox.classList.add('show'); }
+    else clearPin();
+    updateNext(); updateRoute();
+  }
+  customInput.addEventListener('input', () => {
+    state.customText = customInput.value;
+    if (customInput.value.trim()) state.country = 'custom';
+    else if (state.country === 'custom') state.country = null;
+    refreshWhere();
+  });
+  customInput.addEventListener('focus', () => { if (customInput.value.trim()) { state.country = 'custom'; refreshWhere(); } });
+  customInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); customInput.blur(); if (!btnNext.disabled) next(); } });
+  surpriseBtn.addEventListener('click', () => { state.country = 'surprise'; state.customText = ''; customInput.value = ''; refreshWhere(); });
+
+  /* ---------- пошук країни ---------- */
+  const searchInput = $('search-input'), sugg = $('sugg');
+  const norm = s => s.toLowerCase().replace(/[’'`]/g, '').replace(/ё/g, 'е').trim();
+  const ALL = Object.keys(C).sort((a, b) => C[a].name.localeCompare(C[b].name, 'uk'));
+  let hl = -1;
+  function renderSugg() {
+    const q = norm(searchInput.value);
+    const hits = q ? ALL.filter(k => norm(C[k].name).includes(q) || norm(C[k].en).includes(q) || (C[k].short && norm(C[k].short).includes(q))) : [];
+    hits.sort((a, b) => (norm(C[a].name).startsWith(q) ? 0 : 1) - (norm(C[b].name).startsWith(q) ? 0 : 1));
+    const list = hits.slice(0, 8);
+    sugg.innerHTML = list.map((k, i) => `<button type="button" role="option" data-code="${k}" class="${i === hl ? 'hl' : ''}">${esc(C[k].name)}${C[k].tier === 3 ? '<small>мікродержава</small>' : ''}</button>`).join('');
+    sugg.classList.toggle('show', list.length > 0);
+    if (q && !list.length) { sugg.innerHTML = '<button type="button" disabled style="color:#7D6A58;font-style:italic">Такої країни на карті немає — впиши її як своє місце ↓</button>'; sugg.classList.add('show'); }
+  }
+  searchInput.addEventListener('input', () => { hl = -1; renderSugg(); });
+  searchInput.addEventListener('focus', renderSugg);
+  searchInput.addEventListener('blur', () => setTimeout(() => sugg.classList.remove('show'), 180));
+  searchInput.addEventListener('keydown', e => {
+    const items = sugg.querySelectorAll('button[data-code]');
+    if (e.key === 'ArrowDown') { hl = Math.min(hl + 1, items.length - 1); renderSugg(); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { hl = Math.max(hl - 1, 0); renderSugg(); e.preventDefault(); }
+    else if (e.key === 'Enter') { const b = items[hl >= 0 ? hl : 0]; if (b) { chooseSugg(b.dataset.code); } e.preventDefault(); }
+    else if (e.key === 'Escape') sugg.classList.remove('show');
+  });
+  sugg.addEventListener('mousedown', e => { const b = e.target.closest('button[data-code]'); if (b) { e.preventDefault(); chooseSugg(b.dataset.code); } });
+  function chooseSugg(code) { searchInput.value = C[code].name; sugg.classList.remove('show'); searchInput.blur(); zoomTo(code); openCountry(code); }
+
+  /* ------------------------------------------------------------------ */
+  /*  Фінальна дорожня карта, копіювання, конфеті                        */
+  /* ------------------------------------------------------------------ */
+  function countryCard() {
+    if (state.country === 'custom') return { title:state.customText.trim(), text:'Місце, яке ти обрала сама. Найкращий вибір.', svg:I.custom };
+    if (state.country === 'surprise') return { title:'Сюрприз', tag:'обирає чоловік', text:'Дізнаєшся лише в аеропорту… або на вокзалі.', svg:I.envelope };
+    const d = C[state.country]; return d ? { title:d.name, text:d.cap, svg:countryThumb(state.country) } : null;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Табло вильотів (split-flap) і звук клацання (Web Audio)           */
+  /* ------------------------------------------------------------------ */
+  const FLAP_CHARS = 'АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ0123456789-.:! ';
+  let soundOn = false, actx = null, lastClick = 0;
+  function clickSound() {
+    if (!soundOn || !actx) return;
+    const now = performance.now(); if (now - lastClick < 28) return; lastClick = now;
+    const t = actx.currentTime, len = Math.floor(actx.sampleRate * 0.03), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const src = actx.createBufferSource(); src.buffer = buf;
+    const bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800 + Math.random() * 1200; bp.Q.value = 1.2;
+    const g = actx.createGain(); g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+    src.connect(bp).connect(g).connect(actx.destination); src.start(t);
+  }
+  $('sound-btn').addEventListener('click', () => {
+    soundOn = !soundOn;
+    if (soundOn && !actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { soundOn = false; } }
+    if (actx && actx.state === 'suspended') actx.resume();
+    const b = $('sound-btn'); b.classList.toggle('active', soundOn); b.setAttribute('aria-pressed', String(soundOn));
+    if (soundOn) clickSound();
+  });
+  function boardRows() {
+    const ak = airportKey(), via = ak === 'kishinev' ? 'КИШИНІВ' : ak === 'krakow' ? 'КРАКІВ' : ak === 'warsaw' ? 'ВАРШАВА' : '—';
+    const to = state.country === 'custom' ? state.customText.trim() : state.country === 'surprise' ? 'СЮРПРИЗ' : (C[state.country] ? (C[state.country].short || C[state.country].name) : '—');
+    return [['Рейс','МРІЯ-01'],['Звідки','ОДЕСА'],['Через',via],['Куди',to.toUpperCase()],['Пасажирка','КАССАНДРА'],['Статус','ПОСАДКА']];
+  }
+  let boardTimers = [];
+  function runBoard(done) {
+    boardTimers.forEach(clearTimeout); boardTimers = [];
+    const board = $('board'); board.querySelectorAll('.brow').forEach(r => r.remove());
+    $('board-clock').textContent = new Date().toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' });
+    const rows = boardRows();
+    const lblw = window.innerWidth <= 420 ? 78 : 92, avail = Math.max(120, board.clientWidth - 20 - lblw - 6);
+    let maxLen = Math.max(...rows.map(r => r[1].length)), cell = Math.floor((avail - (maxLen - 1) * 2) / maxLen);
+    if (cell < 15) {                                                       // задовгий текст — обрізаємо, щоб табло не ламалося
+      const maxCells = Math.max(6, Math.floor((avail + 2) / 17));
+      rows.forEach(r => { if (r[1].length > maxCells) r[1] = r[1].slice(0, maxCells - 1) + '…'; });
+      maxLen = Math.max(...rows.map(r => r[1].length)); cell = Math.floor((avail - (maxLen - 1) * 2) / maxLen);
+    }
+    board.style.setProperty('--cell', Math.max(12, Math.min(30, cell)) + 'px');
+    const cells = [];
+    rows.forEach(([label, value], ri) => {
+      const row = document.createElement('div'); row.className = 'brow';
+      row.innerHTML = `<span class="blbl">${esc(label)}</span><div class="bcells"></div>`;
+      const wrap = row.querySelector('.bcells');
+      for (let i = 0; i < maxLen; i++) { const c = document.createElement('div'); c.className = 'cell'; c.innerHTML = '<span> </span>'; wrap.appendChild(c); cells.push({ el:c, span:c.firstChild, target:value[i] || ' ', ri, i }); }
+      board.appendChild(row);
+    });
+    const finish = () => { cells.filter(c => c.ri === rows.length - 1 && c.target !== ' ').forEach(c => c.el.classList.add('blink')); if (done) done(); };
+    if (reduced) { cells.forEach(c => { c.span.textContent = c.target; }); finish(); return; }
+    const rand = () => FLAP_CHARS[Math.floor(Math.random() * FLAP_CHARS.length)];
+    let pendingRows = rows.length;
+    rows.forEach((_, ri) => {
+      const rowCells = cells.filter(c => c.ri === ri); let remaining = rowCells.length;
+      rowCells.forEach(c => {
+        const flips = 6 + c.i * 2 + Math.floor(Math.random() * 4); let n = 0;
+        const tick = () => {
+          n++;
+          c.el.classList.remove('tick'); void c.el.offsetWidth; c.el.classList.add('tick');
+          c.span.textContent = n >= flips ? c.target : rand();
+          clickSound();
+          if (n < flips) boardTimers.push(setTimeout(tick, 70 + Math.random() * 30));
+          else if (--remaining === 0 && --pendingRows === 0) boardTimers.push(setTimeout(finish, 350));
+        };
+        boardTimers.push(setTimeout(tick, ri * 420 + c.i * 15));
+      });
+    });
+  }
+
+  function buildFinal() {
+    const map = $('rmap'); map.classList.remove('drawn'); map.innerHTML = '<div class="rmap-line"></div>';
+    $('final-rest').classList.remove('show');
+    let num = 0, delay = 0.2;
+    chain().forEach(nd => {
+      const op = nd.id === 'country' ? countryCard() : (nd.opt || nd.fixed);
+      if (!op) return;
+      const minor = !nd.opt && nd.id !== 'country';
+      const li = document.createElement('li');
+      li.className = 'ri' + (minor ? ' minor' : '');
+      li.style.animationDelay = delay.toFixed(2) + 's'; delay += minor ? 0.3 : 0.5;
+      const label = minor ? '' : `<span class="lbl2">${esc(nd.step || '')}</span>`;
+      const tag = op.tag && !minor ? `<span class="lbl2" style="letter-spacing:.04em;text-transform:none;font-style:italic">${esc(op.tag)}</span>` : '';
+      li.innerHTML = `<div class="rnode">${minor ? (nd.home ? '⌂' : '·') : ++num}</div>
+        <div class="rcard"><div class="ill-wrap">${op.svg}</div><div>${label}<h3>${esc(op.title)}</h3>${tag}<p>${esc(op.text || '')}</p></div>${minor ? '' : '<span class="mini-stamp" aria-hidden="true">Обрано</span>'}</div>`;
+      map.appendChild(li);
+    });
+  }
+  function summaryText() {
+    const road = [], rest = [];
+    chain().forEach(nd => {
+      if (nd.id === 'country') { const c = countryCard(); rest.push(`Куди: ${c ? c.title + (c.tag ? ` (${c.tag})` : '') : '—'}`); return; }
+      const op = nd.opt || nd.fixed; if (!op) return;
+      if (nd.id === 'stay' || nd.id === 'rhythm') rest.push(`${nd.id === 'stay' ? 'Де жити' : 'Ритм подорожі'}: ${op.title}${op.tag ? ` (${op.tag})` : ''}`);
+      else road.push(nd.id === 'odesa' ? 'Одеса' : (op.short && nd.opt ? op.title : op.title));
+    });
+    return ['✈️ Мій маршрут', 'Дорога: ' + road.join(' → '), ...rest, '', 'Маршрут складено. Решту береш на себе ти 💛'].join('\n');
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px';
+    document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); return ok;
+  }
+  async function copyRoute() {
+    const text = summaryText(); let ok = false;
+    if (navigator.clipboard && navigator.clipboard.writeText) { try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { ok = false; } }
+    if (!ok) ok = fallbackCopy(text);
+    if (ok) toast('Маршрут скопійовано ✈');
+    else { $('summary-pre').textContent = text; $('summary-box').hidden = false; toast('Виділи текст нижче та скопіюй'); }
+  }
+  let toastTimer;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600); }
+
+  function confetti() {
+    const cv = $('confetti'), ctx = cv.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2), W = window.innerWidth, H = window.innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; ctx.scale(dpr, dpr);
+    const colors = ['#7A2E2E', '#B8894A', '#A8443F', '#D9B77A', '#5E2222'], rnd = (a, b) => a + Math.random() * (b - a), parts = [];
+    const N = W < 500 ? 70 : 110;
+    for (let i = 0; i < N; i++) parts.push({ x:rnd(0, W), y:rnd(-H * 0.6, -10), vx:rnd(-0.5, 0.5), vy:rnd(1.4, 3.2), rot:rnd(0, 6.28), vr:rnd(-0.06, 0.06), sway:rnd(0, 6.28), swv:rnd(0.02, 0.05), type:i % 4 === 0 ? 'plane' : 'stamp', color:colors[i % colors.length], w:rnd(12, 18), h:rnd(9, 13), s:rnd(0.45, 0.8) });
+    const planePath = new Path2D('M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z');
+    const start = performance.now(), DUR = 5200, FADE = 1200;
+    function frame(now) {
+      const t = now - start; ctx.clearRect(0, 0, W, H);
+      ctx.globalAlpha = t > DUR ? Math.max(0, 1 - (t - DUR) / FADE) : 1;
+      for (const p of parts) {
+        p.sway += p.swv; p.x += p.vx + Math.sin(p.sway) * 0.6; p.y += p.vy; p.rot += p.vr;
+        if (p.y > H + 30) { p.y = -20; p.x = rnd(0, W); }
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        if (p.type === 'stamp') {
+          ctx.fillStyle = '#FBF5E8'; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2 + 2, -p.h / 2 + 2, p.w - 4, p.h - 4);
+          ctx.strokeStyle = '#F4ECD8'; ctx.lineWidth = 1.6; ctx.setLineDash([0, 3]); ctx.lineCap = 'round'; ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.setLineDash([]);
+        } else { ctx.scale(p.s, p.s); ctx.translate(-20, -12); ctx.fillStyle = p.color; ctx.fill(planePath); }
+        ctx.restore();
+      }
+      if (t < DUR + FADE) requestAnimationFrame(frame); else ctx.clearRect(0, 0, W, H);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  updateNext();
+})();
+</script>
+</body>
+</html>
