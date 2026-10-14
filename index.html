@@ -24,6 +24,7 @@
   --dx:40px;
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html,body{margin:0;min-height:100%}
 body{
   font-family:var(--body);color:var(--ink);line-height:1.5;
@@ -74,15 +75,15 @@ h2{font-size:clamp(26px,6vw,38px)}
 .btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 
 .screen{display:none}
-.screen.active{display:block;animation:screenIn .5s cubic-bezier(.22,.8,.3,1) both}
-.screen.leaving{animation:screenOut .26s ease both}
+.screen.active{display:block;animation:screenIn .22s cubic-bezier(.22,.8,.3,1) both}
+.screen.leaving{animation:screenOut .18s ease both}
 @keyframes screenIn{from{opacity:0;transform:translateX(var(--dx))}to{opacity:1;transform:none}}
 @keyframes screenOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(calc(var(--dx) * -0.6))}}
 
 /* ---------- route progress (dynamic chain) ---------- */
 .route-wrap{display:none;margin:0 auto 18px;max-width:680px;padding:0 10px}
 .route-wrap.show{display:block;animation:screenIn .5s ease both}
-.route{position:relative;height:84px}
+.route{position:relative;height:98px}
 .route-line{position:absolute;left:3%;right:3%;top:34px;border-top:3px dashed var(--gold);opacity:.7}
 .rn{position:absolute;top:34px;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:var(--cream2);border:2px solid var(--gold);
   display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:11px;color:var(--gold3);transition:all .4s ease;z-index:1}
@@ -93,13 +94,15 @@ h2{font-size:clamp(26px,6vw,38px)}
 .rn.todo{opacity:.85}
 .rl{position:absolute;top:48px;transform:translateX(-50%);white-space:nowrap;font-family:var(--serif);font-style:italic;font-size:10px;color:var(--gold3);letter-spacing:.02em;line-height:1;transition:left .4s ease}
 .rl.alt{top:64px}
+.rl.sub{font-size:9px;font-style:italic;letter-spacing:.02em;opacity:.9;text-transform:none}
+@media(min-width:600px){.rl.sub{font-size:10.5px}}
 .rl.done{color:var(--bordo2)}
 .rl.current{color:var(--bordo);font-weight:700}
 @media(min-width:600px){.rl{font-size:12px}}
 .route-plane{position:absolute;top:4px;width:38px;height:24px;transform:translateX(-50%);transition:left .8s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 2px rgba(59,42,34,.25));z-index:2}
 .route-plane svg{width:100%;height:100%;animation:bob 2.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
-.route-label{text-align:center;margin:4px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:14px;letter-spacing:.06em}
+.route-label{text-align:center;margin:10px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:14px;letter-spacing:.06em}
 
 /* ---------- steps & cards ---------- */
 .step-head{text-align:center;margin:0 auto 20px;max-width:620px}
@@ -111,6 +114,7 @@ h2{font-size:clamp(26px,6vw,38px)}
 .card::after{content:'';position:absolute;inset:5px;border:1px solid rgba(217,183,122,.55);border-radius:10px;pointer-events:none}
 .card .ill-wrap{flex:0 0 100px;width:100px;filter:drop-shadow(0 1px 0 rgba(140,106,60,.25))}
 .card .card-body{flex:1;min-width:0}
+button.card:not(.compact) .card-body{padding-right:18px}
 @media(hover:hover){.card:not(.info):hover{transform:translateY(-3px);box-shadow:0 2px 0 rgba(140,106,60,.18),0 18px 30px -16px rgba(59,42,34,.5);border-color:var(--gold)}}
 .card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .card.selected{border-color:var(--bordo);background:#FAF0DD;box-shadow:0 0 0 3px rgba(122,46,46,.16),0 10px 24px -16px rgba(59,42,34,.4)}
@@ -122,6 +126,10 @@ h2{font-size:clamp(26px,6vw,38px)}
 .card.custom input{display:block;width:100%;margin:6px 0 8px;padding:10px 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--gold2);border-radius:8px;outline:none}
 .card.custom input:focus{border-color:var(--bordo);box-shadow:0 0 0 3px rgba(122,46,46,.14)}
 .card.custom input::placeholder{color:#B4A48E;font-style:italic}
+.card-wrap{display:flex;flex-direction:column;gap:10px}
+.card-wrap .card{flex:1}
+.card-note{margin:0 0 4px;text-align:center;font-family:var(--serif);font-style:italic;color:var(--bordo);font-size:21px;line-height:1.3}
+@media(min-width:680px){.card-note{font-size:20px}}
 .card.compact{min-height:0;padding:10px 14px 10px 10px}
 .card.compact .ill-wrap{flex-basis:72px;width:72px}
 .card.compact h3{font-size:17px}
@@ -134,12 +142,12 @@ h2{font-size:clamp(26px,6vw,38px)}
 .ill .halo{fill:#EADFC6}
 .ill text{font-family:var(--serif);font-weight:700}
 
-.stamp{position:absolute;top:-12px;right:-8px;width:70px;height:70px;border-radius:50%;z-index:2;border:3px double var(--bordo);display:grid;place-items:center;text-align:center;
-  color:var(--bordo);font-family:var(--serif);font-weight:700;font-size:11px;line-height:1.1;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-14deg) scale(1.7);opacity:0;pointer-events:none;mix-blend-mode:multiply;
+.stamp{position:absolute;top:-22px;right:-20px;width:54px;height:54px;border-radius:50%;z-index:2;border:3px double var(--bordo);display:grid;place-items:center;text-align:center;
+  color:var(--bordo);font-family:var(--serif);font-weight:700;font-size:9.5px;line-height:1.1;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-14deg) scale(1.7);opacity:0;pointer-events:none;mix-blend-mode:multiply;
   background:radial-gradient(circle,rgba(122,46,46,.10),rgba(122,46,46,.02) 70%,transparent 72%)}
 .stamp::before{content:'';position:absolute;inset:4px;border:1px solid var(--bordo);border-radius:50%;opacity:.8}
-.stamp small{display:block;font-size:9px;letter-spacing:.3em;margin-top:2px;opacity:.85}
-.card.selected .stamp,.chosen-box.show .stamp{animation:stampIn .4s cubic-bezier(.2,1.5,.4,1) forwards}
+.stamp small{display:block;font-size:7.5px;letter-spacing:.25em;margin-top:1px;opacity:.85}
+.card.selected .stamp{animation:stampIn .4s cubic-bezier(.2,1.5,.4,1) forwards}
 @keyframes stampIn{0%{transform:rotate(-14deg) scale(1.7);opacity:0}55%{opacity:.95}100%{transform:rotate(-14deg) scale(1);opacity:.92}}
 
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(244,236,216,.98) 70%,rgba(244,236,216,0))}
@@ -149,7 +157,45 @@ h2{font-size:clamp(26px,6vw,38px)}
 .nav .btn.primary{flex:1.7}
 
 /* ---------- map of Europe ---------- */
-.map-shell{max-width:860px;margin:0 auto}
+.map-shell{margin:0 -14px}
+@media(min-width:680px){
+  .map-shell{--mw:min(calc(100vw - 48px),1500px);width:var(--mw);margin:0 0 0 calc((100% - var(--mw)) / 2);display:grid;grid-template-columns:210px minmax(0,1fr);gap:18px;align-items:start}
+  .map-shell .map-box{grid-column:2;grid-row:1}
+  .map-shell .map-hint,.map-shell .chips{grid-column:2}
+  .visited{grid-column:1;grid-row:1 / span 2;position:sticky;top:14px}
+}
+.map-box{min-height:240px}
+@media(max-width:679px){.map-box{border-radius:0;border-left:0;border-right:0}.map-box::after{border-radius:0;left:0;right:0}.map-hint{padding:0 14px}}
+/* міста, де вона вже була */
+.visited{background:var(--cream2);border:1.5px solid var(--gold2);border-radius:14px;padding:10px 12px 12px;text-align:left;box-shadow:0 2px 0 rgba(140,106,60,.18),0 10px 24px -16px rgba(59,42,34,.4)}
+.visited-head{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:0;padding:0;font:inherit;font-family:var(--serif);font-weight:700;color:var(--bordo2);font-size:16px;cursor:default;text-align:left}
+.visited-head .chev{display:none;width:9px;height:9px;border-right:2px solid var(--bordo);border-bottom:2px solid var(--bordo);transform:rotate(45deg);margin:0 6px 4px 0;transition:transform .2s}
+.visited.collapsed .visited-head .chev{transform:rotate(-45deg);margin:4px 6px 0 0}
+.visited-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:3px}
+.visited-list li{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:8px;font-size:14px;color:var(--ink);cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s;user-select:none}
+.visited-list li .vi{width:17px;height:17px;flex:0 0 17px;border-radius:50%;background:var(--gold2);border:1px solid var(--bordo);display:grid;place-items:center;font-size:10px;color:var(--bordo);font-weight:700;line-height:1}
+.visited-list li:hover,.visited-list li.active{background:#FAF0DD;border-color:var(--gold2)}
+.visited-list li.active .vi{background:var(--bordo);color:var(--cream2)}
+.visited p{margin:8px 0 0;font-size:12px;font-style:italic;color:var(--muted)}
+@media(max-width:679px){
+  .visited{margin:0 14px 10px;padding:8px 12px 10px}
+  .visited-head{cursor:pointer;font-size:15px}.visited-head .chev{display:block}
+  .visited.collapsed .visited-list,.visited.collapsed p{display:none}
+  .visited-list{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .visited-list li{padding:4px 10px 4px 6px;border:1px solid var(--gold2);border-radius:999px;font-size:13px;background:var(--cream2)}
+  .visited p{display:none}
+}
+.vmark{cursor:pointer}
+.vm-body{transition:transform .25s ease;transform-box:fill-box;transform-origin:center}
+.vm-bg{fill:var(--gold2);stroke:var(--bordo);stroke-width:1.2}
+.vm-check{fill:none;stroke:var(--bordo);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.vm-ring{fill:none;stroke:var(--bordo);stroke-width:1.4;opacity:0;transform-box:fill-box;transform-origin:center}
+.vmark.hl .vm-body{transform:scale(1.4)}
+.vmark.hl .vm-bg{fill:var(--bordo)}
+.vmark.hl .vm-check{stroke:var(--cream2)}
+.vmark.hl .vm-ring{animation:vring 1.1s ease-out infinite}
+@keyframes vring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+.pin-num{font-family:var(--serif);font-weight:700;font-size:8.5px;fill:var(--bordo);text-anchor:middle;pointer-events:none}
 .map-box{position:relative;background:#F7F0DF;border:1.5px solid var(--gold2);border-radius:14px;overflow:hidden;box-shadow:0 2px 0 rgba(140,106,60,.18),0 12px 28px -18px rgba(59,42,34,.45);
   background-image:repeating-linear-gradient(0deg,rgba(184,137,74,.06) 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,rgba(184,137,74,.06) 0 1px,transparent 1px 28px)}
 .map-box::after{content:'';position:absolute;inset:6px;border:1px solid rgba(217,183,122,.6);border-radius:9px;pointer-events:none}
@@ -178,7 +224,11 @@ h2{font-size:clamp(26px,6vw,38px)}
 .micro{fill:var(--cream2);stroke:var(--gold3);stroke-width:1;cursor:pointer}
 .micro-hit{fill:transparent;cursor:pointer}
 .micro.sel{fill:var(--bordo);stroke:var(--bordo)}
-.home-heart{fill:var(--bordo);pointer-events:none}
+.home-heart{fill:var(--bordo);pointer-events:none;transform-box:fill-box;transform-origin:center}
+.home-g.pulse .home-heart{animation:heartPulse 1.1s ease-in-out infinite}
+@keyframes heartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.home-start{font-family:var(--serif);font-style:italic;fill:var(--bordo2);text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#F7F0DF;stroke-width:2px;opacity:0;transition:opacity .6s ease}
+.home-g.pulse .home-start{opacity:1}
 .home-lbl{font-family:var(--serif);font-style:italic;fill:var(--bordo);pointer-events:none;paint-order:stroke;stroke:#F7F0DF;stroke-width:2.5px}
 .pin{pointer-events:none}
 .pin .pin-in{animation:pinDrop .55s cubic-bezier(.3,1.5,.5,1) both;transform-box:fill-box;transform-origin:50% 100%}
@@ -211,11 +261,38 @@ h2{font-size:clamp(26px,6vw,38px)}
 .sugg button:hover,.sugg button.hl{background:#FAF0DD}
 .sugg button small{margin-left:auto;color:var(--muted);font-size:12px;font-style:italic}
 .surprise-row{max-width:720px;margin:14px auto 0}
-.chosen-box{max-width:720px;margin:16px auto 0;position:relative;display:none;align-items:center;gap:12px;padding:12px 16px;background:#FAF0DD;border:1.5px solid var(--bordo);border-radius:14px;text-align:left}
-.chosen-box.show{display:flex}
-.chosen-box .ill-wrap{flex:0 0 72px;width:72px}
-.chosen-box b{font-family:var(--serif);font-size:18px;color:var(--bordo2);display:block}
-.chosen-box span{font-size:13px;font-style:italic;color:var(--muted)}
+/* список обраних точок */
+.chosen-list{max-width:720px;margin:18px auto 0;text-align:left}
+.chosen-title{font-family:var(--serif);font-weight:700;color:var(--bordo2);font-size:18px;margin:0 0 8px;text-align:center}
+.chosen-list ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.chosen-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#FAF0DD;border:1.5px solid var(--bordo);border-radius:14px;animation:screenIn .35s ease both}
+.chosen-item .num{width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:var(--bordo);color:var(--cream2);display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:14px}
+.chosen-item .ill-wrap{flex:0 0 60px;width:60px}
+.chosen-item .ci-body{flex:1;min-width:0}
+.chosen-item b{font-family:var(--serif);font-size:17px;color:var(--bordo2);display:block}
+.chosen-item .cap{font-size:13px;font-style:italic;color:var(--muted)}
+.chosen-item .x{width:38px;height:38px;flex:0 0 38px;border-radius:50%;border:1.5px solid var(--gold2);background:var(--cream2);color:var(--bordo);font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 2px;touch-action:manipulation}
+.chosen-item .x:hover{border-color:var(--bordo);background:#fff}
+.chosen-hint{text-align:center;font-size:12px;font-style:italic;color:var(--muted);margin:8px 0 0}
+/* питання: кінцева точка чи ще країна */
+.ask{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);width:min(420px,92vw);z-index:52;background:var(--cream2);border-radius:14px;padding:22px 20px 18px;text-align:center;box-shadow:0 20px 50px -20px rgba(59,42,34,.6);border:6px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6;opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility 0s .25s}
+.ask.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);transition-delay:0s}
+.ask p{font-family:var(--serif);font-size:19px;color:var(--bordo2);margin:0 0 16px;line-height:1.35}
+.ask-btns{display:flex;flex-direction:column;gap:10px}
+.ask .btn{width:100%}
+/* подивитися реальні варіанти житла */
+.stay-links{max-width:720px;margin:22px auto 0;background:var(--cream2);border:1.5px dashed var(--gold);border-radius:14px;padding:14px 16px 12px;text-align:left}
+.stay-links h3{font-size:18px;margin:0 0 6px;text-align:center}
+.stay-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px dashed var(--gold2);flex-wrap:wrap}
+.stay-row:first-of-type{border-top:0}
+.stay-row b{font-family:var(--serif);color:var(--bordo2);font-size:16px}
+.stay-btns{display:flex;gap:8px}
+.lnk{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:6px 16px;border-radius:999px;font-family:var(--serif);font-weight:600;font-size:15px;text-decoration:none;border:1.5px solid var(--bordo);color:var(--bordo);background:var(--cream2);touch-action:manipulation}
+.lnk.booking{background:var(--bordo);color:var(--cream2)}
+.lnk:hover{filter:brightness(1.08)}
+.lnk:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.stay-links .fine{text-align:center;margin-top:10px}
 
 /* ---------- country sheet ---------- */
 .backdrop{position:fixed;inset:0;background:rgba(59,42,34,.45);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -271,7 +348,12 @@ h2{font-size:clamp(26px,6vw,38px)}
 .rcard h3{font-size:18px;margin:0 0 2px}
 .ri.minor .rcard h3{font-size:16px}
 .rcard p{margin:0;font-size:13px;font-style:italic;color:var(--muted);line-height:1.4}
-.rcard .mini-stamp{position:absolute;right:8px;top:-10px;width:44px;height:44px;border-radius:50%;border:2px double var(--bordo);color:var(--bordo);display:grid;place-items:center;font-size:7.5px;font-family:var(--serif);font-weight:700;letter-spacing:.1em;text-transform:uppercase;transform:rotate(12deg);opacity:.85;mix-blend-mode:multiply;background:var(--cream2)}
+.rstay{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--gold2);font-size:13px;color:var(--ink);line-height:1.3}
+.rstay-ic{width:34px;flex:0 0 34px}.rstay-ic svg{width:100%;height:auto;display:block}
+.rstay b{font-family:var(--serif);color:var(--bordo2);font-weight:700}
+.rnode svg{width:58%;height:58%;display:block}
+.multi-hint{margin:6px 0 0;font-size:13px;font-style:italic;color:var(--gold3);letter-spacing:.04em}
+.multi-hint::before{content:'✦ ';color:var(--gold2)}
 .map-end{display:flex;align-items:center;gap:12px;padding-left:9px;color:var(--gold3);font-family:var(--serif);font-style:italic;opacity:0;transform:translateY(8px)}
 .rmap.drawn ~ .map-end{animation:itemIn .6s ease 3.4s forwards}
 .map-end .flag{width:38px;height:38px;flex:0 0 38px}
@@ -299,18 +381,40 @@ h2{font-size:clamp(26px,6vw,38px)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}.ri{opacity:1;transform:none}.map-end{opacity:1;transform:none}}
 
 /* ---------- конверт на старті ---------- */
-#s-envelope{min-height:80vh;display:none;align-items:center;justify-content:center;text-align:center;flex-direction:column}
+#s-envelope{min-height:100vh;min-height:100svh;display:none;align-items:center;text-align:center;flex-direction:column;padding-top:calc(50vh - 40px);padding-top:calc(50svh - 40px)}
 #s-envelope.active{display:flex}
-.env-scene{position:relative;width:min(92vw,540px);aspect-ratio:3/2;perspective:1400px;margin:4vh auto 0;transition:opacity .45s ease,transform .45s ease}
-.env-scene.done{opacity:0;transform:scale(1.04)}
+/* лист може виїжджати вгору за межі конверта, але не вниз */
+.env-scene{position:relative;width:min(92vw,660px,calc((100svh - 80px) / 1.55));aspect-ratio:3/2;perspective:1400px;margin:0 auto;clip-path:inset(-300vh -45vw 0 -45vw)}
+.env-back,.env-pocket,.env-frame,.env-name,.env-stamp,.env-flap{transition:opacity 1s ease,transform 1s ease}
+/* лист повністю вийшов — конверт м'яко з'їжджає вниз і тане */
+.env-scene.done .env-back,.env-scene.done .env-pocket,.env-scene.done .env-frame,.env-scene.done .env-name,.env-scene.done .env-seal{opacity:0;pointer-events:none;transform:translateY(44px)}
+.env-scene.done .env-stamp{opacity:0;pointer-events:none;transform:rotate(6deg) translateZ(0) translateY(44px)}
+.env-scene.done .env-flap{opacity:0;pointer-events:none}
+.env-scene.gone .env-back,.env-scene.gone .env-pocket,.env-scene.gone .env-frame,.env-scene.gone .env-name,.env-scene.gone .env-stamp,.env-scene.gone .env-flap,.env-scene.gone .env-seal{visibility:hidden}
 .env-back{position:absolute;inset:0;background:#F6EEDD;border-radius:6px;box-shadow:0 20px 50px -24px rgba(59,42,34,.6),0 1px 0 rgba(140,106,60,.3);border:6px solid transparent;
   border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
-.env-letter{position:absolute;left:7%;right:7%;top:6%;height:88%;background:#FFF9EC;border:1px solid var(--gold2);border-radius:3px;box-shadow:0 6px 18px -8px rgba(59,42,34,.5);
-  transition:transform 1s cubic-bezier(.2,.8,.3,1);padding:10% 8% 0;text-align:center;overflow:hidden;z-index:1}
-.env-letter h3{font-family:var(--serif);font-size:clamp(14px,3.6vw,20px);color:var(--bordo2);margin:0 0 6px}
-.env-letter i{display:block;height:2px;background:var(--gold-light);margin:8px auto;width:70%}
-.env-letter i:nth-of-type(2){width:85%}.env-letter i:nth-of-type(3){width:60%}
-.env-scene.lift .env-letter{transform:translateY(-78%) scale(1.03)}
+/* лист: поки всередині конверта, видно лише частину над його верхнім краєм (clip-path їде разом із листом) */
+.env-letter{position:absolute;left:6%;right:6%;top:0;background:var(--cream2);border-radius:6px;box-shadow:0 6px 18px -8px rgba(59,42,34,.5);border:7px solid transparent;
+  border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 7;
+  clip-path:inset(0 0 100% 0);transition:transform 4.4s cubic-bezier(.16,.84,.26,1),clip-path 4.4s cubic-bezier(.16,.84,.26,1);padding:56px 14px 80px;text-align:center;z-index:1;transform-origin:50% 50%;will-change:transform}
+.env-letter::after{content:'';position:absolute;inset:8px;border:1px solid var(--gold2);pointer-events:none;border-radius:3px}
+.env-letter .letter-in{position:relative;z-index:1}
+.env-letter .eyebrow{font-size:11px;margin-bottom:6px}
+.env-letter h1{font-size:clamp(19px,4.8vw,27px)}
+.env-letter .rule{margin:10px auto;max-width:200px}
+.env-letter .lead{font-size:clamp(14px,3.7vw,17px);margin:0 0 16px;line-height:1.5}
+.env-letter .btn{min-height:50px;font-size:17px;padding:10px 34px}
+.env-letter .fine{font-size:11px;letter-spacing:.04em;margin-top:12px}
+.env-letter .deco.compass{width:36px;height:36px;left:12px;top:12px}
+.env-letter .deco.pstamp{width:40px;right:12px;top:10px}
+.env-letter .deco.pstamp2{display:block;width:34px;left:14px;bottom:12px}
+.env-letter .deco.postmark{width:56px;height:56px;right:14px;bottom:8px}
+@media(min-width:680px){.env-letter{padding:74px 40px 90px}.env-letter .btn{min-height:56px;font-size:19px;padding:12px 44px}.env-letter .fine{font-size:12px;margin-top:16px}
+  .env-letter .deco.compass{width:56px;height:56px;left:16px;top:16px}.env-letter .deco.pstamp{width:56px;right:14px;top:12px}.env-letter .deco.pstamp2{width:48px;left:18px;bottom:14px}.env-letter .deco.postmark{width:74px;height:74px;right:18px;bottom:8px}}
+.env-scene.lift .env-letter{transform:translateY(var(--out,-100%));clip-path:inset(0 0 0 0)}
+.env-scene.settle .env-letter{z-index:9;transition:transform 1.2s cubic-bezier(.45,0,.2,1),box-shadow 1.2s ease;transform:translateY(var(--lift,-70%)) scale(var(--lift-s,1));box-shadow:0 1px 0 rgba(140,106,60,.25),0 18px 40px -22px rgba(59,42,34,.45)}
+.env-scene.gone .env-letter{clip-path:none}
+.env-scene.gone .env-letter{box-shadow:0 1px 0 rgba(140,106,60,.25),0 18px 40px -22px rgba(59,42,34,.45)}
 .env-pocket{position:absolute;inset:0;z-index:2;clip-path:polygon(0 0,50% 52%,100% 0,100% 100%,0 100%);background:linear-gradient(180deg,#F4EBD6 0%,#F8F1E1 100%);border-radius:6px;pointer-events:none}
 .env-pocket::before,.env-pocket::after{content:'';position:absolute;top:0;width:60%;height:62%;border-bottom:1px solid rgba(140,106,60,.35)}
 .env-pocket::before{left:0;transform:skewY(42deg);transform-origin:left top}
@@ -318,7 +422,7 @@ h2{font-size:clamp(26px,6vw,38px)}
 .env-frame{position:absolute;inset:0;border-radius:6px;pointer-events:none;z-index:2;border:6px solid transparent;
   border-image:repeating-linear-gradient(-45deg,var(--bordo) 0 10px,transparent 10px 20px,var(--gold) 20px 30px,transparent 30px 40px) 6}
 .env-name{position:absolute;left:0;right:0;top:58%;z-index:3;font-family:var(--script);font-size:clamp(26px,7vw,42px);color:var(--bordo2);pointer-events:none;line-height:1}
-.env-stamp{position:absolute;right:5%;top:6%;width:min(14%,66px);z-index:3;transform:rotate(6deg);filter:drop-shadow(0 2px 2px rgba(59,42,34,.25));pointer-events:none}
+.env-stamp{position:absolute;right:5%;top:6%;width:min(14%,66px);z-index:6;transform:rotate(6deg) translateZ(0);filter:drop-shadow(0 2px 2px rgba(59,42,34,.25));pointer-events:none}
 .env-flap{position:absolute;left:0;right:0;top:0;height:54%;z-index:4;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#EADFC6,#F2E7D0);transform-origin:50% 0;
   transition:transform 1.1s cubic-bezier(.4,0,.2,1);backface-visibility:visible;border-radius:6px 6px 0 0}
 .env-flap::after{content:'';position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 40%)}
@@ -336,11 +440,100 @@ h2{font-size:clamp(26px,6vw,38px)}
 .env-hint{margin:26px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:16px;letter-spacing:.06em;animation:hintPulse 2.2s ease-in-out infinite;transition:opacity .3s}
 @keyframes hintPulse{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}
 .env-scene.open ~ .env-hint{opacity:0;animation:none}
+.env-scene.gone ~ .env-hint{display:none}
 
+/* ---------- сова-листоноша ---------- */
+.owl{position:fixed;left:0;top:0;width:120px;height:128px;z-index:9;pointer-events:none;will-change:transform}
+.owl[hidden]{display:none}
+.owl-in{width:100%;height:100%;transition:transform .22s ease}
+.owl svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 8px rgba(59,42,34,.28))}
+.owl-shadow{position:fixed;left:0;top:0;width:110px;height:26px;z-index:8;pointer-events:none;border-radius:50%;background:radial-gradient(ellipse at center,rgba(59,42,34,.30),rgba(59,42,34,.10) 55%,transparent 72%);will-change:transform,opacity}
+@media(max-width:679px){.owl{width:96px;height:106px}.owl-shadow{width:84px;height:20px}}
+.owl{height:132px}
+.env-scene.carried{pointer-events:none;opacity:0;transform-origin:50% 50%;will-change:transform}
+.env-hint.wait{opacity:0;animation:none}
+
+/* ---------- переходи між екранами ---------- */
+.tx{position:fixed;inset:0;z-index:45;pointer-events:none;display:none;overflow:hidden}
+.tx.run{display:block}
+.tx-clouds .band{position:absolute;left:-10vw;right:-10vw;top:0;height:120vh;background:#F4ECD8;transform:translateY(105vh)}
+.tx-clouds.run .band{animation:cloudBand .8s cubic-bezier(.4,0,.3,1) both}
+@keyframes cloudBand{0%{transform:translateY(105vh)}42%{transform:translateY(-6vh)}58%{transform:translateY(-14vh)}100%{transform:translateY(-140vh)}}
+.tx-clouds .cl{position:absolute;height:auto;min-width:150px;filter:drop-shadow(0 6px 8px rgba(140,106,60,.16))}
+.tx-clouds .cl.t{top:1px;transform:translateY(-58%)}
+.tx-clouds .cl.b{bottom:1px;transform:translateY(58%)}
+.tx-clouds .cl.side{width:30vw;min-width:140px;opacity:0}
+.tx-clouds .cl.side.l{left:8vw;top:30vh}.tx-clouds .cl.side.r{right:6vw;top:44vh}
+.tx-clouds.run .cl.side.l{animation:cloudL .8s ease-in-out both}.tx-clouds.run .cl.side.r{animation:cloudR .8s ease-in-out both}
+@keyframes cloudL{0%{transform:translate(0,90vh);opacity:0}45%{transform:translate(0,0);opacity:1}100%{transform:translate(-80vw,-20vh);opacity:0}}
+@keyframes cloudR{0%{transform:translate(0,90vh);opacity:0}45%{transform:translate(0,0);opacity:1}100%{transform:translate(80vw,-16vh);opacity:0}}
+.tx-plane .curtain{position:absolute;inset:0;background:#F4ECD8;transform:translateX(-101%)}
+.tx-plane.run .curtain{animation:wipe .8s linear both}
+@keyframes wipe{0%{transform:translateX(-101%)}50%{transform:translateX(0)}100%{transform:translateX(101%)}}
+.tx-plane .trail{position:absolute;top:calc(40vh + 22px);left:0;height:0;width:0;border-top:3px dashed var(--bordo);opacity:.7}
+.tx-plane.run .trail{animation:trail .8s linear both}
+@keyframes trail{0%{width:0;opacity:.7}50%{width:104vw;opacity:.7}100%{width:112vw;opacity:0}}
+.tx-plane .pl{position:absolute;top:40vh;left:0;width:68px;height:auto;transform:translateX(-90px);filter:drop-shadow(0 3px 3px rgba(59,42,34,.3))}
+.tx-plane.run .pl{animation:fly .8s linear both}
+@keyframes fly{0%{transform:translateX(-90px) rotate(-3deg)}50%{transform:translateX(104vw) rotate(0)}100%{transform:translateX(112vw) rotate(0)}}
+.screen.active.notx{animation:none}
+@media(max-width:679px){.tx-plane .pl{width:52px}.tx-plane .trail{top:calc(40vh + 17px)}}
+
+/* ---------- потяг і автобус на інформаційних екранах ---------- */
+#s-pltrain.active,#s-kish.active{display:flex;flex-direction:column;min-height:calc(100svh - 300px)}
+.drive{position:relative;width:100vw;margin:auto calc(50% - 50vw) 0;padding-top:28px;height:106px;pointer-events:none;overflow:hidden}
+.drive{display:none}body[data-screen="pltrain"] #s-pltrain .drive,body[data-screen="kish"] #s-kish .drive{display:block}
+.drive::after{content:'';position:absolute;left:0;right:0;bottom:11px;border-top:2px dashed var(--gold);opacity:.55}
+.drive.rail::after{border-top:3px double var(--gold3);opacity:.6}
+.drive .veh{position:absolute;bottom:12px;left:0;width:170px;height:auto;animation:driveBy 20s linear infinite;animation-delay:-5s;filter:drop-shadow(0 2px 2px rgba(59,42,34,.2))}
+.drive.road .veh{width:140px;animation-duration:16s}
+@keyframes driveBy{from{transform:translateX(-190px)}to{transform:translateX(calc(100vw + 30px))}}
+.drive .puff{animation:puff 1.5s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.drive .puff.p2{animation-delay:.5s}.drive .puff.p3{animation-delay:1s}
+@keyframes puff{0%{opacity:.85;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(-16px,-26px) scale(1.5)}}
+.drive .wheel{animation:spin 1.1s linear infinite;transform-box:fill-box;transform-origin:center}
+.drive.road .veh{animation-name:driveBy,bob2;animation-duration:16s,.9s;animation-delay:-4s,0s;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite}
+@keyframes bob2{0%,100%{margin-bottom:0}50%{margin-bottom:2px}}
+@media(prefers-reduced-motion:reduce){.drive{display:none}}
+
+/* ---------- вибір міста в картці країни ---------- */
+.city-step{padding:2px 0 6px}
+.city-grid{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:560px){.city-grid{grid-template-columns:1fr 1fr}}
+.city-card{display:block;width:100%;text-align:left;padding:10px 12px;background:var(--cream2);border:1.5px solid var(--gold2);border-radius:12px;font:inherit;color:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;transition:transform .15s,border-color .15s,background .15s;touch-action:manipulation}
+.city-card:hover{border-color:var(--bordo);background:#FAF0DD;transform:translateY(-1px)}
+.city-card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.city-card b{display:block;font-family:var(--serif);font-size:17px;color:var(--bordo2)}
+.city-card span{display:block;font-size:13px;font-style:italic;color:var(--muted);line-height:1.4;margin-top:2px}
+.city-card.later{border-style:dashed;background:#FAF2E2}
+.was{display:block;font-size:12px;color:var(--gold3);font-style:italic;margin-top:5px}
+.city-custom{margin-top:12px;padding:12px 14px}
+.city-custom .row{display:flex;gap:8px;align-items:stretch}
+.city-custom .row input{flex:1;min-width:0}
+.city-custom .row .btn{flex:0 0 auto;min-height:44px;padding:8px 16px}
+.city-custom p.was{margin:6px 0 0}
+.sheet-foot .btn.ghost{min-height:46px}
+
+/* ---------- житло для кожної точки ---------- */
+.stay-block{max-width:720px;margin:0 auto}
+.stay-block + .stay-block{margin-top:34px;padding-top:26px;border-top:1px dashed var(--gold2)}
+.stay-h{text-align:center;font-size:clamp(20px,5vw,26px);margin:0 0 14px}
+.stay-block .stay-links{margin-top:16px}
+
+/* ---------- героїня з валізою під картками ---------- */
+.hero-slot{position:relative;height:225px;margin:22px auto 0;max-width:720px;overflow:visible}
+.hero{position:absolute;left:50%;bottom:0;height:225px;width:auto;transform:translateX(-50%);pointer-events:none;will-change:transform}
+.hero svg{height:100%;width:auto;overflow:visible;display:block}
+@media(max-width:679px){.hero-slot{height:177px;margin-top:14px}.hero{height:177px}}
+.hero .h-bubble{opacity:0}
 /* ---------- маршрут польоту на карті ---------- */
 .rt-ground{fill:none;stroke:var(--bordo2);stroke-linecap:round;opacity:.85}
 .rt-air{fill:none;stroke:var(--bordo);stroke-linecap:round}
-.rt-airport{fill:var(--cream2);stroke:var(--bordo2)}
+.rt-airport{fill:var(--cream2);stroke:var(--bordo2);stroke-width:1.4}
+.rt-stop .rt-airport{r:3.5}
+.rt-apt-plane{fill:var(--bordo)}
+.rt-lbl{font-family:var(--serif);font-style:italic;font-size:8.5px;fill:var(--bordo2);text-anchor:middle;paint-order:stroke;stroke:#F7F0DF;stroke-width:2.2px;pointer-events:none}
+.rt-veh{pointer-events:none;filter:drop-shadow(0 1px 1px rgba(59,42,34,.35))}
 .rt-plane{fill:var(--bordo);filter:drop-shadow(0 1px 1px rgba(59,42,34,.4))}
 .route-g{transition:opacity .45s ease}
 .route-g.fade{opacity:0}
@@ -408,7 +601,20 @@ h2{font-size:clamp(26px,6vw,38px)}
   <section class="screen" id="s-envelope">
     <div class="env-scene" id="env-scene">
       <div class="env-back"></div>
-      <div class="env-letter" aria-hidden="true"><h3>Кассандро 🐍, твоя подорож…</h3><i></i><i></i><i></i></div>
+      <div class="env-letter" id="env-letter" aria-hidden="true">
+        <svg class="deco compass" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#8C6A3C" stroke-width="1" stroke-dasharray="2 4"/><path d="M50 6L56 50 50 94 44 50z" fill="#7A2E2E"/><path d="M6 50L50 44 94 50 50 56z" fill="#B8894A"/><path d="M50 6L44 50h12z" fill="#A8443F"/><path d="M6 50l44-6v12z" fill="#D9B77A"/><circle cx="50" cy="50" r="4" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/></svg>
+        <svg class="deco pstamp" viewBox="0 0 80 100" aria-hidden="true"><rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#FBF5E8" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/><rect x="9" y="9" width="62" height="82" fill="#EADFC6" stroke="#7A2E2E" stroke-width="1.5"/><path d="M14 70q14-20 26-10t26-8" fill="none" stroke="#7A2E2E" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M62 36c0-1.5-1.5-2.2-4-2.2h-8l-6-6h-3l4 6h-7l-2-2h-1.5l.8 4.2-.8 4.2H36l2-2h7l-4 6h3l6-6h8c2.5 0 4-.7 4-2.2z" fill="#7A2E2E"/><text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#7A2E2E" letter-spacing="2">ПОШТА</text><text x="16" y="22" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#7A2E2E">50</text></svg>
+        <svg class="deco pstamp2" viewBox="0 0 80 100" aria-hidden="true"><rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#FBF5E8" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/><rect x="9" y="9" width="62" height="82" fill="#F3E4C6" stroke="#8C6A3C" stroke-width="1.5"/><path d="M14 66l12-20 8 10 10-16 12 20 8-8 6 14z" fill="#D9B77A" stroke="#8C6A3C" stroke-width="1.2"/><circle cx="58" cy="30" r="6" fill="#A8443F"/><text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#8C6A3C" letter-spacing="2">ЄВРОПА</text></svg>
+        <svg class="deco postmark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#7A2E2E" stroke-width="2"/><circle cx="50" cy="50" r="33" fill="none" stroke="#7A2E2E" stroke-width="1"/><path d="M22 50h56M22 56h56M22 44h56" stroke="#7A2E2E" stroke-width="1.6" stroke-linecap="round"/><path d="M78 46q14 2 20 0M78 54q14 2 20 0M78 50q14 2 22 0" stroke="#7A2E2E" stroke-width="1.6" stroke-linecap="round" fill="none"/><text x="50" y="35" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-weight="700" fill="#7A2E2E" letter-spacing="1">З ЛЮБОВ'Ю</text><text x="50" y="72" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#7A2E2E" letter-spacing="1">ДЕНЬ НАРОДЖЕННЯ</text></svg>
+        <div class="letter-in">
+          <p class="eyebrow">Подорож на твій вибір</p>
+          <h1>Кассандро 🐍, твоя подорож починається тут</h1>
+          <div class="rule"><span>✦</span></div>
+          <p class="lead">Куди, як і де — вирішуєш тільки ти.<br>Обирай не поспішаючи.</p>
+          <button class="btn primary" id="btn-start-env" type="button" tabindex="-1">Почати</button>
+          <p class="fine">чотири кроки · один маршрут · безліч вражень</p>
+        </div>
+      </div>
       <div class="env-pocket"></div>
       <div class="env-frame"></div>
       <div class="env-stamp"><svg viewBox="0 0 80 100" aria-hidden="true"><rect x="2" y="2" width="76" height="96" fill="#FFF8EA"/><rect x="2" y="2" width="76" height="96" fill="none" stroke="#F6EEDD" stroke-width="7" stroke-dasharray="0 9.5" stroke-linecap="round"/><rect x="9" y="9" width="62" height="82" fill="#EADFC6" stroke="#7A2E2E" stroke-width="1.5"/><path d="M14 70q14-20 26-10t26-8" fill="none" stroke="#7A2E2E" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M62 36c0-1.5-1.5-2.2-4-2.2h-8l-6-6h-3l4 6h-7l-2-2h-1.5l.8 4.2-.8 4.2H36l2-2h7l-4 6h3l6-6h8c2.5 0 4-.7 4-2.2z" fill="#7A2E2E"/><text x="40" y="84" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="700" fill="#7A2E2E" letter-spacing="2">ПОШТА</text><text x="16" y="22" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#7A2E2E">50</text></svg></div>
@@ -464,8 +670,13 @@ h2{font-size:clamp(26px,6vw,38px)}
 
   <!-- КРОК 2: КАРТА -->
   <section class="screen" id="s-where">
-    <header class="step-head"><p class="eyebrow">Крок 2 із 4</p><h2>Куди</h2><p class="hint">Торкнись країни на карті, знайди її в пошуку або впиши своє місце.</p></header>
+    <header class="step-head"><p class="eyebrow">Крок 2 із 4</p><h2>Куди</h2><p class="hint">Торкнись країни на карті, знайди її в пошуку або впиши своє місце. Країн може бути кілька.</p></header>
     <div class="map-shell">
+      <div class="visited" id="visited">
+        <button class="visited-head" type="button" id="visited-toggle" aria-expanded="true" aria-controls="visited-list"><span>Тут ти вже була ✓</span><i class="chev" aria-hidden="true"></i></button>
+        <ul class="visited-list" id="visited-list"></ul>
+        <p>Торкнись міста — і галочка на карті підсвітиться.</p>
+      </div>
       <div class="map-box" id="map-box">
         <div class="loading" id="map-loading"><div>
           <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#8C6A3C" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#8C6A3C" stroke-width="1" stroke-dasharray="2 4"/><path d="M50 6L56 50 50 94 44 50z" fill="#7A2E2E"/><path d="M6 50L50 44 94 50 50 56z" fill="#B8894A"/><circle cx="50" cy="50" r="4" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/></svg>
@@ -485,12 +696,16 @@ h2{font-size:clamp(26px,6vw,38px)}
       <div class="field" id="custom-field">
         <label for="custom-input">Або впиши своє місце</label>
         <input id="custom-input" type="text" maxlength="60" autocomplete="off" placeholder="Наприклад, Азорські острови…">
-        <p>Своє місце замінить країну на карті.</p>
+        <p>Своє місце додасться до маршруту ще однією точкою.</p>
         <span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span>
       </div>
     </div>
     <div class="surprise-row"><button class="card compact" type="button" id="surprise-where" aria-pressed="false"><div class="ill-wrap" id="surprise-ill"></div><div class="card-body"><span class="tag">обирає чоловік</span><h3>Сюрприз</h3><p>Дізнаєшся лише в аеропорту… або на вокзалі.</p></div><span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span></button></div>
-    <div class="chosen-box" id="chosen-box"><div class="ill-wrap" id="chosen-ill"></div><div><b id="chosen-name"></b><span id="chosen-cap"></span></div><span class="stamp" aria-hidden="true"><span>Обрано<small>✦ ✦ ✦</small></span></span></div>
+    <div class="chosen-list" id="chosen-list" hidden>
+      <p class="chosen-title">Твої точки маршруту</p>
+      <ol id="chosen-ol"></ol>
+      <p class="chosen-hint">Літак летить у цьому порядку. Хрестик прибирає точку.</p>
+    </div>
   </section>
 
   <!-- ФІНАЛ -->
@@ -513,7 +728,7 @@ h2{font-size:clamp(26px,6vw,38px)}
             <span>Пункт призначення — щастя</span>
           </div>
         </div>
-        <p class="final-text">Маршрут складено. Решту я беру на себе.</p>
+        <p class="final-text">Маршрут складено.</p>
         <!-- ======================================================== -->
         <!--  ОСОБИСТЕ ПОСЛАННЯ: заміни вміст цього блоку своїм текстом  -->
         <!-- ======================================================== -->
@@ -532,6 +747,23 @@ h2{font-size:clamp(26px,6vw,38px)}
   </section>
 </div>
 
+<!-- сова-листоноша (SVG будується скриптом) -->
+<div class="owl-shadow" id="owl-shadow" aria-hidden="true" hidden></div>
+<div class="owl" id="owl" aria-hidden="true" hidden><div class="owl-in" id="owl-in"></div></div>
+<!-- переходи між екранами: хмари та літачок -->
+<div class="tx tx-clouds" id="tx-clouds" aria-hidden="true"><div class="band">
+  <svg class="cl t" style="left:-6%;width:38vw" viewBox="0 0 200 100"><path d="M20 90c-18 0-22-24-4-30-4-22 24-34 38-18 6-18 36-20 46-2 14-10 38 0 36 20 18 0 24 30 2 30z" fill="#F4ECD8" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl t" style="left:24%;width:34vw" viewBox="0 0 200 100"><path d="M24 92c-20 0-24-26-4-32 0-20 26-30 40-14 8-18 40-16 48 2 16-8 38 4 34 22 16 2 20 22 0 22z" fill="#F7F0DF" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl t" style="left:50%;width:40vw" viewBox="0 0 200 100"><path d="M18 92c-18-2-20-26 0-30-2-22 28-34 42-16 10-20 42-18 50 0 14-10 40 2 36 22 18 2 20 24-2 24z" fill="#F4ECD8" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl t" style="left:78%;width:34vw" viewBox="0 0 200 100"><path d="M22 92c-18 0-22-24-2-30-2-20 24-32 38-16 8-18 38-18 46 0 16-8 38 4 34 22 16 2 20 24-2 24z" fill="#F7F0DF" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl b" style="left:-4%;width:36vw" viewBox="0 0 200 100"><path d="M22 8c-20 0-24 26-4 32 0 20 26 30 40 14 8 18 40 16 48-2 16 8 38-4 34-22 16-2 20-22 0-22z" fill="#F4ECD8" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl b" style="left:30%;width:40vw" viewBox="0 0 200 100"><path d="M18 8c-18 2-20 26 0 30-2 22 28 34 42 16 10 20 42 18 50 0 14 10 40-2 36-22 18-2 20-24-2-24z" fill="#F7F0DF" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl b" style="left:66%;width:38vw" viewBox="0 0 200 100"><path d="M20 10c-18 0-22 24-4 30-4 22 24 34 38 18 6 18 36 20 46 2 14 10 38 0 36-20 18 0 24-30 2-30z" fill="#F4ECD8" stroke="#E6D5B0" stroke-width="2"/></svg>
+</div>
+  <svg class="cl side l" viewBox="0 0 200 100"><path d="M20 90c-18 0-22-24-4-30-4-22 24-34 38-18 6-18 36-20 46-2 14-10 38 0 36 20 18 0 24 30 2 30z" fill="#F7F0DF" stroke="#E6D5B0" stroke-width="2"/></svg>
+  <svg class="cl side r" viewBox="0 0 200 100"><path d="M24 92c-20 0-24-26-4-32 0-20 26-30 40-14 8-18 40-16 48 2 16-8 38 4 34 22 16 2 20 22 0 22z" fill="#F4ECD8" stroke="#E6D5B0" stroke-width="2"/></svg>
+</div>
+<div class="tx tx-plane" id="tx-plane" aria-hidden="true"><div class="curtain"></div><div class="trail"></div><svg class="pl" viewBox="0 0 40 24"><path d="M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z" fill="#7A2E2E"/></svg></div>
 <div class="nav" id="nav"><div class="inner">
   <button class="btn ghost" id="btn-back" type="button">← Назад</button>
   <button class="btn primary" id="btn-next" type="button" disabled>Далі →</button>
@@ -541,7 +773,11 @@ h2{font-size:clamp(26px,6vw,38px)}
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
   <div class="sheet-head"><h3 id="sheet-title"></h3><p id="sheet-cap"></p><button class="sheet-close" id="sheet-close" type="button" aria-label="Закрити">×</button></div>
   <div class="sheet-body" id="sheet-body"></div>
-  <div class="sheet-foot"><button class="btn primary" id="sheet-pick" type="button">Обрати цю країну</button><p class="credit">Фото й описи з Вікіпедії</p></div>
+  <div class="sheet-foot"><button class="btn primary" id="sheet-pick" type="button">Обрати цю країну</button><button class="btn ghost" id="sheet-back" type="button" hidden>← До пам'яток</button><p class="credit" id="sheet-credit">Фото й описи з Вікіпедії</p></div>
+</div>
+<div class="ask" id="ask" role="dialog" aria-modal="true" aria-labelledby="ask-q">
+  <p id="ask-q">Це твоя кінцева точка чи додаєш ще місце до маршруту?</p>
+  <div class="ask-btns"><button class="btn ghost" id="ask-more" type="button">Додати ще місце</button><button class="btn primary" id="ask-done" type="button">Це все, рухаємось далі</button></div>
 </div>
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Перегляд фото">
   <button class="lb-close" id="lb-close" type="button" aria-label="Закрити">×</button>
@@ -551,7 +787,7 @@ h2{font-size:clamp(26px,6vw,38px)}
   <div class="lb-hint">← → гортати · ↓ закрити</div>
   <div class="lb-cap"><div class="lb-title" id="lb-title"></div><div class="lb-count" id="lb-count"></div><a class="lb-link" id="lb-link" href="#" target="_blank" rel="noopener">Детальніше у Вікіпедії</a></div>
 </div>
-<button class="sound-btn" id="sound-btn" type="button" aria-pressed="false" aria-label="Звук табло">
+<button class="sound-btn active" id="sound-btn" type="button" aria-pressed="true" aria-label="Звук табло">
   <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M23 9l-6 6M17 9l6 6"/></svg>
   <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
 </button>
@@ -596,37 +832,34 @@ h2{font-size:clamp(26px,6vw,38px)}
   const SUB = {
     origin: { title:'Звідки летимо?', hint:'З України зараз не літають, тож спершу — дорога до аеропорту в сусідній країні.', key:'origin',
       options:[
-        { id:'kishinev', title:'Аеропорт Кишинева', tag:'найближчий до Одеси', short:'Кишинів', text:'Кілька годин дороги — і ти вже біля трапа.', svg:I.airport },
-        { id:'poland', title:'Аеропорт у Польщі', tag:'більше напрямків, дорога довша', short:'Польща', text:'Шлях довший, зате звідси літають майже всюди.', svg:I.plane }
+        { id:'kishinev', title:'Аеропорт Кишинева', note:'Побачитись з Тамуною', short:'Кишинів', text:'Кілька годин дороги — і ти вже біля трапа.', svg:I.airport },
+        { id:'poland', title:'Аеропорт у Польщі', note:'Побачитись з Ліною', short:'Польща', text:'Шлях довший, зате звідси літають майже всюди.', svg:I.plane }
       ]},
-    kish: { title:'Як дістатися до Кишинева?', hint:'Дорога коротка, тож можна обрати настрій, а не швидкість.', key:'kishTransfer',
+    kish: { title:'Автобусом з Одеси до Кишинева', hint:'Цей етап уже вирішено — просто насолоджуйся дорогою.', info:true,
       options:[
-        { id:'premium', title:'Преміальний трансфер', tag:'їздить просто з Одеси', short:'Трансфер', text:'Комфортне авто від дверей до терміналу — без зайвих турбот.', svg:I.transfer },
-        { id:'bus', title:'Звичайний автобус', tag:'просто і по-мандрівничому', short:'Автобус', text:'Рюкзак, вікно й дорога — як у справжніх мандрівників.', svg:I.bus }
+        { id:'bus', title:'Автобусом з Одеси до Кишинева', tag:'фіксований етап', short:'Автобус', text:'Автобус з Одеси, кілька годин дороги, кордон — і ти вже біля трапа.', svg:I.bus }
       ]},
-    pltrain: { title:'Потяг з Одеси до Польщі', hint:'Цей етап уже вирішено — просто насолоджуйся дорогою.', info:true,
+    pltrain: { title:'Потяг з Одеси до Пшемишля', hint:'Цей етап уже вирішено — просто насолоджуйся дорогою.', info:true,
       options:[
-        { id:'train', title:'Потяг з Одеси до Польщі', tag:'фіксований етап', short:'Потяг', text:'Заснути в Одесі — прокинутися в Європі.', svg:I.train }
+        { id:'train', title:'Потяг з Одеси до Пшемишля', tag:'фіксований етап', short:'Потяг', text:'Потяг з Одеси привозить у Пшемишль — польське місто одразу за кордоном. Заснути в Одесі — прокинутися в Європі.', svg:I.train }
       ]},
-    plairport: { title:'Звідки вилітаємо?', hint:'Два аеропорти, два міста — і обидва варті окремого дня.', key:'plAirport',
+    plairport: { title:'Звідки вилітаємо?', hint:'Два міста, два аеропорти — і обидва варті окремого дня.', key:'plAirport',
       options:[
-        { id:'krakow', title:'Краків', short:'Краків', text:'Королівське місто з драконом під Вавелем.', svg:I.krakow },
-        { id:'warsaw', title:'Варшава', short:'Варшава', text:'Столиця, що відбудувала себе з попелу й не втратила усмішки.', svg:I.warsaw }
+        { id:'krakow', title:'Краків', note:'Швидше в подорож назустріч пригодам і без зупинок', short:'Краків', gen:'Кракова', text:'Королівське місто з драконом під Вавелем.', svg:I.krakow },
+        { id:'warsaw', title:'Варшава', note:'Зупинитися в Ліни і погратися з маленьким Стасіком', short:'Варшава', gen:'Варшави', text:'Столиця, що відбудувала себе з попелу й не втратила усмішки.', svg:I.warsaw }
       ]},
-    placcess: { title:'Як дістатися до аеропорту?', hint:'Останній відрізок перед небом.', key:'plAccess',
+    placcess: { title:'Як дістатися з Пшемишля до міста?', hint:'Дорога між містами — уже Польщею, до самого літака.', key:'plAccess',
       options:[
-        { id:'bus', title:'Автобус', short:'Автобус', text:'Прямий рейс до терміналу без пересадок.', svg:I.bus },
-        { id:'train', title:'Потяг', short:'Потяг', text:'Зручно, швидко і з кавою у вагоні-ресторані.', svg:I.train }
+        { id:'bus', title:'Автобус', short:'Автобус', instr:'автобусом', text:'Прямий рейс без пересадок.', svg:I.bus },
+        { id:'train', title:'Потяг', short:'Потяг', instr:'потягом', text:'Зручно, швидко і з кавою у вагоні-ресторані.', svg:I.train }
       ]},
     stay: { title:'Де жити', hint:'Місце, куди захочеться повертатися щовечора.', key:'stay', step:3,
       options:[
-        { id:'chalet', title:'Шале в горах', short:'Шале', text:'Дерев’яні стіни, камін і тиша, що дзвенить.', svg:I.chalet },
-        { id:'seaside', title:'Будиночок біля моря', short:'Море', text:'Прокидатися під шум хвиль і запах солі.', svg:I.seaside },
         { id:'oldtown', title:'Квартира в старому місті', tag:'з видом на архітектуру', short:'Старе місто', text:'Вікно на дахи й дзвони старовинного собору.', svg:I.oldtown },
         { id:'hotel', title:'Затишний бутік-готель', short:'Готель', text:'Свіжі квіти, м’які рушники й сніданок у ліжко.', svg:I.hotel },
         { id:'surprise', title:'Сюрприз', tag:'обирає чоловік', short:'Сюрприз', text:'Нехай адреса залишиться таємницею до останнього.', svg:I.key }
       ]},
-    rhythm: { title:'Ритм подорожі', hint:'Яким буде настрій твоїх днів?', key:'rhythm', step:4,
+    rhythm: { title:'Ритм подорожі', hint:'Яким буде настрій твоїх днів?', key:'rhythm', step:4, multi:true,
       options:[
         { id:'slow', title:'Повільний відпочинок', short:'Спокій', text:'Жодних планів, лише книга, сонце й довгі сніданки.', svg:I.slow },
         { id:'nature', title:'Прогулянки й природа', short:'Природа', text:'Стежки, озера й повітря, яким хочеться дихати глибше.', svg:I.nature },
@@ -695,11 +928,71 @@ h2{font-size:clamp(26px,6vw,38px)}
   const PALE = { atlas:'112', c:[28.0,53.6], name:'Білорусь' };
   const ATLAS_INDEX = {}; Object.keys(C).forEach(k => { const d = C[k]; if (d.atlas) ATLAS_INDEX['id:'+d.atlas] = k; (d.atlasNames||[]).forEach(n => ATLAS_INDEX['name:'+n] = k); });
   const ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json';
+  // міста, де вона вже була — галочки на карті
+  const VISITED = [
+    { name:'Барселона', c:[2.17, 41.39] }, { name:'Будапешт', c:[19.04, 47.50] }, { name:'Ібіца', c:[1.43, 38.91] }, { name:'Рим', c:[12.50, 41.90] },
+    { name:'Мілан', c:[9.19, 45.46] }, { name:'Лісабон', c:[-9.14, 38.72] }, { name:'Крит', c:[24.90, 35.24] }, { name:'Варшава', c:[21.01, 52.23] }
+  ];
+
+  /* ------------------------------------------------------------------ */
+  /*  Міста для вибору всередині країни                                   */
+  /*  [назва, англійська назва, довгота, широта, місцевий відмінок, підпис, slug для Booking] */
+  /* ------------------------------------------------------------------ */
+  const C_LOC = { AL:'Албанії', AD:'Андоррі', AT:'Австрії', BE:'Бельгії', BA:'Боснії і Герцеговині', BG:'Болгарії', HR:'Хорватії', CY:'Кіпрі', CZ:'Чехії', DK:'Данії', EE:'Естонії', FI:'Фінляндії', FR:'Франції', DE:'Німеччині', GR:'Греції', HU:'Угорщині', IS:'Ісландії', IE:'Ірландії', IT:'Італії', XK:'Косові', LV:'Латвії', LI:'Ліхтенштейні', LT:'Литві', LU:'Люксембурзі', MT:'Мальті', MD:'Молдові', MC:'Монако', ME:'Чорногорії', NL:'Нідерландах', MK:'Північній Македонії', NO:'Норвегії', PL:'Польщі', PT:'Португалії', RO:'Румунії', SM:'Сан-Марино', RS:'Сербії', SK:'Словаччині', SI:'Словенії', ES:'Іспанії', SE:'Швеції', CH:'Швейцарії', TR:'Туреччині', GB:'Британії', VA:'Ватикані', GE:'Грузії' };
+  const CITIES = {
+    AL:[['Тирана','Tirana',19.82,41.33,'Тирані','Строката столиця з кав\'ярнями на кожному розі.','tirana'],['Берат','Berat',19.95,40.71,'Бераті','Місто тисячі вікон над річкою Осум.','berat'],['Саранда','Saranda',20.00,39.87,'Саранді','Іонічне море кольору лазуриту й сонце до вечора.','saranda'],['Ксаміл','Ksamil',20.00,39.77,'Ксамілі','Білі пляжі та острівці, до яких можна доплисти.','ksamil'],['Гірокастра','Gjirokaster',20.14,40.08,'Гірокастрі','Кам\'яне місто з фортецею й дахами з плитняку.','gjirokaster'],['Шкодер','Shkoder',19.51,42.07,'Шкодері','Велосипеди, озеро й фортеця Розафа на пагорбі.','shkoder'],['Влера','Vlore',19.49,40.47,'Влері','Там, де Адріатика зустрічається з Іонічним морем.','vlore']],
+    AD:[['Андорра-ла-Велья','Andorra la Vella',1.52,42.51,'Андоррі-ла-Вельї','Найвища столиця Європи між піренейськими вершинами.','andorra-la-vella'],['Ескальдес','Escaldes-Engordany',1.54,42.51,'Ескальдесі','Термальні води й найбільший спа в Піренеях.','escaldes-engordany'],['Сольдеу','Soldeu',1.67,42.58,'Сольдеу','Гірськолижне село з видами на всі боки.','soldeu'],['Ордіно','Ordino',1.53,42.56,'Ордіно','Тихе кам\'яне містечко біля природного парку.','ordino']],
+    AT:[['Відень','Vienna',16.37,48.21,'Відні','Вальси, кав\'ярні й палаци на кожному кроці.','vienna'],['Зальцбург','Salzburg',13.04,47.80,'Зальцбурзі','Місто Моцарта з фортецею над дахами.','salzburg'],['Інсбрук','Innsbruck',11.40,47.27,'Інсбруку','Альпи починаються просто за рогом старого міста.','innsbruck'],['Гальштат','Hallstatt',13.65,47.56,'Гальштаті','Крихітне село між озером і скелею, наче з листівки.','hallstatt'],['Грац','Graz',15.44,47.07,'Граці','Червоні дахи, годинникова вежа й студентський настрій.','graz'],['Лінц','Linz',14.29,48.31,'Лінці','Дунай, сучасне мистецтво й торт лінцер.','linz']],
+    BE:[['Брюссель','Brussels',4.35,50.85,'Брюсселі','Гран-Плас, вафлі та шоколад на кожному кроці.','brussels'],['Брюгге','Bruges',3.22,51.21,'Брюгге','Канали, лебеді й мереживо середньовічних вуличок.','bruges'],['Гент','Ghent',3.72,51.05,'Генті','Замок графів і набережні, що світяться вечорами.','ghent'],['Антверпен','Antwerp',4.40,51.22,'Антверпені','Діаманти, мода й найкрасивіший вокзал Європи.','antwerp'],['Льєж','Liege',5.57,50.63,'Льєжі','Сходи Бюрен і недільний ринок уздовж Маасу.','liege'],['Лювен','Leuven',4.70,50.88,'Лювені','Найстаріший університет і найдовша барна стійка світу.','leuven']],
+    BA:[['Сараєво','Sarajevo',18.41,43.86,'Сараєві','Схід і Захід в одному місті, кава з джезви й чевапи.','sarajevo'],['Мостар','Mostar',17.81,43.34,'Мостарі','Старий міст, з якого стрибають у смарагдову Неретву.','mostar'],['Благай','Blagaj',17.89,43.26,'Благаї','Дервішський дім біля витоку річки під скелею.','blagaj'],['Яйце','Jajce',17.27,44.34,'Яйці','Водоспад просто в центрі міста.','jajce'],['Требинє','Trebinje',18.34,42.71,'Требинє','Платани, вино й мости в середземноморському ритмі.','trebinje'],['Баня-Лука','Banja Luka',17.19,44.77,'Баня-Луці','Зелене місто над річкою Врбас.','banja-luka']],
+    BG:[['Софія','Sofia',23.32,42.70,'Софії','Золоті куполи, гори на горизонті й неквапні бульвари.','sofia'],['Пловдив','Plovdiv',24.75,42.14,'Пловдиві','Римський театр і найстаріше живе місто Європи.','plovdiv'],['Варна','Varna',27.91,43.21,'Варні','Морська столиця з найдовшим приморським парком.','varna'],['Несебр','Nessebar',27.73,42.66,'Несебрі','Старовинне місто на півострові серед Чорного моря.','nessebar'],['Велико-Тирново','Veliko Tarnovo',25.63,43.08,'Велико-Тирнові','Будинки, що висять над закрутом річки Янтри.','veliko-tarnovo'],['Банско','Bansko',23.49,41.84,'Банську','Гірський курорт з таверни-механи на кожній вулиці.','bansko'],['Бургас','Burgas',27.47,42.50,'Бургасі','Спокійне море, солоні озера й пісок до обрію.','burgas']],
+    HR:[['Дубровник','Dubrovnik',18.09,42.65,'Дубровнику','Мури над морем і червоні дахи старого міста.','dubrovnik'],['Спліт','Split',16.44,43.51,'Спліті','Місто, що виросло всередині палацу Діоклетіана.','split'],['Загреб','Zagreb',15.98,45.81,'Загребі','Затишна столиця з кав\'ярнями та ринком Долац.','zagreb'],['Хвар','Hvar',16.44,43.17,'Хварі','Лаванда, яхти й найсонячніший острів Адріатики.','hvar'],['Ровінь','Rovinj',13.64,45.08,'Ровіні','Різнобарвні будиночки, що спускаються до самої води.','rovinj'],['Задар','Zadar',15.23,44.12,'Задарі','Морський орган і найкрасивіший захід сонця за Гічкоком.','zadar'],['Пула','Pula',13.85,44.87,'Пулі','Римська арена на березі Істрії.','pula']],
+    CY:[['Пафос','Paphos',32.42,34.77,'Пафосі','Мозаїки, гавань і скеля Афродіти неподалік.','paphos'],['Лімасол','Limassol',33.04,34.69,'Лімасолі','Довга набережна, марина й вино з гірських сіл.','limassol'],['Ларнака','Larnaca',33.62,34.92,'Ларнаці','Пальмова алея та солоне озеро з фламінго.','larnaca'],['Айя-Напа','Ayia Napa',33.99,34.99,'Айя-Напі','Бірюзові бухти й найбіліший пісок острова.','ayia-napa'],['Нікосія','Nicosia',33.36,35.17,'Нікосії','Остання розділена столиця з венеційськими мурами.','nicosia'],['Протарас','Protaras',34.05,35.01,'Протарасі','Тиха затока для довгих ранків на пляжі.','protaras']],
+    CZ:[['Прага','Prague',14.42,50.09,'Празі','Сто веж, Карлів міст і пиво у кожному підвальчику.','prague'],['Чеський Крумлов','Cesky Krumlov',14.32,48.81,'Чеському Крумлові','Казкове містечко в закруті Влтави.','cesky-krumlov'],['Брно','Brno',16.61,49.20,'Брно','Студентське місто з виллою Тугендгат і підземеллями.','brno'],['Карлові Вари','Karlovy Vary',12.87,50.23,'Карлових Варах','Колонади, гарячі джерела й оплатки.','karlovy-vary'],['Кутна Гора','Kutna Hora',15.27,49.95,'Кутній Горі','Срібне місто з костницею й собором святої Варвари.','kutna-hora'],['Оломоуць','Olomouc',17.25,49.59,'Оломоуці','Барокові фонтани й астрономічний годинник без натовпу.','olomouc']],
+    DK:[['Копенгаген','Copenhagen',12.57,55.68,'Копенгагені','Велосипеди, Нюхавн і гюґе в кожній кав\'ярні.','copenhagen'],['Орхус','Aarhus',10.20,56.16,'Орхусі','Музей ARoS з райдужною панорамою на даху.','aarhus'],['Оденсе','Odense',10.39,55.40,'Оденсе','Місто Андерсена, де казки починалися.','odense'],['Ольборг','Aalborg',9.92,57.05,'Ольборзі','Фіорд, вулички й найвеселіший карнавал Півночі.','aalborg'],['Гельсінгер','Helsingor',12.61,56.04,'Гельсінгері','Замок Гамлета над протокою.','helsingor'],['Скаген','Skagen',10.59,57.72,'Скагені','Там, де два моря зустрічаються на кінчику Данії.','skagen']],
+    EE:[['Таллінн','Tallinn',24.75,59.44,'Таллінні','Середньовічне місто з вежами й цифровим серцем.','tallinn'],['Тарту','Tartu',26.73,58.38,'Тарту','Університетське місто з поцілунком студентів на площі.','tartu'],['Пярну','Parnu',24.50,58.39,'Пярну','Літня столиця з піщаним пляжем і дерев\'яними віллами.','parnu'],['Сааремаа','Saaremaa',22.49,58.25,'Сааремаа','Острів вітряків, ялівцю й тиші.','saaremaa'],['Нарва','Narva',28.19,59.38,'Нарві','Дві фортеці дивляться одна на одну через річку.','narva'],['Гаапсалу','Haapsalu',23.54,58.94,'Гаапсалу','Курортне містечко з мереживними шалями й замком.','haapsalu']],
+    FI:[['Гельсінкі','Helsinki',24.94,60.17,'Гельсінкі','Дизайн, сауни на березі й білий собор над портом.','helsinki'],['Рованіємі','Rovaniemi',25.73,66.50,'Рованіємі','Полярне коло, Санта і північне сяйво.','rovaniemi'],['Турку','Turku',22.27,60.45,'Турку','Стара столиця з річкою Аура та архіпелагом.','turku'],['Тампере','Tampere',23.76,61.50,'Тампере','Місто між двома озерами й столиця саун.','tampere'],['Порвоо','Porvoo',25.66,60.39,'Порвоо','Червоні комори на березі й дерев\'яне старе місто.','porvoo'],['Савонлінна','Savonlinna',28.88,61.87,'Савонлінні','Замок на острові та оперний фестиваль серед озер.','savonlinna']],
+    FR:[['Париж','Paris',2.35,48.86,'Парижі','Круасани, набережні Сени й Ейфелева вежа у вікні.','paris'],['Ніцца','Nice',7.26,43.70,'Ніцці','Англійська набережна й блакитне море Рив\'єри.','nice'],['Ліон','Lyon',4.84,45.76,'Ліоні','Гастрономічна столиця з бушонами й трабулями.','lyon'],['Бордо','Bordeaux',-0.58,44.84,'Бордо','Вино, дзеркало води й золоті фасади.','bordeaux'],['Марсель','Marseille',5.37,43.30,'Марселі','Старий порт, буябес і каланки неподалік.','marseille'],['Страсбург','Strasbourg',7.75,48.57,'Страсбурзі','Фахверкові будиночки й канали Маленької Франції.','strasbourg'],['Анесі','Annecy',6.13,45.90,'Анесі','Альпійська Венеція з найчистішим озером Європи.','annecy'],['Канни','Cannes',7.02,43.55,'Каннах','Червона доріжка, пальми та острови Лерен.','cannes']],
+    DE:[['Берлін','Berlin',13.40,52.52,'Берліні','Місто вільного духу, музеїв і нічних велопрогулянок.','berlin'],['Мюнхен','Munich',11.58,48.14,'Мюнхені','Пивні сади, Марієнплац і Альпи за годину.','munich'],['Гамбург','Hamburg',9.99,53.55,'Гамбурзі','Порт, канали та Ельбська філармонія.','hamburg'],['Кельн','Cologne',6.96,50.94,'Кельні','Собор, що видно з будь-якої точки міста.','cologne'],['Дрезден','Dresden',13.74,51.05,'Дрездені','Барокова Флоренція на Ельбі.','dresden'],['Гайдельберг','Heidelberg',8.69,49.41,'Гайдельберзі','Романтичний замок над старим університетським містом.','heidelberg'],['Нюрнберг','Nuremberg',11.08,49.45,'Нюрнберзі','Фортеця, пряники й найвідоміший різдвяний ярмарок.','nuremberg'],['Франкфурт','Frankfurt',8.68,50.11,'Франкфурті','Хмарочоси й яблучне вино в Заксенгаузені.','frankfurt']],
+    GR:[['Афіни','Athens',23.73,37.98,'Афінах','Акрополь над містом і таверни Плаки.','athens'],['Санторіні','Santorini',25.43,36.39,'Санторіні','Білі будиночки над кальдерою та заходи сонця в Ої.','santorini'],['Крит','Crete',24.90,35.24,'Криті','Великий острів з ущелинами, пляжами й критською кухнею.','crete'],['Салоніки','Thessaloniki',22.94,40.64,'Салоніках','Біла вежа, набережна й найкраща вулична їжа.','thessaloniki'],['Родос','Rhodes',28.22,36.44,'Родосі','Лицарське місто й триста сонячних днів.','rhodes'],['Міконос','Mykonos',25.33,37.45,'Міконосі','Вітряки, Маленька Венеція й біло-блакитні вулички.','mykonos'],['Корфу','Corfu',19.92,39.62,'Корфу','Зелений острів з венеційськими фасадами.','corfu'],['Нафпліон','Nafplio',22.80,37.57,'Нафпліоні','Перша столиця Греції з фортецею над затокою.','nafplio']],
+    HU:[['Будапешт','Budapest',19.04,47.50,'Будапешті','Термальні купальні, Дунай і парламент у вогнях.','budapest'],['Егер','Eger',20.37,47.90,'Егері','Фортеця, барокові вулиці й «Бича кров».','eger'],['Печ','Pecs',18.23,46.07,'Печі','Середземноморський настрій і кераміка Жолнаї.','pecs'],['Балатонфюред','Balatonfured',17.89,46.96,'Балатонфюреді','Вітрильники й променад на «угорському морі».','balatonfured'],['Сентендре','Szentendre',19.07,47.67,'Сентендре','Містечко художників за пів години від столиці.','szentendre'],['Дебрецен','Debrecen',21.63,47.53,'Дебрецені','Великий собор і квітковий карнавал.','debrecen']],
+    IS:[['Рейк\'явік','Reykjavik',-21.94,64.15,'Рейк\'явіку','Найпівнічніша столиця з кольоровими дахами.','reykjavik'],['Вік','Vik',-19.01,63.42,'Віку','Чорний пляж Рейнісф\'яра й базальтові колони.','vik'],['Акурейрі','Akureyri',-18.09,65.68,'Акурейрі','Столиця півночі на березі довгого фіорду.','akureyri'],['Гусавік','Husavik',-17.34,66.04,'Гусавіку','Найкраще місце на острові, щоб побачити китів.','husavik'],['Сельфосс','Selfoss',-20.99,63.93,'Сельфоссі','Ворота до Золотого кола.','selfoss'],['Гепн','Hofn',-15.21,64.25,'Гепні','Лангусти з видом на льодовик Ватнайокутль.','hofn']],
+    IE:[['Дублін','Dublin',-6.26,53.35,'Дубліні','Паби з живою музикою й Трініті-коледж.','dublin'],['Голвей','Galway',-9.05,53.27,'Голвеї','Кольорові вулиці й вуличні музиканти на заході острова.','galway'],['Корк','Cork',-8.47,51.90,'Корку','Англійський ринок і дзвони Шендона.','cork'],['Кілларні','Killarney',-9.51,52.06,'Кілларні','Озера, олені й початок Кільця Керрі.','killarney'],['Дінгл','Dingle',-10.27,52.14,'Дінглі','Рибальське містечко на краю Європи.','dingle'],['Кілкенні','Kilkenny',-7.25,52.65,'Кілкенні','Середньовічна миля від замку до собору.','kilkenny']],
+    IT:[['Рим','Rome',12.50,41.90,'Римі','Вічне місто, де кожна площа — музей просто неба.','rome'],['Флоренція','Florence',11.25,43.77,'Флоренції','Колиска Ренесансу й найкраще джелато на світі.','florence'],['Венеція','Venice',12.34,45.44,'Венеції','Канали, гондоли й ранкова тиша на площі Сан-Марко.','venice'],['Мілан','Milan',9.19,45.46,'Мілані','Дуомо, мода й аперитиво на терасах.','milan'],['Неаполь','Naples',14.27,40.85,'Неаполі','Справжня піца й Везувій на горизонті.','naples'],['Амальфі','Amalfi',14.60,40.63,'Амальфі','Лимонні сади над морем на найкрасивішому узбережжі.','amalfi'],['Верона','Verona',10.99,45.44,'Вероні','Арена, балкон Джульєтти й вечірня опера.','verona'],['Болонья','Bologna',11.34,44.49,'Болоньї','Аркади, вежі та найсмачніша паста Італії.','bologna']],
+    XK:[['Приштина','Pristina',21.17,42.66,'Приштині','Молода столиця з макіато на кожному кроці.','pristina'],['Призрен','Prizren',20.74,42.21,'Призрені','Кам\'яний міст, мечеті й фортеця над містом.','prizren'],['Печ','Peja',20.29,42.66,'Печі','Ворота до Проклятих гір і ущелини Ругова.','peja'],['Г\'яково','Gjakova',20.43,42.38,'Г\'якові','Старий базар з дерев\'яними крамницями.','gjakova'],['Мітровиця','Mitrovica',20.87,42.89,'Мітровиці','Місто на двох берегах Ібару.','mitrovica']],
+    LV:[['Рига','Riga',24.11,56.95,'Ризі','Югендстиль, Центральний ринок у ангарах і бальзам.','riga'],['Юрмала','Jurmala',23.77,56.97,'Юрмалі','Сосни, дюни й дерев\'яні дачі біля моря.','jurmala'],['Сігулда','Sigulda',24.85,57.15,'Сігулді','Латвійська Швейцарія з замками над Гауєю.','sigulda'],['Цесіс','Cesis',25.27,57.31,'Цесісі','Руїни орденського замку й бруківка.','cesis'],['Кулдіга','Kuldiga',21.97,56.97,'Кулдізі','Найширший водоспад Європи й цегляний міст.','kuldiga'],['Лієпая','Liepaja',21.01,56.51,'Лієпаї','Місто, де народжується вітер.','liepaja']],
+    LI:[['Вадуц','Vaduz',9.52,47.14,'Вадуці','Княжий замок над крихітною столицею.','vaduz'],['Мальбун','Malbun',9.61,47.10,'Мальбуні','Єдиний гірськолижний курорт князівства.','malbun'],['Бальцерс','Balzers',9.50,47.07,'Бальцерсі','Замок Гутенберг на самотньому пагорбі.','balzers'],['Шан','Schaan',9.51,47.17,'Шані','Найбільше поселення країни з видом на Альпи.','schaan']],
+    LT:[['Вільнюс','Vilnius',25.28,54.69,'Вільнюсі','Барокове старе місто й богемний Ужупіс.','vilnius'],['Каунас','Kaunas',23.90,54.90,'Каунасі','Міжвоєнний модернізм і злиття двох річок.','kaunas'],['Клайпеда','Klaipeda',21.14,55.70,'Клайпеді','Портове місто з фахверком і виходом до коси.','klaipeda'],['Нида','Nida',21.00,55.30,'Ниді','Дюни Куршської коси й дім Томаса Манна.','nida'],['Тракай','Trakai',24.93,54.64,'Тракаї','Острівний замок і караїмські кибіни.','trakai'],['Паланга','Palanga',21.07,55.92,'Паланзі','Пірс, бурштин і сосновий парк біля моря.','palanga']],
+    LU:[['Люксембург','Luxembourg',6.13,49.61,'Люксембурзі','Казематі, мости й місто на кількох рівнях.','luxembourg'],['Віанден','Vianden',6.21,49.93,'Віандені','Замок над річкою Ур, як із казки.','vianden'],['Ехтернах','Echternach',6.42,49.81,'Ехтернаху','Найстаріше місто країни біля Маленької Швейцарії.','echternach'],['Клерво','Clervaux',6.03,50.05,'Клерво','Білий замок і фотовиставка «Рід людський».','clervaux'],['Ремих','Remich',6.37,49.54,'Ремиху','Виноградники над Мозелем і ігристе креман.','remich']],
+    MT:[['Валлетта','Valletta',14.51,35.90,'Валлетті','Місто лицарів із балконами кольору меду.','valletta'],['Мдіна','Mdina',14.40,35.89,'Мдіні','Мовчазне місто за середньовічними мурами.','mdina'],['Слима','Sliema',14.50,35.91,'Слимі','Набережна з видом на бастіони Валлетти.','sliema'],['Гозо','Gozo',14.25,36.05,'Гозо','Тихіший острів з солоними ваннами й цитаделлю.','gozo'],['Марсашлокк','Marsaxlokk',14.54,35.84,'Марсашлокку','Рибальське село з кольоровими човнами луццу.','marsaxlokk']],
+    MD:[['Кишинів','Chisinau',28.86,47.01,'Кишиневі','Зелена столиця з парками й винними погребами поруч.','chisinau'],['Орхей','Orhei',28.82,47.38,'Орхеї','Старий Орхей — скельний монастир над закрутом Реуту.','orhei'],['Крікова','Cricova',28.86,47.14,'Крікові','Підземне місто вина завдовжки сто двадцять кілометрів.','cricova'],['Сороки','Soroca',28.30,48.16,'Сороках','Кругла фортеця на березі Дністра.','soroca'],['Комрат','Comrat',28.66,46.30,'Комраті','Столиця Гагаузії з власним характером.','comrat'],['Бєльці','Balti',27.92,47.76,'Бєльцях','Північна столиця й ворота до сільської Молдови.','balti']],
+    MC:[['Монте-Карло','Monte Carlo',7.42,43.74,'Монте-Карло','Казино, яхти й поворот Формули-1.','monte-carlo'],['Монако-Вілль','Monaco-Ville',7.42,43.73,'Монако-Віллі','Княжий палац і старе місто на Скелі.','monaco-ville'],['Ла-Кондамін','La Condamine',7.42,43.73,'Ла-Кондаміні','Порт Еркюль і ранковий ринок.','la-condamine'],['Фонтвьєй','Fontvieille',7.41,43.72,'Фонтвьєї','Трояндовий сад принцеси Грейс біля моря.','fontvieille']],
+    ME:[['Котор','Kotor',18.77,42.42,'Которі','Фіорд, мури на скелі й тисяча сходинок до фортеці.','kotor'],['Будва','Budva',18.84,42.29,'Будві','Старе місто, пляжі й вечірній променад.','budva'],['Пераст','Perast',18.70,42.49,'Перасті','Барокове містечко з острівцем Божої Матері на Скелі.','perast'],['Светі-Стефан','Sveti Stefan',18.89,42.26,'Светі-Стефані','Острів-готель на листівках усього світу.','sveti-stefan'],['Подгориця','Podgorica',19.26,42.44,'Подгориці','Столиця між річками й виноградниками.','podgorica'],['Жабляк','Zabljak',19.12,43.15,'Жабляку','Чорне озеро й вершини Дурмітора.','zabljak'],['Герцег-Нові','Herceg Novi',18.53,42.45,'Герцег-Нові','Місто сходів і мімоз на вході в затоку.','herceg-novi']],
+    NL:[['Амстердам','Amsterdam',4.90,52.37,'Амстердамі','Канали, велосипеди й музеї на будь-який настрій.','amsterdam'],['Роттердам','Rotterdam',4.48,51.92,'Роттердамі','Кубічні будинки й найсміливіша архітектура.','rotterdam'],['Утрехт','Utrecht',5.12,52.09,'Утрехті','Канали з терасами на рівні води й вежа Дом.','utrecht'],['Гаага','The Hague',4.30,52.08,'Гаазі','Королівське місто з морем і Вермеєром.','the-hague'],['Делфт','Delft',4.36,52.01,'Делфті','Синя кераміка й тихі канали.','delft'],['Гітгорн','Giethoorn',6.08,52.72,'Гітгорні','Село без доріг, лише човни й містки.','giethoorn'],['Маастрихт','Maastricht',5.69,50.85,'Маастрихті','Бургундський настрій на півдні країни.','maastricht']],
+    MK:[['Скоп\'є','Skopje',21.43,42.00,'Скоп\'є','Кам\'яний міст, старий базар і сотні статуй.','skopje'],['Охрид','Ohrid',20.80,41.12,'Охриді','Озеро-перлина з церквами над водою.','ohrid'],['Бітола','Bitola',21.33,41.03,'Бітолі','Консульське місто з вулицею Широк Сокак.','bitola'],['Струга','Struga',20.68,41.18,'Струзі','Там, де Чорний Дрин витікає з озера.','struga'],['Маврово','Mavrovo',20.73,41.66,'Маврові','Національний парк і затоплена церква.','mavrovo']],
+    NO:[['Осло','Oslo',10.75,59.91,'Осло','Фіорд, опера-айсберг і парк скульптур Вігеланда.','oslo'],['Берген','Bergen',5.32,60.39,'Бергені','Дерев\'яна набережна Брюгген і ворота до фіордів.','bergen'],['Тромсе','Tromso',18.96,69.65,'Тромсе','Арктична столиця й полярне сяйво.','tromso'],['Ставангер','Stavanger',5.73,58.97,'Ставангері','Білі дерев\'яні будиночки й Кафедра проповідника.','stavanger'],['Олесунн','Alesund',6.15,62.47,'Олесунні','Місто модерну на островах.','alesund'],['Флом','Flam',7.11,60.86,'Фломі','Найкрутіша залізниця й найвужчий фіорд.','flam'],['Лофотени','Lofoten',14.57,68.23,'Лофотенах','Червоні рибальські хатинки під гострими піками.','lofoten'],['Тронгейм','Trondheim',10.40,63.43,'Тронгеймі','Собор Нідарос і кольорові склади над річкою.','trondheim']],
+    PL:[['Краків','Krakow',19.94,50.06,'Кракові','Ринок, Вавель і дракон під замком.','krakow'],['Варшава','Warsaw',21.01,52.23,'Варшаві','Відбудоване старе місто й вечірня Вісла.','warsaw'],['Гданськ','Gdansk',18.65,54.35,'Гданську','Бурштин, Мотлава й кольорові кам\'яниці.','gdansk'],['Вроцлав','Wroclaw',17.03,51.11,'Вроцлаві','Місто мостів і сотень маленьких гномів.','wroclaw'],['Закопане','Zakopane',19.95,49.30,'Закопаному','Татри, осципки й Крупівки.','zakopane'],['Познань','Poznan',16.93,52.41,'Познані','Козлики на ратуші й рогалі святого Мартина.','poznan'],['Торунь','Torun',18.60,53.01,'Торуні','Місто Коперника й пряників.','torun'],['Люблін','Lublin',22.57,51.25,'Любліні','Ренесансне старе місто й замкова каплиця.','lublin']],
+    PT:[['Лісабон','Lisbon',-9.14,38.72,'Лісабоні','Жовті трамваї, фаду й паштел-де-ната.','lisbon'],['Порту','Porto',-8.61,41.15,'Порту','Портвейн, міст Луїша I і плитки азулежу.','porto'],['Сінтра','Sintra',-9.39,38.80,'Сінтрі','Різнокольоровий палац Пена серед туманних лісів.','sintra'],['Мадейра','Madeira',-16.92,32.65,'Мадейрі','Острів вічної весни з левадами й океаном.','madeira'],['Лагуш','Lagos',-8.67,37.10,'Лагуші','Золоті скелі й гроти Алгарве.','lagos'],['Коїмбра','Coimbra',-8.43,40.21,'Коїмбрі','Старий університет і бібліотека Жоаніна.','coimbra'],['Авейру','Aveiro',-8.65,40.64,'Авейру','Португальська Венеція з човнами молісейру.','aveiro']],
+    RO:[['Бухарест','Bucharest',26.10,44.43,'Бухаресті','Маленький Париж із найбільшим палацом світу.','bucharest'],['Брашов','Brasov',25.60,45.65,'Брашові','Чорна церква й ворота до Трансильванії.','brasov'],['Сібіу','Sibiu',24.15,45.80,'Сібіу','Будинки з «очима» на дахах і площі в пастельних тонах.','sibiu'],['Клуж-Напока','Cluj-Napoca',23.60,46.77,'Клуж-Напоці','Студентська столиця з фестивалями.','cluj-napoca'],['Сігішоара','Sighisoara',24.79,46.22,'Сігішоарі','Жива середньовічна цитадель, де народився Дракула.','sighisoara'],['Тімішоара','Timisoara',21.23,45.75,'Тімішоарі','Місто парків і площ Сецесії.','timisoara'],['Констанца','Constanta',28.63,44.18,'Констанці','Старе казино на березі Чорного моря.','constanta']],
+    SM:[['Сан-Марино','San Marino',12.45,43.94,'Сан-Марино','Три вежі на горі Титано над Адріатикою.','san-marino'],['Борго-Маджоре','Borgo Maggiore',12.45,43.94,'Борго-Маджоре','Містечко під скелею з канатною дорогою нагору.','borgo-maggiore'],['Серравалле','Serravalle',12.48,43.97,'Серравалле','Найбільша громада республіки біля кордону.','serravalle']],
+    RS:[['Белград','Belgrade',20.46,44.79,'Белграді','Калемегдан, кафани й місто, що не спить.','belgrade'],['Новий Сад','Novi Sad',19.83,45.25,'Новому Саді','Петроварадинська фортеця й Дунай.','novi-sad'],['Ниш','Nis',21.90,43.32,'Нишу','Місто Костянтина Великого й бурека.','nis'],['Суботиця','Subotica',19.67,46.10,'Суботиці','Угорська сецесія в кожному фасаді.','subotica'],['Златібор','Zlatibor',19.71,43.73,'Златіборі','Гірське повітря й Дрвенград неподалік.','zlatibor'],['Сремські Карловці','Sremski Karlovci',19.93,45.20,'Сремських Карловцях','Барокове містечко вина бермет.','sremski-karlovci']],
+    SK:[['Братислава','Bratislava',17.11,48.15,'Братиславі','Град над Дунаєм і затишне старе місто.','bratislava'],['Кошице','Kosice',21.26,48.72,'Кошицях','Готичний собор і найдовша головна вулиця.','kosice'],['Високі Татри','High Tatras',20.14,49.14,'Високих Татрах','Найменші високі гори світу з озерами-плесами.','high-tatras'],['Банська Штявниця','Banska Stiavnica',18.89,48.46,'Банській Штявниці','Срібне місто в кратері згаслого вулкана.','banska-stiavnica'],['Бардіїв','Bardejov',21.28,49.29,'Бардієві','Ідеально збережена готична площа.','bardejov'],['Левоча','Levoca',20.59,49.03,'Левочі','Найвищий дерев\'яний вівтар світу.','levoca']],
+    SI:[['Любляна','Ljubljana',14.51,46.06,'Любляні','Дракони на мосту й кав\'ярні вздовж річки.','ljubljana'],['Блед','Bled',14.11,46.37,'Бледі','Озеро з церквою на острові й кремовим тортом.','bled'],['Піран','Piran',13.57,45.53,'Пірані','Венеційське містечко на вістрі півострова.','piran'],['Бохінь','Bohinj',13.89,46.28,'Бохіні','Дике озеро серед Юлійських Альп.','bohinj'],['Марибор','Maribor',15.65,46.55,'Мариборі','Найстаріша виноградна лоза світу.','maribor'],['Постойна','Postojna',14.21,45.78,'Постойні','Печера з поїздом і замок у скелі поруч.','postojna']],
+    ES:[['Барселона','Barcelona',2.17,41.39,'Барселоні','Гауді, море й тапас до пізньої ночі.','barcelona'],['Мадрид','Madrid',-3.70,40.42,'Мадриді','Прадо, Ретіро й чурос на світанку.','madrid'],['Севілья','Seville',-5.99,37.39,'Севільї','Фламенко, апельсинові дерева й Алькасар.','seville'],['Валенсія','Valencia',-0.38,39.47,'Валенсії','Батьківщина паельї та Місто мистецтв.','valencia'],['Гранада','Granada',-3.60,37.18,'Гранаді','Альгамбра на тлі засніжених гір.','granada'],['Ібіца','Ibiza',1.43,38.91,'Ібіці','Білий острів з бухтами й заходами сонця.','ibiza'],['Малага','Malaga',-4.42,36.72,'Малазі','Місто Пікассо й початок Коста-дель-Соль.','malaga'],['Сан-Себастьян','San Sebastian',-1.98,43.32,'Сан-Себастьяні','Пляж Ла-Конча та найкращі пінчос.','san-sebastian']],
+    SE:[['Стокгольм','Stockholm',18.07,59.33,'Стокгольмі','Місто на чотирнадцяти островах і Гамла стан.','stockholm'],['Гетеборг','Gothenburg',11.97,57.71,'Гетеборзі','Канали, морепродукти й острови архіпелагу.','gothenburg'],['Мальме','Malmo',13.00,55.60,'Мальме','Міст до Копенгагена й вежа, що крутиться.','malmo'],['Уппсала','Uppsala',17.64,59.86,'Уппсалі','Собор, університет і кургани вікінгів.','uppsala'],['Вісбю','Visby',18.29,57.64,'Вісбю','Місто троянд і руїн за ганзейськими мурами.','visby'],['Кіруна','Kiruna',20.23,67.86,'Кіруні','Крижаний готель і сяйво за полярним колом.','kiruna']],
+    CH:[['Цюрих','Zurich',8.54,47.38,'Цюриху','Озеро, шоколад і купання просто в місті.','zurich'],['Люцерн','Lucerne',8.31,47.05,'Люцерні','Дерев\'яний міст Капельбрюкке й гора Пілатус.','lucerne'],['Женева','Geneva',6.14,46.20,'Женеві','Фонтан на озері й старе місто на пагорбі.','geneva'],['Інтерлакен','Interlaken',7.87,46.69,'Інтерлакені','Між двома озерами біля підніжжя Юнгфрау.','interlaken'],['Церматт','Zermatt',7.75,46.02,'Церматті','Маттергорн у вікні й жодного автомобіля.','zermatt'],['Берн','Bern',7.45,46.95,'Берні','Аркади, ведмеді й годинник Цитглогге.','bern'],['Лозанна','Lausanne',6.63,46.52,'Лозанні','Олімпійська столиця над Женевським озером.','lausanne'],['Лугано','Lugano',8.95,46.00,'Лугано','Італійський настрій під швейцарськими горами.','lugano']],
+    TR:[['Стамбул','Istanbul',28.98,41.01,'Стамбулі','Босфор, базари й два континенти в одному місті.','istanbul'],['Каппадокія','Cappadocia',34.83,38.64,'Каппадокії','Повітряні кулі над казковими димарями.','cappadocia'],['Анталія','Antalya',30.71,36.90,'Анталії','Старий порт Калеічі й бірюзове узбережжя.','antalya'],['Бодрум','Bodrum',27.43,37.03,'Бодрумі','Білі будиночки, замок і яхти в Егейському морі.','bodrum'],['Ізмір','Izmir',27.14,38.42,'Ізмірі','Набережна Кордон і Ефес за годину.','izmir'],['Памуккале','Pamukkale',29.12,37.92,'Памуккале','Білі тераси з теплою водою й античний Єраполіс.','pamukkale'],['Фетхіє','Fethiye',29.12,36.65,'Фетхіє','Блакитна лагуна Олюденіз і Лікійська стежка.','fethiye'],['Аланія','Alanya',32.00,36.54,'Аланії','Фортеця на мисі й пляж Клеопатри.','alanya']],
+    GB:[['Лондон','London',-0.13,51.51,'Лондоні','Біг-Бен, парки й чай о п\'ятій.','london'],['Единбург','Edinburgh',-3.19,55.95,'Единбурзі','Замок на скелі й старе місто з привидами.','edinburgh'],['Оксфорд','Oxford',-1.26,51.75,'Оксфорді','Місто мрійливих шпилів і коледжів.','oxford'],['Бат','Bath',-2.36,51.38,'Баті','Римські терми й георгіанські півкола.','bath'],['Йорк','York',-1.08,53.96,'Йорку','Мури, Шемблз і найбільший готичний собор.','york'],['Ліверпуль','Liverpool',-2.98,53.41,'Ліверпулі','Бітлз, доки й футбол.','liverpool'],['Кембридж','Cambridge',0.12,52.21,'Кембриджі','Плоскодонки на річці Кем і готичні коледжі.','cambridge'],['Манчестер','Manchester',-2.24,53.48,'Манчестері','Індустріальна цегла, музика й Північний квартал.','manchester']],
+    VA:[['Ватикан','Vatican City',12.45,41.90,'Ватикані','Собор святого Петра й Сикстинська капела.','vatican-city']],
+    GE:[['Тбілісі','Tbilisi',44.83,41.72,'Тбілісі','Сірчані лазні, різьблені балкони й застілля.','tbilisi'],['Батумі','Batumi',41.64,41.65,'Батумі','Чорне море, пальми й сучасні вежі.','batumi'],['Кутаїсі','Kutaisi',42.70,42.27,'Кутаїсі','Храм Баграті та печера Прометея поруч.','kutaisi'],['Мцхета','Mtskheta',44.72,41.85,'Мцхеті','Давня столиця й монастир Джварі над злиттям річок.','mtskheta'],['Сігнагі','Sighnaghi',45.92,41.62,'Сігнагі','Місто кохання з видом на Алазанську долину.','sighnaghi'],['Казбегі','Kazbegi',44.64,42.66,'Казбегі','Церква Гергеті під засніженим Казбеком.','kazbegi'],['Боржомі','Borjomi',43.39,41.84,'Боржомі','Мінеральні джерела в зеленій ущелині.','borjomi']]
+  };
+  const isVisited = name => !!name && VISITED.some(v => v.name.toLowerCase() === String(name).trim().toLowerCase());
 
   /* ------------------------------------------------------------------ */
   /*  Стан (лише в пам’яті) і допоміжне                                  */
   /* ------------------------------------------------------------------ */
-  const state = { screen:'welcome', origin:null, kishTransfer:null, plAirport:null, plAccess:null, country:null, customText:'', stay:null, rhythm:null };
+  // dests — точки маршруту в порядку вибору: { code:'IT', city:{name,en,c,loc,cap}|null, stay } або { custom:true, stay } (текст — у customText, своє місце завжди останнє)
+  const state = { screen:'welcome', origin:null, plAirport:null, plAccess:null, dests:[], customText:'', surprise:false, stay:null, rhythm:[] };
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -708,13 +1001,38 @@ h2{font-size:clamp(26px,6vw,38px)}
   const optOf = (sub, id) => SUB[sub].options.find(o => o.id === id) || null;
   const flow = () => ['origin', ...(state.origin === 'kishinev' ? ['kish'] : state.origin === 'poland' ? ['pltrain','plairport','placcess'] : []), 'where', 'stay', 'rhythm'];
   const cName = code => C[code] ? (C[code].short || C[code].name) : '';
+  const destCodes = () => state.dests.filter(d => d.code).map(d => d.code);
+  const hasCustom = () => state.dests.some(d => d.custom);
+  const destName = d => d.custom ? state.customText.trim() : d.city ? `${d.city.name}, ${C[d.code].name}` : (C[d.code] ? C[d.code].name : '');
+  const destShort = d => d.custom ? state.customText.trim() : d.city ? d.city.name : cName(d.code);
+  const destPoint = d => (d.city && d.city.c) ? d.city.c : C[d.code].c;
+  const destCap = d => d.custom ? 'Своє місце' : d.city ? (d.city.cap || C[d.code].cap) : C[d.code].cap;
+  /* ---------- житло для кожної точки маршруту ---------- */
+  // Booking: статичні сторінки міста/країни, для вписаного вручну місця — пошук Google; Airbnb — пошук за назвою
+  const airbnbCity = q => `https://www.airbnb.com/s/${encodeURIComponent(q)}/homes?adults=1`;
+  const googleBooking = q => `https://www.google.com/search?q=${encodeURIComponent(q)}+booking.com`;
+  function stayLinks(d) {
+    if (d.custom) { const q = state.customText.trim(); return { booking:googleBooking(q), airbnb:airbnbCity(q) }; }
+    if (d.city) return { booking:d.city.slug ? `https://www.booking.com/city/${d.code.toLowerCase()}/${d.city.slug}.html` : googleBooking(d.city.name), airbnb:airbnbCity(d.city.en || d.city.name) };
+    return { booking:`https://www.booking.com/country/${d.code.toLowerCase()}.html`, airbnb:`https://www.airbnb.com/s/${encodeURIComponent(C[d.code].en)}/homes` };
+  }
+  function stayTitle(d) {
+    if (d.custom) return `Де жити: ${state.customText.trim()}`;
+    if (d.city) return d.city.loc ? `Де жити в ${d.city.loc}` : `Де жити: ${d.city.name}`;
+    return `Де жити в ${C_LOC[d.code] || C[d.code].name}`;
+  }
+  function stayTargets() {
+    if (state.surprise) return [{ key:'surprise', title:'Де жити', short:'', get:() => state.stay, set:v => { state.stay = v; }, links:null }];
+    return state.dests.map((d, i) => ({ key:String(i), title:stayTitle(d), short:destShort(d), get:() => d.stay, set:v => { d.stay = v; }, links:stayLinks(d) }));
+  }
 
   /* ---------- екрани кроків 1, 3, 4 ---------- */
   ['origin','kish','pltrain','plairport','placcess','stay','rhythm'].forEach(key => {
     const st = SUB[key];
     const sec = document.createElement('section');
     sec.className = 'screen'; sec.id = 's-' + key;
-    sec.innerHTML = `<header class="step-head"><p class="eyebrow">Крок ${STEP_OF[key]} із 4</p><h2>${esc(st.title)}</h2><p class="hint">${esc(st.hint)}</p></header><div class="cards${st.info ? ' one' : ''}" role="group" aria-label="${esc(st.title)}"></div>`;
+    if (key === 'stay') { sec.innerHTML = `<header class="step-head"><p class="eyebrow">Крок 3 із 4</p><h2>Де жити</h2><p class="hint">${esc(st.hint)}</p></header><div id="stay-blocks"></div>`; $('steps').appendChild(sec); return; }
+    sec.innerHTML = `<header class="step-head"><p class="eyebrow">Крок ${STEP_OF[key]} із 4</p><h2>${esc(st.title)}</h2><p class="hint">${esc(st.hint)}</p>${st.multi ? '<p class="multi-hint">Можна обрати кілька</p>' : ''}</header><div class="cards${st.info ? ' one' : ''}" role="group" aria-label="${esc(st.title)}"></div>`;
     const grid = sec.querySelector('.cards');
     st.options.forEach(op => {
       const body = `<div class="card-body">${op.tag ? `<span class="tag">${esc(op.tag)}</span>` : ''}<h3>${esc(op.title)}</h3><p>${esc(op.text)}</p></div>`;
@@ -723,26 +1041,72 @@ h2{font-size:clamp(26px,6vw,38px)}
       else {
         el = document.createElement('button'); el.type = 'button'; el.className = 'card'; el.setAttribute('aria-pressed', 'false');
         el.innerHTML = `<div class="ill-wrap">${op.svg}</div>${body}${STAMP}`;
-        el.addEventListener('click', () => { state[st.key] = op.id; refreshCards(key); updateNext(); updateRoute(); });
+        el.addEventListener('click', () => {
+          if (st.multi) {                                                     // кілька варіантів; «Сюрприз» виключає решту
+            const arr = state[st.key], i = arr.indexOf(op.id);
+            if (i >= 0) { arr.splice(i, 1); refreshCards(key); updateNext(); updateRoute(); return; }
+            if (op.id === 'surprise') arr.length = 0; else { const si = arr.indexOf('surprise'); if (si >= 0) arr.splice(si, 1); }
+            arr.push(op.id);
+          } else state[st.key] = op.id;
+          refreshCards(key); updateNext(); updateRoute(); heroChoose(el);
+        });
       }
-      el.dataset.id = op.id; grid.appendChild(el);
+      el.dataset.id = op.id;
+      if (op.note) { const w = document.createElement('div'); w.className = 'card-wrap'; w.appendChild(el); w.insertAdjacentHTML('beforeend', `<p class="card-note">${esc(op.note)}</p>`); grid.appendChild(w); }   // підпис окремим рядком під карткою
+      else grid.appendChild(el);
     });
     $('steps').appendChild(sec);
   });
+  // потяг / автобус, що проїжджають унизу інформаційних екранів
+  $('s-pltrain').insertAdjacentHTML('beforeend', `<div class="drive rail" aria-hidden="true"><svg class="veh" viewBox="0 0 200 70">
+    <g class="puff p1"><circle cx="150" cy="12" r="5" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1"/></g><g class="puff p2"><circle cx="150" cy="12" r="4" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1"/></g><g class="puff p3"><circle cx="150" cy="12" r="3.5" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1"/></g>
+    <rect x="10" y="30" width="54" height="22" rx="3" fill="#D9B77A" stroke="#8C6A3C" stroke-width="1.5"/><rect x="16" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/><rect x="31" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/><rect x="46" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/>
+    <rect x="72" y="30" width="54" height="22" rx="3" fill="#D9B77A" stroke="#8C6A3C" stroke-width="1.5"/><rect x="78" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/><rect x="93" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/><rect x="108" y="35" width="9" height="8" fill="#FBF5E8" stroke="#8C6A3C"/>
+    <path d="M64 42h8M126 42h8" stroke="#5E2222" stroke-width="2"/>
+    <rect x="134" y="32" width="56" height="20" rx="3" fill="#7A2E2E" stroke="#5E2222" stroke-width="1.5"/><rect x="164" y="18" width="24" height="16" rx="2" fill="#7A2E2E" stroke="#5E2222" stroke-width="1.5"/><rect x="169" y="22" width="9" height="8" fill="#FBF5E8" stroke="#5E2222"/>
+    <rect x="144" y="16" width="10" height="16" rx="1" fill="#5E2222"/><circle cx="156" cy="40" r="4" fill="#D9B77A" stroke="#5E2222"/><path d="M190 52l10-8v8z" fill="#5E2222"/>
+    <g class="wheel"><circle cx="24" cy="56" r="6" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M24 50v12M18 56h12" stroke="#7A2E2E" stroke-width="1.2"/></g><g class="wheel"><circle cx="52" cy="56" r="6" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M52 50v12M46 56h12" stroke="#7A2E2E" stroke-width="1.2"/></g>
+    <g class="wheel"><circle cx="86" cy="56" r="6" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M86 50v12M80 56h12" stroke="#7A2E2E" stroke-width="1.2"/></g><g class="wheel"><circle cx="114" cy="56" r="6" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M114 50v12M108 56h12" stroke="#7A2E2E" stroke-width="1.2"/></g>
+    <g class="wheel"><circle cx="146" cy="56" r="7" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M146 49v14M139 56h14" stroke="#7A2E2E" stroke-width="1.2"/></g><g class="wheel"><circle cx="178" cy="56" r="7" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2"/><path d="M178 49v14M171 56h14" stroke="#7A2E2E" stroke-width="1.2"/></g>
+  </svg></div>`);
+  $('s-kish').insertAdjacentHTML('beforeend', `<div class="drive road" aria-hidden="true"><svg class="veh" viewBox="0 0 160 70">
+    <rect x="8" y="14" width="144" height="42" rx="9" fill="#D9B77A" stroke="#7A2E2E" stroke-width="2"/><path d="M8 38h144" stroke="#7A2E2E" stroke-width="2"/>
+    <rect x="16" y="20" width="18" height="13" rx="2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/><rect x="40" y="20" width="18" height="13" rx="2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/><rect x="64" y="20" width="18" height="13" rx="2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/><rect x="88" y="20" width="18" height="13" rx="2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/><rect x="118" y="20" width="26" height="13" rx="2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/>
+    <rect x="98" y="40" width="12" height="16" rx="1" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.5"/><rect x="52" y="4" width="40" height="10" rx="2" fill="#7A2E2E"/><path d="M58 9h28" stroke="#FBF5E8" stroke-width="2"/>
+    <circle cx="148" cy="46" r="3" fill="#FFF3C4" stroke="#7A2E2E"/><circle cx="12" cy="46" r="2.5" fill="#A8443F"/>
+    <g class="wheel"><circle cx="40" cy="56" r="8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2.2"/><path d="M40 48v16M32 56h16" stroke="#7A2E2E" stroke-width="1.4"/></g><g class="wheel"><circle cx="120" cy="56" r="8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="2.2"/><path d="M120 48v16M112 56h16" stroke="#7A2E2E" stroke-width="1.4"/></g>
+  </svg></div>`);
+  function renderStay() {
+    const box = $('stay-blocks'), ts = stayTargets();
+    $('s-stay').querySelector('h2').textContent = ts.length === 1 ? ts[0].title : 'Де жити';
+    box.innerHTML = ts.map(t => `<section class="stay-block" data-key="${t.key}">${ts.length > 1 ? `<h3 class="stay-h">${esc(t.title)}</h3>` : ''}<div class="cards" role="group" aria-label="${esc(t.title)}">${SUB.stay.options.map(op => `<button type="button" class="card${t.get() === op.id ? ' selected' : ''}" data-id="${op.id}" aria-pressed="${t.get() === op.id ? 'true' : 'false'}"><div class="ill-wrap">${op.svg}</div><div class="card-body">${op.tag ? `<span class="tag">${esc(op.tag)}</span>` : ''}<h3>${esc(op.title)}</h3><p>${esc(op.text)}</p></div>${STAMP}</button>`).join('')}</div>${t.links ? `<div class="stay-links"><h3>Подивитися реальні варіанти</h3><div class="stay-row"><b>${esc(t.short)}</b><span class="stay-btns"><a class="lnk booking" href="${t.links.booking}" target="_blank" rel="noopener">Booking</a><a class="lnk airbnb" href="${t.links.airbnb}" target="_blank" rel="noopener">Airbnb</a></span></div><p class="fine">Просто подивитися, бронювати поки не треба 😉</p></div>` : ''}</section>`).join('');
+    box.querySelectorAll('.stay-block').forEach(sec => {
+      const t = ts.find(x => x.key === sec.dataset.key);
+      sec.querySelectorAll('.card').forEach(b => b.addEventListener('click', () => {
+        t.set(b.dataset.id);
+        sec.querySelectorAll('.card').forEach(c => { const on = c === b; c.classList.toggle('selected', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+        updateNext(); updateRoute(); heroChoose(b);
+      }));
+    });
+  }
+  function updatePlaccessTitle() {
+    const p = optOf('plairport', state.plAirport);
+    $('s-placcess').querySelector('h2').textContent = p ? `Як дістатися з Пшемишля до ${p.gen}?` : 'Як дістатися з Пшемишля до міста?';
+  }
   function refreshCards(key) {
     const val = state[SUB[key].key];
-    document.querySelectorAll(`#s-${key} .card`).forEach(c => { const on = c.dataset.id === val; c.classList.toggle('selected', on); if (c.tagName === 'BUTTON') c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    document.querySelectorAll(`#s-${key} .card`).forEach(c => { const on = Array.isArray(val) ? val.includes(c.dataset.id) : c.dataset.id === val; c.classList.toggle('selected', on); if (c.tagName === 'BUTTON') c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
   }
   function valid(screen) {
     switch (screen) {
       case 'origin': return !!state.origin;
-      case 'kish': return !!state.kishTransfer;
+      case 'kish': return true;
       case 'pltrain': return true;
       case 'plairport': return !!state.plAirport;
       case 'placcess': return !!state.plAccess;
-      case 'where': return state.country === 'custom' ? state.customText.trim().length > 0 : !!state.country;
-      case 'stay': return !!state.stay;
-      case 'rhythm': return !!state.rhythm;
+      case 'where': return state.surprise || state.dests.length > 0;
+      case 'stay': { const ts = stayTargets(); return ts.length > 0 && ts.every(t => t.get()); }
+      case 'rhythm': return state.rhythm.length > 0;
     }
     return false;
   }
@@ -752,29 +1116,44 @@ h2{font-size:clamp(26px,6vw,38px)}
   }
 
   /* ---------- перемикання екранів ---------- */
-  let switching = false;
+  // уперед — по черзі хмари / літачок (≤0,8 с), назад — простий короткий перехід (~0,4 с)
+  let switching = false, fwdCount = 0;
   function show(id, dir, after) {
     const cur = document.querySelector('.screen.active'), nxt = $(id);
     if (switching || cur === nxt) return;
     switching = true;
     document.documentElement.style.setProperty('--dx', dir < 0 ? '-40px' : '40px');
-    const swap = () => { if (cur) cur.classList.remove('active','leaving'); nxt.classList.add('active'); window.scrollTo(0, 0); switching = false; if (after) after(); };
-    if (cur && !reduced) { cur.classList.add('leaving'); setTimeout(swap, 250); } else swap();
+    const swap = notx => { if (cur) cur.classList.remove('active','leaving','notx'); nxt.classList.toggle('notx', !!notx); nxt.classList.add('active'); window.scrollTo(0, 0); if (after) after(); };
+    if (!cur || reduced) { swap(false); switching = false; return; }
+    if (dir > 0) {
+      const el = $(fwdCount++ % 2 ? 'tx-plane' : 'tx-clouds');
+      el.classList.remove('run'); void el.offsetWidth; el.classList.add('run');
+      setTimeout(() => swap(true), 400);                                            // екран міняється, поки його не видно (без власної анімації появи)
+      setTimeout(() => { el.classList.remove('run'); switching = false; }, 820);
+    } else { cur.classList.add('leaving'); setTimeout(() => { swap(false); switching = false; }, 180); }
   }
   function goScreen(key, dir) {
     const f = flow(), from = f.indexOf(state.screen), to = f.indexOf(key);
     if (dir == null) dir = (from === -1 || to >= from) ? 1 : -1;
     state.screen = key; updateNext();
     $('sound-btn').classList.remove('show');
-    show('s-' + key, dir, () => { nav.classList.add('show'); if (key === 'where') initMap().then(() => syncRoute(false)); });
+    if (key === 'placcess') updatePlaccessTitle();
+    if (key === 'stay') renderStay();
+    show('s-' + key, dir, () => {
+      nav.classList.add('show'); document.body.dataset.screen = key;       // смуги з транспортом показуються лише на своєму екрані й перезапускаються
+      if (HERO_SCREENS.includes(key)) heroShow(key); else heroHide();
+      if (key === 'where') initMap().then(() => { syncRoute(false); setTimeout(mapIntro, 350); });
+    });
     updateRoute();
   }
-  function goWelcome() { state.screen = 'welcome'; nav.classList.remove('show'); routeWrap.classList.remove('show'); $('sound-btn').classList.remove('show'); show('s-welcome', -1); }
+  function goWelcome() { state.screen = 'welcome'; nav.classList.remove('show'); routeWrap.classList.remove('show'); $('sound-btn').classList.remove('show'); heroHide(); show('s-welcome', -1, () => { delete document.body.dataset.screen; }); }
   function goFinal() {
-    state.screen = 'final'; nav.classList.remove('show');
+    state.screen = 'final'; nav.classList.remove('show'); heroHide();
     buildFinal();
     show('s-final', 1, () => {
+      document.body.dataset.screen = 'final';
       $('sound-btn').classList.add('show');
+      if (soundOn) ensureAudio();
       runBoard(() => {
         $('final-rest').classList.add('show');
         requestAnimationFrame(() => $('rmap').classList.add('drawn'));
@@ -789,17 +1168,150 @@ h2{font-size:clamp(26px,6vw,38px)}
     if (reduced) { $('s-welcome').classList.add('active'); return; }
     $('s-envelope').classList.add('active');
     let opened = false;
+    const letter = $('env-letter'), startEnv = $('btn-start-env'), owl = $('owl'), owlIn = $('owl-in'), owlShadow = $('owl-shadow'), hint = $('env-hint');
+    /* ---------- сова-листоноша: багатошаровий SVG, частини анімуються скриптом ---------- */
+    // крило (праве; ліве — дзеркало): одна цілісна закруглена форма, що виходить з-за тіла на рівні плечей; кілька м'яких ліній махових пер по краю
+    const wingSVG = side => `<g class="wing ${side}" ${side === 'l' ? 'transform="translate(420,0) scale(-1,1)"' : ''}><g class="w"><path d="M250 120C292 92 356 94 400 128C420 144 416 172 396 184C360 204 300 196 258 176Q238 150 250 120Z" fill="url(#gWing)" stroke="#6E2A2A" stroke-width="2" stroke-linejoin="round"/><path d="M318 110c28 2 54 14 70 34M322 128c26 4 48 16 62 34M320 146c24 6 44 18 56 34M312 162c20 8 36 16 48 26" fill="none" stroke="#6E2A2A" stroke-width="1.1" opacity=".45"/><path d="M262 124c20-14 46-20 72-18" fill="none" stroke="#F3E6C8" stroke-width="1.2" opacity=".55"/></g></g>`;
+    owlIn.innerHTML = `<svg viewBox="0 0 420 320" overflow="visible">
+      <defs>
+        <radialGradient id="gBody" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#E8CD98"/><stop offset=".55" stop-color="#C9A96E"/><stop offset="1" stop-color="#85623A"/></radialGradient>
+        <radialGradient id="gChest" cx="50%" cy="25%" r="80%"><stop offset="0" stop-color="#FFF8E8"/><stop offset=".6" stop-color="#F0E0BE"/><stop offset="1" stop-color="#D4B176"/></radialGradient>
+        <radialGradient id="gDisc" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#FFF9EC"/><stop offset=".72" stop-color="#EBD9B4"/><stop offset="1" stop-color="#D4B176"/></radialGradient>
+        <radialGradient id="gEye" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#FFF4DE"/><stop offset="1" stop-color="#E4CFA6"/></radialGradient>
+        <radialGradient id="gIris" cx="42%" cy="40%" r="65%"><stop offset="0" stop-color="#B8894A"/><stop offset=".45" stop-color="#7A2E2E"/><stop offset="1" stop-color="#3A1212"/></radialGradient>
+        <linearGradient id="gWing" x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stop-color="#D9B97E"/><stop offset=".55" stop-color="#C9A96E"/><stop offset="1" stop-color="#8A6336"/></linearGradient>
+        <linearGradient id="gTail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8894A"/><stop offset="1" stop-color="#6E2A2A"/></linearGradient>
+        <pattern id="owlhatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0v4" stroke="#7A2E2E" stroke-width=".55" opacity=".26"/></pattern>
+      </defs>
+      <g class="rig">
+        ${wingSVG('l')}${wingSVG('r')}
+        <g class="tail"><path d="M176 272Q210 318 244 272Q228 290 210 292Q192 290 176 272Z" fill="url(#gTail)" stroke="#5E2222" stroke-width="1.6" stroke-linejoin="round"/><path d="M196 280q14 14 28 0" fill="none" stroke="#5E2222" stroke-width=".9" opacity=".5"/></g>
+        <g class="legs"><g stroke="#5E2222" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M190 282l-6 12M190 282v14M190 282l6 12M230 282l-6 12M230 282v14M230 282l6 12"/></g></g>
+        <g class="body">
+          <path d="M210 36C286 36 302 118 296 182C290 250 258 290 210 290C162 290 130 250 124 182C118 118 134 36 210 36Z" fill="url(#gBody)" stroke="#6E2A2A" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M210 36C286 36 302 118 296 182C290 250 258 290 210 290C162 290 130 250 124 182C118 118 134 36 210 36Z" fill="url(#owlhatch)"/>
+          <path d="M152 70C150 50 166 40 176 54M268 70C270 50 254 40 244 54" fill="url(#gBody)" stroke="#6E2A2A" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M160 160q50-18 100 0q10 52-18 92q-32 24-64 0q-28-40-18-92z" fill="url(#gChest)" stroke="#9C7A48" stroke-width="1.2"/>
+          <g fill="#F3E6C8" stroke="#A0804F" stroke-width="1" opacity=".95">
+            <path d="M168 176q7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0v6q-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0z"/>
+            <path d="M172 196q7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0v6q-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0z"/>
+            <path d="M178 216q7-8 14 0 7-8 14 0 7-8 14 0 7-8 14 0v6q-7-7-14 0-7-7-14 0-7-7-14 0-7-7-14 0z"/>
+            <path d="M186 236q7-8 14 0 7-8 14 0 7-8 14 0v6q-7-7-14 0-7-7-14 0-7-7-14 0z"/>
+          </g>
+          <path d="M150 128Q210 208 258 244" fill="none" stroke="#6E2A2A" stroke-width="2.6"/><path d="M150 128Q210 208 258 244" fill="none" stroke="#D9B77A" stroke-width=".9" opacity=".6"/>
+          <rect x="236" y="226" width="46" height="38" rx="12" fill="#D9B77A" stroke="#6E2A2A" stroke-width="1.8"/><path d="M236 240q23 16 46 0" fill="none" stroke="#6E2A2A" stroke-width="1.4"/><rect x="248" y="244" width="22" height="14" rx="2" fill="#FFF9EC" stroke="#7A2E2E" stroke-width=".9"/><path d="M248 244l11 7 11-7" fill="none" stroke="#7A2E2E" stroke-width=".8"/>
+        </g>
+        <g class="head">
+          <circle cx="176" cy="112" r="36" fill="url(#gDisc)" stroke="#9C7A48" stroke-width="1.3"/><circle cx="244" cy="112" r="36" fill="url(#gDisc)" stroke="#9C7A48" stroke-width="1.3"/>
+          <g fill="none" stroke="#B8894A" stroke-width=".9" opacity=".6"><path d="M146 100l-8-4M142 112h-9M146 124l-8 4M274 100l8-4M278 112h9M274 124l8 4"/></g>
+          <g class="eye"><circle cx="176" cy="112" r="20" fill="url(#gEye)" stroke="#6E2A2A" stroke-width="1.8"/><circle cx="178" cy="114" r="12" fill="url(#gIris)"/><circle cx="179" cy="115" r="6.5" fill="#1E0C0C"/><circle cx="171" cy="106" r="4" fill="#fff"/><circle cx="184" cy="120" r="1.8" fill="#fff" opacity=".85"/><circle class="lid" cx="176" cy="112" r="21" fill="url(#gBody)" stroke="#6E2A2A" stroke-width="1.5"/></g>
+          <g class="eye"><circle cx="244" cy="112" r="20" fill="url(#gEye)" stroke="#6E2A2A" stroke-width="1.8"/><circle cx="246" cy="114" r="12" fill="url(#gIris)"/><circle cx="247" cy="115" r="6.5" fill="#1E0C0C"/><circle cx="239" cy="106" r="4" fill="#fff"/><circle cx="252" cy="120" r="1.8" fill="#fff" opacity=".85"/><circle class="lid" cx="244" cy="112" r="21" fill="url(#gBody)" stroke="#6E2A2A" stroke-width="1.5"/></g>
+          <path d="M210 128C203 130 204 146 210 156C216 146 217 130 210 128Z" fill="#D9B77A" stroke="#6E2A2A" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M138 84Q210 40 282 84l-4 10Q210 56 142 94Z" fill="#7A2E2E"/><path d="M142 88Q210 50 278 88" fill="none" stroke="#D9B77A" stroke-width="2.8"/><path d="M272 86l26 6-3 7-26-7z" fill="#7A2E2E"/><circle cx="210" cy="56" r="3.2" fill="#D9B77A"/>
+        </g>
+      </g></svg>`;
+    const rigQ = sel => owlIn.querySelectorAll(sel);
+    const rig = { body:owlIn.querySelector('.body'), head:owlIn.querySelector('.head'), tail:owlIn.querySelector('.tail'), legs:owlIn.querySelector('.legs'),
+      wings:rigQ('.wing .w'), lids:rigQ('.lid') };
+    const lidT = (el, k) => { const cy = +el.getAttribute('cy'), r = +el.getAttribute('r'); el.setAttribute('transform', `translate(0 ${(cy - r) * (1 - k)}) scale(1 ${Math.max(0.001, k)})`); };
+    // поза: p = { amp, spread, phase, bob, tilt, turn, blink, wink }
+    function setPose(p) {
+      const s = Math.sin(p.phase), lag = Math.sin(p.phase - 0.9);
+      const fold = Math.max(0, -Math.sin(p.phase - 0.3));                                    // на підйомі крило трохи складається
+      const rot = (-8 + 26 * s) * p.amp - 20 * p.spread + 4 * p.spread * s;                  // обертання всього крила в плечі
+      const bend = (12 * lag) * p.amp + 5 * p.spread;                                         // згин: кінчик відстає від руху
+      const sy = 1 - 0.18 * p.amp * fold;
+      rig.wings.forEach(el => el.setAttribute('transform', `translate(262 150) rotate(${rot.toFixed(2)}) skewY(${bend.toFixed(2)}) scale(1 ${sy.toFixed(3)}) translate(-262 -150)`));
+      rig.body.setAttribute('transform', `translate(0 ${p.bob.toFixed(2)})`);
+      rig.head.setAttribute('transform', `translate(210 150) rotate(${p.tilt.toFixed(2)}) scale(${p.turn.toFixed(3)} 1) translate(-210 -150) translate(0 ${(p.bob * 0.8).toFixed(2)})`);
+      const tailRot = 2 * s * p.amp + 8 * p.spread, tailSx = 1 + 0.25 * p.spread;
+      rig.tail.setAttribute('transform', `translate(210 272) rotate(${tailRot.toFixed(2)}) scale(${tailSx.toFixed(3)} 1) translate(-210 -272) translate(0 ${(p.bob * 0.9).toFixed(2)})`);
+      rig.legs.setAttribute('transform', `translate(210 282) scale(1 ${(0.5 + 0.5 * p.spread).toFixed(3)}) translate(-210 -282) translate(0 ${p.bob.toFixed(2)})`);
+      lidT(rig.lids[0], p.blink); lidT(rig.lids[1], Math.max(p.blink, p.wink));
+    }
+    setPose({ amp:1, spread:0, phase:0, bob:0, tilt:0, turn:.94, blink:0, wink:0 });
+    // політ: вліт справа зверху, коло над центром, спуск, зависання з розкритими крилами, підморгування, відліт ліворуч
+    hint.classList.add('wait'); scene.classList.add('carried');
+    // конверт стоїть так, щоб лист міг повністю вийти над ним і лишитися в межах екрана
+    const fitEnvelope = () => {
+      const vh = Math.min(window.innerHeight, document.documentElement.clientHeight || 1e9), E = scene.getBoundingClientRect().height, L = letter.getBoundingClientRect().height;
+      $('s-envelope').style.paddingTop = Math.round(Math.max(L + 20, vh - E - 84)) + 'px';
+    };
+    fitEnvelope();
+    setTimeout(() => { fitEnvelope(); owlFlight(); }, 650);
+    function owlFlight() {
+      const vw = window.innerWidth, vh = Math.min(window.innerHeight, document.documentElement.clientHeight || 1e9), r0 = scene.getBoundingClientRect();
+      const mobile = vw < 680, ow = Math.round(r0.width * 0.38), oh = Math.round(ow * 320 / 420), s0 = mobile ? .42 : .4;   // сова ≈ 38 % ширини конверта
+      owl.style.width = ow + 'px'; owl.style.height = oh + 'px'; owlShadow.style.width = Math.round(ow * 0.8) + 'px'; owlShadow.style.height = Math.round(ow * 0.19) + 'px';
+      const fcx = r0.left + r0.width / 2, fcy = r0.top + r0.height / 2;              // кінцевий центр конверта
+      const cc = { x:vw / 2, y:Math.max(oh + 10, vh * 0.30) }, R = Math.max(60, Math.min(vw * 0.22, vh * 0.16, 150));
+      const hang = oh * 0.44 + r0.height * s0 / 2 - 6;                                 // від центру сови до центру конверта в лапах
+      const land = { x:fcx, y:fcy - 36 - hang };                                      // зависання над місцем приземлення
+      const P0 = { x:vw + ow, y:-oh }, T = { x:cc.x, y:cc.y - R };
+      const q = (a, c, b, t) => ({ x:(1 - t) * (1 - t) * a.x + 2 * (1 - t) * t * c.x + t * t * b.x, y:(1 - t) * (1 - t) * a.y + 2 * (1 - t) * t * c.y + t * t * b.y });
+      const eio = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2, eo = t => 1 - Math.pow(1 - t, 3), ei = t => t * t * t;
+      const backOut = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+      const SEG = [0, 1.5, 3.6, 4.6, 5.6, 6.8];                                       // вліт · коло · спуск · зависання · відліт (≈6,8 с)
+      const pos = t => {
+        if (t < SEG[1]) return q(P0, { x:vw * 0.72, y:T.y - 60 }, T, eio(t / SEG[1]));
+        if (t < SEG[2]) { const a = -Math.PI / 2 - eio((t - SEG[1]) / (SEG[2] - SEG[1])) * Math.PI * 2; return { x:cc.x + R * Math.cos(a), y:cc.y + R * Math.sin(a) }; }
+        if (t < SEG[3]) return q(T, { x:cc.x - R * 1.1, y:(T.y + land.y) / 2 }, land, eo((t - SEG[2]) / (SEG[3] - SEG[2])));
+        if (t < SEG[4]) return { x:land.x, y:land.y + Math.sin((t - SEG[3]) * 6) * 3 };
+        return q(land, { x:land.x - vw * 0.35, y:land.y - vh * 0.1 }, { x:-ow * 1.5, y:land.y - vh * 0.28 }, ei((t - SEG[4]) / (SEG[5] - SEG[4])));
+      };
+      // ритм махів: частіше на зльоті й відльоті, повільніше на колі, плавне планування на спуску, тріпотіння з розкритими крилами при зависанні
+      const rhythm = t => t < SEG[1] ? { f:3.0, amp:1, spread:0 } : t < SEG[2] ? { f:1.7, amp:.75, spread:.15 } : t < SEG[3] ? { f:1.1, amp:.45, spread:.4 } : t < SEG[4] ? { f:1.3, amp:.25, spread:1 } : { f:2.9, amp:1, spread:0 };
+      owl.hidden = false; owlShadow.hidden = false; scene.style.opacity = '1';
+      let prev = pos(0), face = -1, winked = false, phase = 0, last = null, tilt = 0, turn = .92, blinkT = -1, smoothVx = 0;
+      const t0 = performance.now();
+      function frame(now) {
+        const t = (now - t0) / 1000, dt = last == null ? 0 : Math.min(0.05, (now - last) / 1000); last = now;
+        const p = pos(Math.min(t, SEG[5])), rh = rhythm(t);
+        const vx = p.x - prev.x; if (Math.abs(vx) > 0.4) face = vx < 0 ? -1 : 1; prev = p;
+        smoothVx += (vx - smoothVx) * 0.12;
+        phase += 2 * Math.PI * rh.f * dt;
+        const hovering = t >= SEG[3] && t < SEG[4];
+        const tiltTarget = hovering ? 0 : Math.max(-8, Math.min(8, face * smoothVx * 1.6));     // голова нахиляється в бік повороту
+        tilt += (tiltTarget - tilt) * 0.1; turn += ((hovering ? 1 : .94) - turn) * 0.12;        // перед посадкою повертається до глядача
+        if (hovering && blinkT < 0) blinkT = t;                                                   // …і кліпає
+        const bl = blinkT >= 0 ? Math.max(0, 1 - Math.abs((t - blinkT - 0.11) / 0.11)) : 0;
+        const bob = -4 * rh.amp * Math.sin(phase - 0.4);                                          // тіло здіймається в такт махам
+        const sprd = hovering ? Math.min(1, (t - SEG[3]) / 0.35) : (t >= SEG[4] ? Math.max(0, 1 - (t - SEG[4]) / 0.3) : rh.spread);
+        setPose({ amp:rh.amp, spread:sprd, phase, bob, tilt, turn, blink:bl, wink:(owl.classList.contains('wink') ? 1 : 0) });
+        owl.style.transform = `translate(${(p.x - ow / 2).toFixed(1)}px,${(p.y - oh / 2).toFixed(1)}px)`;
+        owlIn.style.transform = `scaleX(${face})`;
+        owlShadow.style.transform = `translate(${(p.x - ow * 0.4).toFixed(1)}px,${(p.y + oh * 0.6 + 24 - bob * 0.5).toFixed(1)}px) scale(${(0.9 + 0.1 * Math.sin(phase)).toFixed(3)})`;
+        owlShadow.style.opacity = String(0.55 + 0.15 * Math.sin(phase));
+        if (t < SEG[3]) scene.style.transform = `translate(${(p.x - fcx).toFixed(1)}px,${(p.y + hang - fcy).toFixed(1)}px) scale(${s0})`;   // конверт у лапах
+        else if (t < SEG[3] + 0.7) {                                                                                                        // м'яке приземлення з відскоком
+          const b = backOut(Math.min(1, (t - SEG[3]) / 0.7)), sc = s0 + (1 - s0) * b;
+          scene.style.transform = `translate(${((land.x - fcx) * (1 - b)).toFixed(1)}px,${((land.y + hang - fcy) * (1 - b)).toFixed(1)}px) scale(${sc.toFixed(3)})`;
+        } else scene.style.transform = '';
+        if (!winked && t > SEG[3] + 0.55) { winked = true; owl.classList.add('wink'); setTimeout(() => owl.classList.remove('wink'), 420); }
+        if (t < SEG[5]) requestAnimationFrame(frame);
+        else { owl.hidden = true; owlShadow.hidden = true; scene.style.transform = ''; scene.classList.remove('carried'); scene.classList.add('landed'); hint.classList.remove('wait'); }
+      }
+      requestAnimationFrame(frame);
+    }
     seal.addEventListener('click', () => {
+      if (!scene.classList.contains('landed')) return;
       if (opened) return; opened = true;
+      // кінцеве положення листа: по центру екрана, повністю видимий
+      const r = letter.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+      let s = Math.min(1.15, (vw - 24) / r.width); if (r.height * s > vh - 32) s = Math.max(.8, (vh - 32) / r.height);
+      const lift = vh / 2 - (r.top + r.height / 2);
+      scene.style.setProperty('--lift', lift.toFixed(1) + 'px'); scene.style.setProperty('--lift-s', s.toFixed(3));
+      scene.style.setProperty('--out', (-(r.height + 6)).toFixed(1) + 'px');   // повністю над верхнім краєм конверта
       seal.classList.add('cracked');                                   // печатка тріскається
       setTimeout(() => scene.classList.add('open'), 350);              // клапан розгортається (rotateX)
       setTimeout(() => scene.classList.add('behind'), 900);            // клапан іде за лист
-      setTimeout(() => scene.classList.add('lift'), 1150);             // лист виїжджає
-      setTimeout(() => scene.classList.add('done'), 2050);             // сцена тане
-      setTimeout(() => show('s-welcome', 1), 2350);                    // і стає повним листом
+      setTimeout(() => scene.classList.add('lift'), 1150);             // лист 4,4 с виїжджає вгору; видно лише частину над конвертом
+      setTimeout(() => { scene.classList.add('settle'); scene.classList.add('done'); }, 5650);   // вийшов повністю: на передній план і в центр, конверт з'їжджає вниз і тане
+      setTimeout(() => { scene.classList.add('gone'); letter.removeAttribute('aria-hidden'); startEnv.tabIndex = 0; }, 6950);
     });
+    startEnv.addEventListener('click', () => { if (opened) goScreen('origin', 1); });
   })();
-  function next() { if (!valid(state.screen)) return; const f = flow(), i = f.indexOf(state.screen); if (i < f.length - 1) goScreen(f[i+1], 1); else goFinal(); }
+  function next() { if (!valid(state.screen)) return; const f = flow(), i = f.indexOf(state.screen); if (i < f.length - 1) goScreen(f[i+1], 1); else { if (soundOn) ensureAudio(); goFinal(); } }  // AudioContext — у жесті користувача, щоб табло клацало
   function back() { const f = flow(), i = f.indexOf(state.screen); if (i > 0) goScreen(f[i-1], -1); else goWelcome(); }
   $('btn-start').addEventListener('click', () => goScreen('origin', 1));
   btnNext.addEventListener('click', next); btnBack.addEventListener('click', back);
@@ -812,23 +1324,25 @@ h2{font-size:clamp(26px,6vw,38px)}
     n.push({ id:'odesa', label:'Одеса', stage:-1, home:true, fixed:{ title:'Одеса', text:'Звідси все починається.', svg:I.odesa } });
     if (!o) n.push({ id:'origin', label:'Звідки?', q:true, stage:st('origin'), screen:'origin' });
     else if (o === 'kishinev') {
-      const t = optOf('kish', state.kishTransfer);
-      n.push({ id:'kish', label:t ? t.short : 'Як?', q:!t, stage:st('kish'), opt:t, step:'Дорога', screen:'kish' });
-      n.push({ id:'kishinev', label:'Кишинів', stage:st('origin'), fixed:{ title:'Аеропорт Кишинева', text:'Найближчий аеропорт до дому.', svg:I.airport } });
+      n.push({ id:'kishbus', label:'Автобус', stage:st('kish'), fixed:optOf('kish','bus'), screen:'kish' });
+      n.push({ id:'kishinev', label:'Кишинів', stage:st('kish') + 0.5, fixed:{ title:'Аеропорт Кишинева', text:'Найближчий аеропорт до дому.', svg:I.airport }, screen:'origin' });
     } else {
       n.push({ id:'pltrain', label:'Потяг', stage:st('pltrain'), fixed:optOf('pltrain','train'), screen:'pltrain' });
-      n.push({ id:'poland', label:'Польща', stage:st('pltrain') + 0.5, fixed:{ title:'Польща', text:'Кордон позаду — Європа попереду.', svg:I.border } });
-      const a = optOf('placcess', state.plAccess);
-      n.push({ id:'placcess', label:a ? a.short : 'Як?', q:!a, stage:st('placcess'), opt:a, step:'До аеропорту', screen:'placcess' });
-      const p = optOf('plairport', state.plAirport);
-      n.push({ id:'plairport', label:p ? p.short : 'Аеропорт?', q:!p, stage:st('plairport'), opt:p, step:'Аеропорт', screen:'plairport' });
+      n.push({ id:'przemysl', label:'Пшемишль', stage:st('pltrain') + 0.5, fixed:{ title:'Пшемишль', text:'Кордон позаду — Європа попереду.', svg:I.border }, screen:'origin' });
+      const p = optOf('plairport', state.plAirport), a = optOf('placcess', state.plAccess);
+      // місто вильоту — один вузол; транспорт із Пшемишля — дрібним підписом під ним
+      const opt = p ? Object.assign({}, p, { text:(a ? `З Пшемишля ${a.instr}. ` : '') + p.text }) : null;
+      n.push({ id:'plcity', label:p ? p.short : 'Місто?', q:!p, sub:a ? a.instr : '', stage:st('plairport'), opt, step:'Місто вильоту', screen:'plairport', screen2:'placcess' });
     }
     n.push({ id:'flight', label:'Літак', stage:st('where') - 0.5, fixed:{ title:'Літак', text:'Кілька годин у хмарах — і ти вже в іншому світі.', svg:I.plane } });
-    const cl = state.country === 'custom' ? state.customText.trim() : state.country === 'surprise' ? 'Сюрприз' : cName(state.country);
+    const ds = state.dests, cl = state.surprise ? 'Сюрприз' : ds.length ? destShort(ds[0]) + (ds.length > 1 ? ` +${ds.length - 1}` : '') : '';
     n.push({ id:'country', label:cl || 'Куди?', q:!cl, stage:st('where'), step:'Куди', screen:'where' });
-    const s = optOf('stay', state.stay), r = optOf('rhythm', state.rhythm);
-    n.push({ id:'stay', label:s ? s.short : 'Житло?', q:!s, stage:st('stay'), opt:s, step:'Де жити', screen:'stay' });
-    n.push({ id:'rhythm', label:r ? r.short : 'Ритм?', q:!r, stage:st('rhythm'), opt:r, step:'Ритм', screen:'rhythm' });
+    const ts = stayTargets(), allStay = ts.length > 0 && ts.every(t => t.get());
+    const sl = allStay ? (ts.length > 1 ? `Житло · ${ts.length}` : optOf('stay', ts[0].get()).short) : '';
+    n.push({ id:'stay', label:sl || 'Житло?', q:!sl, stage:st('stay'), step:'Де жити', screen:'stay', stays:allStay ? ts.map(t => ({ title:t.short, opt:optOf('stay', t.get()) })) : null });
+    const rs = state.rhythm.map(id => optOf('rhythm', id)).filter(Boolean);
+    const ro = rs.length ? Object.assign({}, rs[0], { title:rs.map(r => r.title).join(' · '), text:rs.length > 1 ? rs.map(r => r.text).join(' ') : rs[0].text, tag:rs.length === 1 ? rs[0].tag : '' }) : null;
+    n.push({ id:'rhythm', label:rs.length ? rs[0].short + (rs.length > 1 ? ` +${rs.length - 1}` : '') : 'Ритм?', q:!rs.length, stage:st('rhythm'), opt:ro, opts:rs, step:'Ритм', screen:'rhythm' });
     return n;
   }
   function updateRoute() {
@@ -836,17 +1350,20 @@ h2{font-size:clamp(26px,6vw,38px)}
     routeWrap.classList.add('show');
     const final = state.screen === 'final';
     const nodes = chain(), N = nodes.length;
-    const ci = final ? N : nodes.findIndex(nd => nd.screen === state.screen);
+    const ci = final ? N : nodes.findIndex(nd => nd.screen === state.screen || nd.screen2 === state.screen);
     routeEl.querySelectorAll('.rn,.rl').forEach(e => e.remove());
     let curX = null;
+    const answered = nd => !nd.q && (nd.opt || nd.id === 'country' || nd.id === 'stay' || nd.id === 'rhythm');
+    const far = nodes.reduce((m, nd, i) => answered(nd) ? i : m, -1);         // найдальший вузол із відомою відповіддю
     nodes.forEach((nd, i) => {
       const x = (3 + (i + 0.5) / N * 94).toFixed(2) + '%';
-      // поточна точка — та, що відповідає екрану; все ліворуч і всі вже відповідані питання — пройдені;
-      // невідповідані питання показують «?» незалежно від місця в ланцюжку; фіксовані етапи праворуч — порожні
+      // поточна точка — та, що відповідає екрану; все ліворуч — пройдене; невідповідані питання — «?»;
+      // усе з уже відомою відповіддю (і фіксовані етапи, які вже пройдено дорогою до неї) — заповнене; решта праворуч — порожня
       let status;
       if (i === ci) status = 'current';
+      else if (i < ci) status = 'done';
       else if (nd.q) status = 'q';
-      else if (i < ci || nd.screen) status = 'done';
+      else if (answered(nd) || i < far) status = 'done';
       else status = 'todo';
       if (status === 'current') curX = x;
       const dot = document.createElement('span'); dot.className = `rn ${status}${nd.home ? ' home' : ''}`; dot.style.left = x;
@@ -854,10 +1371,135 @@ h2{font-size:clamp(26px,6vw,38px)}
       const lbl = document.createElement('span'); lbl.className = `rl ${status}${i % 2 ? ' alt' : ''}`; lbl.style.left = x;
       lbl.textContent = nd.label.length > 12 ? nd.label.slice(0, 11) + '…' : nd.label;
       routeEl.appendChild(dot); routeEl.appendChild(lbl);
+      if (nd.sub) { const sb = document.createElement('span'); sb.className = `rl sub ${status}`; sb.style.left = x; sb.style.top = (i % 2 ? 75 : 59) + 'px'; sb.textContent = '· ' + nd.sub; routeEl.appendChild(sb); }
     });
     routePlane.style.left = final ? (3 + (N - 0.5) / N * 94).toFixed(2) + '%' : (curX || '5%');
     routeLabel.textContent = final ? 'Маршрут складено ✦' : `Крок ${STEP_OF[state.screen]} із 4 · ${STEP_TITLE[STEP_OF[state.screen]]}`;
   }
+
+  /* ------------------------------------------------------------------ */
+  /*  Героїня з валізою під картками (SVG зі спини, частини анімуються)   */
+  /* ------------------------------------------------------------------ */
+  const HERO_SCREENS = ['origin', 'plairport', 'placcess', 'stay', 'rhythm'];
+  const hero = document.createElement('div'); hero.className = 'hero'; hero.id = 'hero'; hero.setAttribute('aria-hidden', 'true'); hero.hidden = true;
+  hero.innerHTML = `<svg viewBox="0 0 220 236" overflow="visible">
+    <defs>
+      <linearGradient id="hDress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3E6C8"/><stop offset="1" stop-color="#D9B77A"/></linearGradient>
+      <linearGradient id="hHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A2E24"/><stop offset=".5" stop-color="#3E1F18"/><stop offset="1" stop-color="#5E2222"/></linearGradient>
+      <linearGradient id="hCase" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E6CA92"/><stop offset="1" stop-color="#B8894A"/></linearGradient>
+      <pattern id="hHatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0v4" stroke="#7A2E2E" stroke-width=".5" opacity=".28"/></pattern>
+    </defs>
+    <ellipse class="h-shadow" cx="104" cy="222" rx="56" ry="6" fill="rgba(59,42,34,.14)"/>
+    <g class="h-case">
+      <rect x="22" y="160" width="48" height="54" rx="4" fill="url(#hCase)" stroke="#7A2E2E" stroke-width="2"/><rect x="22" y="160" width="48" height="54" rx="4" fill="url(#hHatch)"/>
+      <path d="M33 160v54M59 160v54" stroke="#7A2E2E" stroke-width="2.2"/><path d="M22 186h48" stroke="#8C6A3C" stroke-width="1.2" opacity=".7"/>
+      <path d="M22 166l6-6M70 166l-6-6M22 208l6 6M70 208l-6 6" stroke="#5E2222" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="46" cy="174" r="6" fill="#A8443F" stroke="#FBF5E8" stroke-width="1.2"/><path d="M43 174l2 2 4-4" fill="none" stroke="#FBF5E8" stroke-width="1.2"/>
+      <g transform="rotate(-8 32 199)"><rect x="24" y="194" width="16" height="10" rx="1.5" fill="#FBF5E8" stroke="#8C6A3C" stroke-width="1"/><path d="M26 201l4-5 3 3 3-4 4 6z" fill="#B8894A"/></g>
+      <path d="M60 191l5 8h-10z" fill="#D9B77A" stroke="#7A2E2E" stroke-width="1"/>
+      <text x="48" y="211" font-size="9">🐍</text>
+      <rect x="41" y="128" width="5" height="34" fill="#8C6A3C" stroke="#5E2222" stroke-width="1"/><rect x="47" y="128" width="5" height="34" fill="#8C6A3C" stroke="#5E2222" stroke-width="1"/><rect x="35" y="122" width="23" height="8" rx="3" fill="#7A2E2E"/>
+      <circle cx="30" cy="216" r="4.5" fill="#5E2222"/><circle cx="62" cy="216" r="4.5" fill="#5E2222"/>
+    </g>
+    <g class="h-legs">
+      <g class="h-leg l"><path d="M92 150l-4 56h12l4-56z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/><path d="M86 206q7-4 14 0l2 9h-18z" fill="#7A2E2E"/></g>
+      <g class="h-leg r"><path d="M104 150l-4 56h12l4-56z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/><path d="M98 206q7-4 14 0l2 9h-18z" fill="#7A2E2E"/></g>
+    </g>
+    <g class="h-body">
+      <path d="M80 100q22-10 44 0l12 70q-34 10-68 0z" fill="url(#hDress)" stroke="#7A2E2E" stroke-width="1.6"/><path d="M80 100q22-10 44 0l12 70q-34 10-68 0z" fill="url(#hHatch)"/>
+      <path d="M84 136q18 6 36 0M82 154q20 6 40 0" stroke="#8C6A3C" stroke-width="1" fill="none" opacity=".6"/>
+      <path d="M78 118h48" stroke="#7A2E2E" stroke-width="3"/><path d="M102 118l-7-6 7-2 7 8 7-8 7 2-7 6z" fill="#A8443F" stroke="#7A2E2E" stroke-width="1"/>
+      <g class="h-arm r"><path d="M124 104q10 20 8 44l-8 2q-2-22-8-42z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/></g>
+      <g class="h-arm l"><path d="M80 104q-18 10-32 24l6 6q14-12 30-24z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/></g>
+      <g class="h-hairback"><path d="M80 70q22-12 44 0q10 36 2 84q-22 8-48 0q-8-48 2-84z" fill="url(#hHair)"/><path d="M90 90q-4 30 0 56M102 94q2 30-2 58M114 90q4 30 0 56" stroke="#7A2E2E" stroke-width="1.2" fill="none" opacity=".5"/></g>
+    </g>
+    <g class="h-head">
+      <rect x="96" y="86" width="12" height="16" rx="4" fill="#E8CFAE" stroke="#8C6A3C" stroke-width="1"/>
+      <circle cx="102" cy="72" r="23" fill="url(#hHair)" stroke="#3E1F18" stroke-width="1"/>
+      <path d="M84 62q18-12 36 0M82 74q20-10 40 0M86 86q16-8 32 0" stroke="#8C6A3C" stroke-width="1" fill="none" opacity=".45"/>
+      <g class="h-hair l"><path d="M80 76q-14 26-10 60q6-12 12-24q4-20-2-36z" fill="url(#hHair)"/></g>
+      <g class="h-hair r"><path d="M124 76q14 26 10 60q-6-12-12-24q-4-20 2-36z" fill="url(#hHair)"/></g>
+      <circle cx="102" cy="58" r="3" fill="#D9B77A" stroke="#8C6A3C" stroke-width=".8"/>
+    </g>
+    <g class="h-bubble">
+      <g fill="#FFF9EC" stroke="#B8894A" stroke-width="1.2"><circle cx="128" cy="36" r="9"/><circle cx="141" cy="30" r="12"/><circle cx="153" cy="38" r="9"/><circle cx="141" cy="43" r="9"/><circle cx="124" cy="52" r="3"/><circle cx="118" cy="60" r="2"/></g>
+      <text class="h-q" x="141" y="43" text-anchor="middle" font-size="19" font-weight="700" fill="#7A2E2E" font-family="Georgia,serif">?</text>
+      <path class="h-heart" d="M141 46c-3-5-11-8-11-15a6.5 6.5 0 0 1 11-4 6.5 6.5 0 0 1 11 4c0 7-8 10-11 15z" fill="#A8443F" stroke="#7A2E2E" stroke-width="1.2" opacity="0"/>
+    </g>
+  </svg>`;
+  HERO_SCREENS.forEach(k => { const slot = document.createElement('div'); slot.className = 'hero-slot'; $('s-' + k).appendChild(slot); });
+  const hq = sel => hero.querySelector(sel);
+  const HR = { head:hq('.h-head'), body:hq('.h-body'), legL:hq('.h-leg.l'), legR:hq('.h-leg.r'), armL:hq('.h-arm.l'), armR:hq('.h-arm.r'), hairL:hq('.h-hair.l'), hairR:hq('.h-hair.r'), hairB:hq('.h-hairback'), kase:hq('.h-case'), bubble:hq('.h-bubble'), q:hq('.h-q'), heart:hq('.h-heart') };
+  const HS = { shown:false, entered:false, raf:0, t0:0, walk:false, walkFrom:0, look:null, heartAt:-10, nextQ:0, qUntil:0 };
+  const f1 = v => (+v).toFixed(2);
+  function heroPose(p) {
+    HR.legL.setAttribute('transform', `rotate(${f1(p.legL)} 96 150)`); HR.legR.setAttribute('transform', `rotate(${f1(p.legR)} 108 150)`);
+    HR.body.setAttribute('transform', `translate(${f1(p.lean)} ${f1(p.bob)}) rotate(${f1(p.lean * 0.4)} 102 170)`);
+    HR.armL.setAttribute('transform', `rotate(${f1(p.armL)} 80 104)`); HR.armR.setAttribute('transform', `rotate(${f1(p.armR)} 124 104)`);
+    HR.hairB.setAttribute('transform', `rotate(${f1(p.hair * 0.5)} 102 70)`);
+    HR.head.setAttribute('transform', `translate(${f1(p.lean)} ${f1(p.bob - p.headUp)}) rotate(${f1(p.head)} 102 96)`);
+    HR.hairL.setAttribute('transform', `rotate(${f1(p.hair)} 80 76)`); HR.hairR.setAttribute('transform', `rotate(${f1(p.hair)} 124 76)`);
+    HR.kase.setAttribute('transform', `translate(${f1(p.caseDx)} ${f1(p.bob * 0.3)}) rotate(${f1(p.caseRot)} 62 216)`);
+    HR.bubble.style.opacity = p.bubble.show ? '1' : '0';
+    HR.bubble.setAttribute('transform', `translate(141 40) scale(${f1(Math.max(0.01, p.bubble.s))}) translate(-141 -40)`);
+    HR.q.style.opacity = p.bubble.heart ? '0' : '1'; HR.heart.style.opacity = p.bubble.heart ? '1' : '0';
+  }
+  const basePose = () => ({ legL:0, legR:0, armL:46, armR:-4, head:0, headUp:3, hair:0, bob:0, lean:0, caseRot:0, caseDx:0, bubble:{ show:false, heart:false, s:1 } });
+  function heroFrame(now) {
+    if (!HS.shown) return;
+    const t = (now - HS.t0) / 1000, p = basePose();
+    if (HS.walk) {                                                               // перший показ: приходить зліва, котячи валізу
+      const W = 2.5, u = Math.min(1, t / W);
+      const ease = u < 0.85 ? u / 0.85 * 0.97 : 0.97 + (1 - Math.pow(1 - (u - 0.85) / 0.15, 2)) * 0.03;
+      hero.style.transform = `translateX(calc(-50% - ${(HS.walkFrom * (1 - ease)).toFixed(1)}px))`;
+      const w = t * 2 * Math.PI * 1.9, st = u < 0.9 ? 1 : (1 - u) / 0.1;
+      p.legL = 17 * Math.sin(w) * st; p.legR = -17 * Math.sin(w) * st;
+      p.bob = -2.2 * Math.abs(Math.cos(w)) * st; p.armR = -4 + 10 * Math.sin(w) * st;
+      p.hair = 5 * Math.sin(w - 0.6) * st; p.head = 2 * Math.sin(w) * st; p.headUp = 0;
+      p.armL = -12 * st; p.caseRot = -16 * st; p.caseDx = 12 * st;
+      if (u >= 1) {                                                              // прийшла: ставить валізу, відпускає ручку, піднімає голову до карток
+        const v = Math.min(1, (t - W) / 0.6);
+        p.armL = -12 + 58 * v; p.headUp = 4 * v; p.caseRot = 0; p.caseDx = 0;
+        if (v >= 1) { HS.walk = false; HS.entered = true; HS.t0 = now; HS.nextQ = 1.5; if (HS.look) HS.heartAt = 0; }
+      }
+    } else {                                                                     // роздуми: погляд з картки на картку, переступання, волосся, хмаринка «?»
+      const look = HS.look;
+      p.head = look ? look.a + 1.2 * Math.sin(t * 1.1) : 8 * Math.sin(t * 0.75) * Math.sin(t * 0.31 + 1);
+      p.headUp = look ? look.up : 3 + 0.6 * Math.sin(t * 0.9);
+      p.hair = 2 * Math.sin(t * 0.9 + 0.5); p.armR = -4 + 1.5 * Math.sin(t * 0.7); p.bob = 0.6 * Math.sin(t * 1.3);
+      const sh = t % 7.3, sw = sh > 5.4 && sh < 6.6 ? Math.sin((sh - 5.4) / 1.2 * Math.PI) : 0;   // переступає з ноги на ногу
+      p.lean = 3 * sw; p.legL = 4 * sw; p.legR = -2 * sw;
+      if (!look) {
+        if (t > HS.nextQ && !HS.qUntil) HS.qUntil = t + 2.2;
+        if (HS.qUntil) { const a = t - (HS.qUntil - 2.2), b = HS.qUntil - t, s = Math.min(1, a / 0.3, b / 0.3); p.bubble = { show:s > 0, heart:false, s:0.6 + 0.4 * Math.max(0, s) }; if (b <= 0) { HS.qUntil = 0; HS.nextQ = t + 4 + Math.random() * 4; } }
+      } else {                                                                   // вибір зроблено: сердечко спалахує над головою
+        const a = t - HS.heartAt, s = a < 0.35 ? 1.3 * (a / 0.35) : a < 0.6 ? 1.3 - 0.3 * ((a - 0.35) / 0.25) : 1;
+        p.bubble = { show:a >= 0, heart:true, s };
+      }
+    }
+    heroPose(p);
+    HS.raf = requestAnimationFrame(heroFrame);
+  }
+  function heroLook(el, pop) {
+    const r = el.getBoundingClientRect(), h = hero.getBoundingClientRect();
+    const dx = (r.left + r.width / 2) - (h.left + h.width / 2);
+    HS.look = { a:Math.max(-14, Math.min(14, dx / 18)), up:5 };
+    HS.heartAt = pop ? (performance.now() - HS.t0) / 1000 : -10;
+  }
+  function heroShow(key) {
+    const sec = $('s-' + key), slot = sec && sec.querySelector('.hero-slot'); if (!slot) return heroHide();
+    if (hero.parentNode !== slot) slot.appendChild(hero);
+    hero.hidden = false; cancelAnimationFrame(HS.raf);
+    HS.shown = true; HS.look = null; HS.qUntil = 0; HS.nextQ = 2 + Math.random() * 3; HS.t0 = performance.now();
+    const sel = sec.querySelector('.card.selected');
+    if (reduced) { hero.style.transform = 'translateX(-50%)'; const p = basePose(); if (sel) { heroLook(sel, false); p.head = HS.look.a; p.headUp = 5; p.bubble = { show:true, heart:true, s:1 }; } heroPose(p); return; }
+    if (!HS.entered) { HS.walk = true; HS.walkFrom = window.innerWidth / 2 + 160; } else { HS.walk = false; hero.style.transform = 'translateX(-50%)'; }
+    if (sel) heroLook(sel, false);
+    HS.raf = requestAnimationFrame(heroFrame);
+  }
+  function heroChoose(el) { if (!HS.shown) return; heroLook(el, true); if (reduced) { const p = basePose(); p.head = HS.look.a; p.headUp = 5; p.bubble = { show:true, heart:true, s:1 }; heroPose(p); } }
+  function heroHide() { HS.shown = false; cancelAnimationFrame(HS.raf); hero.hidden = true; }
+  heroPose(basePose());
 
   /* ------------------------------------------------------------------ */
   /*  Карта Європи (D3 + TopoJSON, world-atlas countries-50m)            */
@@ -873,7 +1515,9 @@ h2{font-size:clamp(26px,6vw,38px)}
     let topo;
     try { topo = await atlasPromise; } catch (e) { M = false; mapFallback(); return; }
     const box = $('map-box');
-    const W = Math.max(box.clientWidth, 300), H = Math.round(W * (W < 600 ? 1.0 : 0.64));
+    const mobile = window.innerWidth < 680, W = Math.max(box.clientWidth, 300);
+    // телефон: ~70% висоти екрана; комп'ютер: майже вся ширина, але щоб уміщалося по висоті
+    const vh = Math.min(window.innerHeight, document.documentElement.clientHeight || 1e9), H = mobile ? Math.round(Math.min(760, Math.max(380, vh * 0.7))) : Math.round(Math.min(W * 0.64, Math.max(460, vh * 0.78)));
     const feats = topojson.feature(topo, topo.objects.countries).features;
     feats.forEach(f => { f.code = ATLAS_INDEX['id:' + f.id] || ATLAS_INDEX['name:' + f.properties.name] || null; });
     const projection = d3.geoConicConformal().parallels([40, 65]).rotate([-18, 0]);
@@ -914,19 +1558,70 @@ h2{font-size:clamp(26px,6vw,38px)}
     const homeLayer = g.append('g');
     { const [x, y] = projection(HOME.odesa);
       homeLayer.append('g').attr('class', 'home-g').attr('data-x', x).attr('data-y', y)
-        .html(`<path class="home-heart" d="M0 4C-1.5 1-6-1-6-4.5a3.5 3.5 0 0 1 6-2.2 3.5 3.5 0 0 1 6 2.2C6-1 1.5 1 0 4z"/><text class="home-lbl" x="8" y="2">Дім</text>`); }
+        .html(`<path class="home-heart" d="M0 4C-1.5 1-6-1-6-4.5a3.5 3.5 0 0 1 6-2.2 3.5 3.5 0 0 1 6 2.2C6-1 1.5 1 0 4z"/><text class="home-lbl" x="8" y="2">Дім</text><text class="home-start" x="0" y="15" font-size="6.5">Звідси все починається</text>`); }
+    const visitedLayer = g.append('g').attr('class', 'visited-layer');
+    VISITED.forEach((v, i) => {
+      const [x, y] = projection(v.c);
+      visitedLayer.append('g').attr('class', 'vmark').attr('data-i', i).attr('data-x', x).attr('data-y', y)
+        .html(`<title>${esc(v.name)}</title><circle class="vm-ring" r="7"/><g class="vm-body"><circle class="vm-bg" r="6.5"/><path class="vm-check" d="M-3.3 .4l2.3 2.4 4.5-5.2"/></g>`)
+        .on('click', e => { e.stopPropagation(); hlVisited(i, true); });
+    });
     const routeLayer = g.append('g').attr('class', 'route-layer');
     const pinLayer = g.append('g').attr('class', 'pin');
     const zoom = d3.zoom().scaleExtent([1, 12]).translateExtent([[-W * 0.4, -H * 0.4], [W * 1.4, H * 1.4]])
       .on('zoom', e => { g.attr('transform', e.transform); applyZoom(e.transform.k); });
     svg.call(zoom);
-    M = { svg, g, projection, path, zoom, feats, W, H, k:1, pinLayer, lblLayer, microLayer, homeLayer, routeLayer, routeKey:null, plane:null };
+    M = { svg, g, projection, path, zoom, feats, W, H, k:1, pinLayer, lblLayer, microLayer, homeLayer, visitedLayer, routeLayer, routeKey:null, routeLegKeys:[], plane:null };
     applyZoom(1);
     $('map-loading').remove(); $('zoom-ctl').hidden = false;
     $('zoom-in').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 1.7));
     $('zoom-out').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.7));
-    if (state.country && C[state.country]) syncRoute(false);
+    syncRoute(false);
   }
+  // перший вхід на карту: стартуємо зі збільшеного сердечка «Дім» і плавно віддаляємось до всієї Європи
+  // перший вхід: 3 с на збільшеному «Домі» з пульсом сердечка й підписом, потім 2,8 с плавного відльоту; будь-який дотик чи кнопка — одразу кінцевий вигляд
+  function mapIntro() {
+    if (!M || !M.svg || M.introDone) return; M.introDone = true;
+    if (reduced) return;
+    const [x, y] = M.projection(HOME.odesa), home = M.homeLayer.select('.home-g'), node = M.svg.node();
+    M.svg.call(M.zoom.transform, d3.zoomIdentity.translate(M.W / 2, M.H / 2).scale(6).translate(-x, -y));
+    home.classed('pulse', true);
+    let done = false, tm = 0;
+    const off = () => { node.removeEventListener('pointerdown', skip, true); node.removeEventListener('wheel', skip, true); document.removeEventListener('click', onBtn, true); M.introSkip = null; };
+    const end = () => { if (done) return; done = true; clearTimeout(tm); home.classed('pulse', false); off(); };
+    const skip = () => { if (done) return; M.svg.interrupt(); drawRoute(false); M.svg.call(M.zoom.transform, d3.zoomIdentity); end(); };   // одразу кінцевий вигляд з наземним маршрутом
+    const onBtn = e => { if (e.target.closest('button')) skip(); };
+    node.addEventListener('pointerdown', skip, true); node.addEventListener('wheel', skip, true); document.addEventListener('click', onBtn, true);
+    M.introSkip = skip;
+    const zoomOut = () => { if (done) return; M.svg.transition().duration(2800).ease(d3.easeCubicInOut).call(M.zoom.transform, d3.zoomIdentity).on('end', end); };
+    tm = setTimeout(() => {
+      if (done) return;
+      home.classed('pulse', false);
+      if (routeLegs().some(l => l.type === 'ground')) drawRoute({ vehicle:true, onDone:zoomOut });   // транспорт їде з Одеси до аеропорту
+      else zoomOut();
+    }, 3000);
+  }
+  /* ---------- «Тут ти вже була»: список + підсвічування галочок ---------- */
+  let vTimer = 0;
+  function hlVisited(i, pulse) {
+    document.querySelectorAll('#visited-list li').forEach(li => li.classList.toggle('active', +li.dataset.i === i));
+    if (M && M.svg) M.visitedLayer.selectAll('.vmark').classed('hl', function () { return +this.dataset.i === i; });
+    clearTimeout(vTimer);
+    if (pulse && i >= 0) vTimer = setTimeout(() => hlVisited(-1), 2200);
+  }
+  (function visitedList() {
+    const ul = $('visited-list');
+    ul.innerHTML = VISITED.map((v, i) => `<li data-i="${i}" tabindex="0" role="button" aria-label="${esc(v.name)} — показати на карті"><span class="vi">✓</span>${esc(v.name)}</li>`).join('');
+    const fine = window.matchMedia && window.matchMedia('(hover:hover)').matches;
+    ul.querySelectorAll('li').forEach(li => {
+      const i = +li.dataset.i;
+      if (fine) { li.addEventListener('mouseenter', () => hlVisited(i, false)); li.addEventListener('mouseleave', () => hlVisited(-1)); }
+      li.addEventListener('click', () => hlVisited(li.classList.contains('active') && !fine ? -1 : i, true));
+      li.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hlVisited(i, true); } });
+    });
+    const vis = $('visited'), tg = $('visited-toggle');
+    tg.addEventListener('click', () => { if (window.innerWidth >= 680) return; const c = vis.classList.toggle('collapsed'); tg.setAttribute('aria-expanded', String(!c)); });
+  })();
   function applyZoom(k) {
     M.k = k;
     M.lblLayer.selectAll('.lbl').attr('font-size', (11 / k).toFixed(2))
@@ -938,93 +1633,159 @@ h2{font-size:clamp(26px,6vw,38px)}
     M.microLayer.selectAll('.micro-hit').attr('r', (16 / k).toFixed(2));
     M.homeLayer.select('.home-g').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1.6 / k).toFixed(3)})`; });
     M.homeLayer.select('.home-lbl').attr('font-size', 7);
-    M.pinLayer.select('.pin-g').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1 / k).toFixed(3)})`; });
+    M.pinLayer.selectAll('.pin-g').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1 / k).toFixed(3)})`; });
+    M.visitedLayer.selectAll('.vmark').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1 / k).toFixed(3)})`; });
     M.routeLayer.selectAll('.rt-ground').attr('stroke-width', (1.6 / k).toFixed(3)).attr('stroke-dasharray', `${(2 / k).toFixed(2)} ${(3.2 / k).toFixed(2)}`);
     M.routeLayer.selectAll('.rt-air').attr('stroke-width', (2 / k).toFixed(3)).attr('stroke-dasharray', `${(7 / k).toFixed(2)} ${(5 / k).toFixed(2)}`);
     M.routeLayer.selectAll('.rt-airport').attr('r', (3.5 / k).toFixed(2)).attr('stroke-width', (1.4 / k).toFixed(2));
     M.routeLayer.selectAll('.rt-mask').attr('stroke-width', (14 / k).toFixed(2));
     if (M.plane) M.plane.el.attr('transform', `translate(${M.plane.x},${M.plane.y}) scale(${(0.6 / k).toFixed(3)}) rotate(${M.plane.a}) translate(-20,-12)`);
+    if (M.veh) placeVeh(M.veh.x, M.veh.y, M.veh.a);
+    M.routeLayer.selectAll('.rt-stop').attr('transform', function () { return `translate(${this.dataset.x},${this.dataset.y}) scale(${(1 / k).toFixed(3)})`; });
   }
-  /* ---------- маршрут польоту: Одеса → аеропорт → країна ---------- */
+  /* ---------- маршрут: Одеса → (потяг/автобус) → аеропорт → точки ---------- */
   const AIRPORTS = { kishinev:[28.93, 46.93], krakow:[19.79, 50.08], warsaw:[20.97, 52.17] };
+  const LVIV = [24.03, 49.84], PRZEMYSL = [22.77, 49.78];
   function airportKey() { return state.origin === 'kishinev' ? 'kishinev' : state.origin === 'poland' ? (state.plAirport || null) : null; }
   const PLANE_D = 'M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z';
+  const VEH = {   // маленькі вінтажні іконки транспорту (дивляться праворуч), 30×18
+    bus:'<rect x="1" y="3" width="26" height="11" rx="3" fill="#D9B77A" stroke="#7A2E2E" stroke-width="1.2"/><rect x="4" y="5.5" width="4" height="3.5" fill="#FBF5E8"/><rect x="10" y="5.5" width="4" height="3.5" fill="#FBF5E8"/><rect x="16" y="5.5" width="4" height="3.5" fill="#FBF5E8"/><rect x="22" y="5.5" width="3.5" height="3.5" fill="#FBF5E8"/><circle cx="7" cy="15" r="2.2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.1"/><circle cx="21" cy="15" r="2.2" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1.1"/>',
+    train:'<rect x="1" y="5" width="12" height="9" rx="1.5" fill="#D9B77A" stroke="#7A2E2E" stroke-width="1.1"/><rect x="3.5" y="7" width="3" height="3" fill="#FBF5E8"/><rect x="8" y="7" width="3" height="3" fill="#FBF5E8"/><rect x="15" y="5" width="13" height="9" rx="1.5" fill="#7A2E2E" stroke="#5E2222" stroke-width="1.1"/><rect x="22" y="2" width="5" height="4" rx="1" fill="#7A2E2E"/><rect x="17" y="1" width="2.5" height="4" fill="#5E2222"/><rect x="23" y="7.5" width="3" height="3" fill="#FBF5E8"/><circle cx="4" cy="15.5" r="1.8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1"/><circle cx="10" cy="15.5" r="1.8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1"/><circle cx="18" cy="15.5" r="1.8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1"/><circle cx="25" cy="15.5" r="1.8" fill="#FBF5E8" stroke="#7A2E2E" stroke-width="1"/>'
+  };
   let routeAnim = 0;
   function clearRoute(immediate) {
     if (!M || !M.svg) return;
-    routeAnim++; M.plane = null; M.routeKey = null;
+    routeAnim++; M.plane = null; M.veh = null; M.routeKey = null; M.routeLegKeys = [];
     const old = M.routeLayer.selectAll('.route-g');
     if (immediate || reduced) old.remove(); else { old.classed('fade', true); setTimeout(() => old.remove(), 500); }
   }
-  function drawRoute(code, animate) {
-    if (!M || !M.svg) return;
-    const ak = airportKey(), key = (ak || 'odesa') + ':' + code;
-    if (M.routeKey === key && M.pinLayer.select('.pin-g').size()) return;
-    clearRoute(!animate);
-    M.pinLayer.html(''); M.g.selectAll('.country.sel').classed('sel', false);
-    M.routeKey = key;
-    const myAnim = ++routeAnim;
-    const pr = M.projection, odesa = pr(HOME.odesa), apt = ak ? pr(AIRPORTS[ak]) : null, dest = pr(C[code].c);
-    const from = apt || odesa;
-    // дуга: квадратична Безьє, опукла перпендикулярно до хорди
+  // дуга: квадратична Безьє, опукла перпендикулярно до хорди (вгору екрана)
+  function arcPath(from, dest) {
     const dx = dest[0] - from[0], dy = dest[1] - from[1], len = Math.hypot(dx, dy) || 1;
-    let nx = -dy / len, ny = dx / len; if (ny > 0) { nx = -nx; ny = -ny; }           // нормаль, спрямована вгору екрана
+    let nx = -dy / len, ny = dx / len; if (ny > 0) { nx = -nx; ny = -ny; }
     const bulge = Math.min(len * 0.3, 110);
-    const cx = (from[0] + dest[0]) / 2 + nx * bulge, cy = (from[1] + dest[1]) / 2 + ny * bulge;
-    const arcD = `M${from[0]},${from[1]} Q${cx},${cy} ${dest[0]},${dest[1]}`;
+    return `M${from[0]},${from[1]} Q${(from[0] + dest[0]) / 2 + nx * bulge},${(from[1] + dest[1]) / 2 + ny * bulge} ${dest[0]},${dest[1]}`;
+  }
+  const curve = pts => d3.line().curve(d3.curveCatmullRom.alpha(0.5))(pts);
+  // відрізки маршруту: наземні (за вибором «Як дістатися») і повітряні (точки в порядку вибору)
+  function routeLegs() {
+    const ak = airportKey(), pr = M.projection, odesa = pr(HOME.odesa), legs = [];
+    let from = odesa;
+    if (state.origin === 'kishinev') {
+      const apt = pr(AIRPORTS.kishinev);
+      legs.push({ type:'ground', kind:'bus', d:curve([odesa, pr([29.85, 46.6]), apt]), a:odesa, b:apt, key:'g:kish', dur:2500, stop:{ p:apt, apt:'Кишинів' } });
+      from = apt;
+    } else if (state.origin === 'poland') {
+      const lv = pr(LVIV), pz = pr(PRZEMYSL);
+      legs.push({ type:'ground', kind:'train', d:curve([odesa, pr([28.4, 48.3]), lv, pz]), a:odesa, b:pz, key:'g:train', dur:2600, stop:{ p:pz, label:'Пшемишль', pause:500 } });
+      from = pz;
+      if (ak) { const apt = pr(AIRPORTS[ak]); legs.push({ type:'ground', kind:state.plAccess || 'bus', d:curve([pz, apt]), a:pz, b:apt, key:'g:' + ak + ':' + (state.plAccess || ''), dur:1200, stop:{ p:apt, apt:ak === 'krakow' ? 'Краків' : 'Варшава' } }); from = apt; }
+    }
+    state.dests.filter(d => d.code).forEach(d => { const to = pr(destPoint(d)); legs.push({ type:'air', a:from, b:to, d:arcPath(from, to), key:'a:' + d.code + ':' + (d.city ? d.city.name : '') }); from = to; });
+    return legs;
+  }
+  function placeVeh(x, y, a) {
+    if (!M.veh) return;
+    const flip = Math.cos(a * Math.PI / 180) < 0;                                  // їде ліворуч — дзеркалимо, щоб не був догори колесами
+    M.veh.x = x; M.veh.y = y; M.veh.a = a;
+    M.veh.el.attr('transform', `translate(${x},${y}) scale(${(1.2 / M.k).toFixed(3)}) rotate(${(flip ? a + 180 : a).toFixed(1)})${flip ? ' scale(-1,1)' : ''} translate(-14,-10)`);
+  }
+  // animate: false | true (анімуємо нові відрізки) | { vehicle:true, onDone } (вступ: транспорт їде по землі, камера супроводжує)
+  function drawRoute(animate) {
+    if (!M || !M.svg) return;
+    const vehicle = !!(animate && animate.vehicle), onDone = animate && animate.onDone;
+    const legs = routeLegs(), key = legs.map(l => l.key).join('|');
+    if (!legs.length) { clearRoute(false); placePins(Infinity, -1); return; }
+    if (!vehicle && M.routeKey === key && M.routeLayer.select('.route-g').size()) { placePins(Infinity, -1); return; }
+    const prev = M.routeLegKeys || [];
+    let common = 0; while (common < prev.length && common < legs.length && prev[common] === legs[common].key) common++;
+    const extend = !vehicle && animate && !reduced && common === prev.length;      // лише дописали відрізки — анімуємо тільки нові
+    const startAnim = vehicle && !reduced ? 0 : (animate && !reduced) ? (extend ? common : 0) : legs.length;
+    clearRoute(vehicle || extend || !animate);
+    M.routeKey = key; M.routeLegKeys = legs.map(l => l.key);
+    const myAnim = ++routeAnim;
     const rg = M.routeLayer.append('g').attr('class', 'route-g');
     const mid = 'rtm' + Date.now();
-    const defs = rg.append('defs'); const mask = defs.append('mask').attr('id', mid).attr('maskUnits', 'userSpaceOnUse').attr('x', -1e5).attr('y', -1e5).attr('width', 2e5).attr('height', 2e5);
-    const groundMask = mask.append('path').attr('class', 'rt-mask').attr('d', apt ? `M${odesa[0]},${odesa[1]} L${apt[0]},${apt[1]}` : `M${odesa[0]},${odesa[1]}`).attr('fill', 'none').attr('stroke', '#fff').attr('pathLength', 1).attr('stroke-dasharray', 1).attr('stroke-dashoffset', animate && !reduced ? 1 : 0);
-    const airMask = mask.append('path').attr('class', 'rt-mask').attr('d', arcD).attr('fill', 'none').attr('stroke', '#fff').attr('pathLength', 1).attr('stroke-dasharray', 1).attr('stroke-dashoffset', animate && !reduced ? 1 : 0);
+    const mask = rg.append('defs').append('mask').attr('id', mid).attr('maskUnits', 'userSpaceOnUse').attr('x', -1e5).attr('y', -1e5).attr('width', 2e5).attr('height', 2e5);
     const lines = rg.append('g').attr('mask', `url(#${mid})`);
-    if (apt) lines.append('path').attr('class', 'rt-ground').attr('d', `M${odesa[0]},${odesa[1]} L${apt[0]},${apt[1]}`);
-    const air = lines.append('path').attr('class', 'rt-air').attr('d', arcD);
-    if (apt) rg.append('circle').attr('class', 'rt-airport').attr('cx', apt[0]).attr('cy', apt[1]);
+    const items = legs.map((l, i) => {
+      const m = mask.append('path').attr('class', 'rt-mask').attr('d', l.d).attr('fill', 'none').attr('stroke', '#fff').attr('pathLength', 1).attr('stroke-dasharray', 1).attr('stroke-dashoffset', i >= startAnim ? 1 : 0);
+      const p = lines.append('path').attr('class', l.type === 'ground' ? 'rt-ground' : 'rt-air').attr('d', l.d);
+      let stop = null;
+      if (l.stop) {                                                                 // зупинка: підпис міста або аеропорт з літачком
+        stop = rg.append('g').attr('class', 'rt-stop').attr('data-x', l.stop.p[0]).attr('data-y', l.stop.p[1]).attr('opacity', i >= startAnim ? 0 : 1);
+        stop.append('circle').attr('class', 'rt-airport').attr('r', 3.5);
+        if (l.stop.apt) { stop.append('path').attr('class', 'rt-apt-plane').attr('d', PLANE_D).attr('transform', 'translate(-10,-22) scale(.5)'); stop.append('text').attr('class', 'rt-lbl').attr('x', 0).attr('y', 16).text(`Аеропорт · ${l.stop.apt}`); }
+        else stop.append('text').attr('class', 'rt-lbl').attr('x', 0).attr('y', -8).text(l.stop.label);
+      }
+      return { leg:l, m, node:p.node(), stop };
+    });
     applyZoom(M.k);
-    if (!animate || reduced) { placePin(code, false); return; }
-    const planeEl = rg.append('path').attr('class', 'rt-plane').attr('d', PLANE_D);
-    const airNode = air.node(), L = airNode.getTotalLength();
-    const ease = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    const T0 = performance.now(), TG = apt ? 500 : 0, TA = 1700;
-    const setPlane = (x, y, a) => { M.plane = { el: planeEl, x, y, a }; planeEl.attr('transform', `translate(${x},${y}) scale(${(0.6 / M.k).toFixed(3)}) rotate(${a}) translate(-20,-12)`); };
-    const p0 = airNode.getPointAtLength(0), p1 = airNode.getPointAtLength(Math.min(2, L));
-    setPlane(p0.x, p0.y, Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI);
-    planeEl.attr('opacity', 0);
+    const pinsBefore = legs.slice(0, startAnim).filter(l => l.type === 'air').length;   // шпильки, що вже стоять
+    if (startAnim >= legs.length) { placePins(Infinity, -1); if (onDone) onDone(); return; }
+    placePins(pinsBefore, -1);
+    const planeEl = rg.append('path').attr('class', 'rt-plane').attr('d', PLANE_D).attr('opacity', 0);
+    const ease = t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t, eio = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const setPlane = (x, y, a) => { M.plane = { el:planeEl, x, y, a }; planeEl.attr('transform', `translate(${x},${y}) scale(${(0.6 / M.k).toFixed(3)}) rotate(${a}) translate(-20,-12)`); };
+    const groundTotal = legs.filter(l => l.type === 'ground').reduce((s, l) => s + l.dur, 0), kEnd = state.origin === 'poland' ? 2.3 : 3.6;
+    let groundDone = 0, vehEl = null;
+    if (vehicle) { vehEl = rg.append('g').attr('class', 'rt-veh'); M.veh = { el:vehEl, x:legs[0].a[0], y:legs[0].a[1], a:0 }; }
+    const setVehKind = kind => { if (vehEl) vehEl.html(VEH[kind] || VEH.bus); };
+    if (vehicle) setVehKind(legs[0].kind);
+    let i = startAnim, pinIdx = pinsBefore, T0 = performance.now(), pauseUntil = 0;
     function frame(now) {
       if (routeAnim !== myAnim) return;
-      const t = now - T0;
-      if (apt) groundMask.attr('stroke-dashoffset', 1 - Math.min(1, t / TG));
-      if (t >= TG) {
-        const u = ease(Math.min(1, (t - TG) / TA));
-        airMask.attr('stroke-dashoffset', 1 - u);
-        const p = airNode.getPointAtLength(u * L), q = airNode.getPointAtLength(Math.min(L, u * L + 1.5)), b = airNode.getPointAtLength(Math.max(0, u * L - 1.5));
-        setPlane(p.x, p.y, Math.atan2(q.y - b.y, q.x - b.x) * 180 / Math.PI);
-        planeEl.attr('opacity', u < 0.97 ? 1 : (1 - u) / 0.03);
+      if (now < pauseUntil) { requestAnimationFrame(frame); return; }
+      const it = items[i], ground = it.leg.type === 'ground', L = it.node.getTotalLength();
+      const dur = ground ? (vehicle ? it.leg.dur : 500) : Math.max(900, Math.min(1800, L * 5));
+      const u0 = Math.min(1, (now - T0) / dur), u = ground ? (vehicle ? eio(u0) : u0) : ease(u0);
+      it.m.attr('stroke-dashoffset', 1 - u);
+      const p = it.node.getPointAtLength(u * L), q = it.node.getPointAtLength(Math.min(L, u * L + 1.5)), b = it.node.getPointAtLength(Math.max(0, u * L - 1.5));
+      const ang = Math.atan2(q.y - b.y, q.x - b.x) * 180 / Math.PI;
+      if (!ground) { setPlane(p.x, p.y, ang); planeEl.attr('opacity', u < 0.97 ? 1 : (1 - u) / 0.03); }
+      else if (vehicle) {
+        placeVeh(p.x, p.y, ang);
+        const g = Math.min(1, (groundDone + u0 * it.leg.dur) / groundTotal), k = 6 + (kEnd - 6) * g;     // камера супроводжує й поступово віддаляється
+        M.svg.call(M.zoom.transform, d3.zoomIdentity.translate(M.W / 2, M.H / 2).scale(k).translate(-p.x, -p.y));
       }
-      if (t < TG + TA) requestAnimationFrame(frame);
-      else { planeEl.remove(); M.plane = null; placePin(code, true); }
+      if (u0 < 1) { requestAnimationFrame(frame); return; }
+      if (!ground) { placePins(pinIdx + 1, pinIdx); pinIdx++; }
+      if (it.stop) it.stop.transition().duration(400).attr('opacity', 1);           // прибули: підпис зупинки / аеропорт із літачком
+      if (ground && vehicle) {
+        groundDone += it.leg.dur;
+        const nxt = items[i + 1];
+        if (nxt && nxt.leg.type === 'ground') { pauseUntil = now + (it.leg.stop && it.leg.stop.pause || 0); setTimeout(() => { if (routeAnim === myAnim) setVehKind(nxt.leg.kind); }, (it.leg.stop && it.leg.stop.pause || 0) * 0.6); }
+        else { vehEl.transition().duration(600).attr('opacity', 0).remove(); M.veh = null; }  // транспорт м'яко зникає біля аеропорту
+      }
+      i++; T0 = Math.max(now, pauseUntil);
+      if (i < items.length) requestAnimationFrame(frame);
+      else { planeEl.remove(); M.plane = null; if (onDone) onDone(); }
     }
     requestAnimationFrame(frame);
   }
   function syncRoute(animate) {
     if (!M || !M.svg) return;
-    if (state.country && C[state.country]) drawRoute(state.country, animate); else clearRoute(true);
+    drawRoute(animate);                                                              // наземна частина малюється навіть без обраних точок
   }
-  function placePin(code, animate) {
+  // шпильки з номерами: перші `count` країн маршруту; шпилька `animIdx` падає з анімацією
+  function placePins(count, animIdx) {
     if (!M || !M.svg) return;
-    const [x, y] = M.projection(C[code].c);
+    const codes = destCodes(), shown = state.dests.filter(d => d.code).slice(0, count);
     M.pinLayer.html('');
-    const gp = M.pinLayer.append('g').attr('class', 'pin-g').attr('data-x', x).attr('data-y', y).attr('transform', `translate(${x},${y}) scale(${(1 / M.k).toFixed(3)})`);
-    gp.append('ellipse').attr('class', 'pin-shadow').attr('cx', 1).attr('cy', 2).attr('rx', 7).attr('ry', 3).attr('fill', '#3B2A22');
-    const inner = gp.append('g').attr('class', 'pin-in');
-    inner.append('path').attr('d', 'M0 0C-3-6-11-10-11-18a11 11 0 0 1 22 0c0 8-8 12-11 18z').attr('fill', '#7A2E2E').attr('stroke', '#FBF5E8').attr('stroke-width', 1.5);
-    inner.append('circle').attr('cy', -18).attr('r', 4).attr('fill', '#FBF5E8');
-    if (animate === false || reduced) { inner.style('animation', 'none'); gp.select('.pin-shadow').style('animation', 'none').style('opacity', .35); }
-    M.g.selectAll('.country').classed('sel', f => f.code === code);
-    M.microLayer.selectAll('.micro').classed('sel', function () { return this.dataset.code === code; });
-    M.lblLayer.selectAll('.lbl').classed('sel', function () { return this.dataset.code === code; });
-    document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('sel', b.dataset.code === code));
+    shown.forEach((d, i) => {
+      const [x, y] = M.projection(destPoint(d));
+      const gp = M.pinLayer.append('g').attr('class', 'pin-g').attr('data-x', x).attr('data-y', y).attr('transform', `translate(${x},${y}) scale(${(1 / M.k).toFixed(3)})`);
+      gp.append('ellipse').attr('class', 'pin-shadow').attr('cx', 1).attr('cy', 2).attr('rx', 7).attr('ry', 3).attr('fill', '#3B2A22');
+      const inner = gp.append('g').attr('class', 'pin-in');
+      inner.append('path').attr('d', 'M0 0C-3-6-11-10-11-18a11 11 0 0 1 22 0c0 8-8 12-11 18z').attr('fill', '#7A2E2E').attr('stroke', '#FBF5E8').attr('stroke-width', 1.5);
+      inner.append('circle').attr('cy', -18).attr('r', 6.5).attr('fill', '#FBF5E8');
+      inner.append('text').attr('class', 'pin-num').attr('y', -18).attr('dy', '.36em').text(i + 1);
+      if (i !== animIdx || reduced) { inner.style('animation', 'none'); gp.select('.pin-shadow').style('animation', 'none').style('opacity', .35); }
+    });
+    M.g.selectAll('.country').classed('sel', f => codes.includes(f.code));
+    M.microLayer.selectAll('.micro').classed('sel', function () { return codes.includes(this.dataset.code); });
+    M.lblLayer.selectAll('.lbl').classed('sel', function () { return codes.includes(this.dataset.code); });
+    document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('sel', codes.includes(b.dataset.code)));
   }
   function clearPin() {
     clearRoute(false);
@@ -1044,7 +1805,7 @@ h2{font-size:clamp(26px,6vw,38px)}
     });
     $('map-hint').textContent = '';
   }
-  function countryThumb(code) {
+  function countryThumb(code, pt) {
     const d = C[code];
     try {
       if (M && M.feats) {
@@ -1057,7 +1818,7 @@ h2{font-size:clamp(26px,6vw,38px)}
             geom = polys.find(p => d3.geoContains(p, d.c)) || polys.reduce((a, b) => area(b) > area(a) ? b : a);
           }
           const pr = d3.geoMercator().fitExtent([[14, 10], [106, 80]], geom);
-          const [cx, cy] = pr(d.c);
+          const [cx, cy] = pr(pt || d.c);
           return `<svg class="ill" viewBox="0 0 120 90" aria-hidden="true"><circle cx="60" cy="44" r="34" class="halo"/><path d="${d3.geoPath(pr)(geom)}" class="s g" stroke-width="1.6"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="3.5" class="s sb"/></svg>`;
         }
       }
@@ -1072,18 +1833,43 @@ h2{font-size:clamp(26px,6vw,38px)}
   const sheet = $('sheet'), backdrop = $('backdrop'), sheetBody = $('sheet-body');
   function openCountry(code) {
     const d = C[code]; if (!d) return;
+    if (M && M.introSkip) M.introSkip();
     sheetCode = code;
     $('sheet-title').textContent = d.name; $('sheet-cap').textContent = d.cap;
     sheetBody.innerHTML = d.sights.map((s, i) => `<div class="sight" data-i="${i}"><div class="ph loading"><div class="plh">${PLACEHOLDER_SVG}</div></div><div><h4>${esc(s[0].replace(/\s*\([^)]*\)\s*$/, ''))}</h4><p class="dim">Завантажуємо…</p></div></div>`).join('');
-    $('sheet-pick').textContent = state.country === code ? 'Це моя країна ✓' : 'Обрати цю країну';
+    $('sheet-pick').hidden = false; $('sheet-back').hidden = true; $('sheet-credit').hidden = false;
     backdrop.classList.add('show'); sheet.classList.add('show'); document.body.classList.add('modal-open');
     sheetBody.scrollTop = 0;
     d.sights.forEach((s, i) => loadSight(code, s, i));
   }
   function closeSheet() { sheetCode = null; backdrop.classList.remove('show'); sheet.classList.remove('show'); document.body.classList.remove('modal-open'); }
-  backdrop.addEventListener('click', closeSheet); $('sheet-close').addEventListener('click', closeSheet);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetCode && !lbOpen) closeSheet(); });
-  $('sheet-pick').addEventListener('click', () => { if (sheetCode) pickCountry(sheetCode); });
+  backdrop.addEventListener('click', () => { if (askOpen) closeAsk(); else closeSheet(); }); $('sheet-close').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lbOpen) { if (askOpen) closeAsk(); else if (sheetCode) closeSheet(); } });
+  /* ---------- «кінцева точка чи ще країна?» ---------- */
+  let askOpen = false, askTimer = 0;
+  function openAsk(delay) { clearTimeout(askTimer); askTimer = setTimeout(() => { askOpen = true; backdrop.classList.add('show'); $('ask').classList.add('show'); document.body.classList.add('modal-open'); $('ask-done').focus({ preventScroll:true }); }, delay); }
+  function closeAsk() { clearTimeout(askTimer); if (!askOpen) return; askOpen = false; backdrop.classList.remove('show'); $('ask').classList.remove('show'); document.body.classList.remove('modal-open'); }
+  $('ask-more').addEventListener('click', closeAsk);
+  $('ask-done').addEventListener('click', () => { closeAsk(); if (valid('where')) next(); });
+  $('sheet-pick').addEventListener('click', () => { if (sheetCode) showCityStep(sheetCode); });
+  $('sheet-back').addEventListener('click', () => { if (sheetCode) openCountry(sheetCode); });
+  /* ---------- крок вибору міста всередині країни ---------- */
+  const WAS_HERE = 'Ти тут уже була, повернення до улюбленого місця 💛';
+  function showCityStep(code) {
+    const d = C[code], list = CITIES[code] || [];
+    $('sheet-cap').textContent = 'Яке місто? Або вирішиш пізніше.';
+    sheetBody.innerHTML = `<div class="city-step"><div class="city-grid">${list.map((c, i) => `<button type="button" class="city-card" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(c[5])}</span>${isVisited(c[0]) ? `<em class="was">${WAS_HERE}</em>` : ''}</button>`).join('')}<button type="button" class="city-card later" id="city-later"><b>Вирішу пізніше</b><span>Країну лишаємо, шпилька стане в її центр.</span></button></div>
+      <div class="field city-custom"><label for="city-input">Впиши своє місто</label><div class="row"><input id="city-input" type="text" maxlength="40" autocomplete="off" placeholder="Наприклад, ${esc(list[0] ? list[0][0] : d.name)}…"><button class="btn primary small" id="city-add" type="button" disabled>Додати</button></div><p class="was" id="city-was" hidden>${WAS_HERE}</p></div></div>`;
+    $('sheet-pick').hidden = true; $('sheet-back').hidden = false; $('sheet-credit').hidden = true;
+    sheetBody.scrollTop = 0;
+    sheetBody.querySelectorAll('.city-card[data-i]').forEach(b => b.addEventListener('click', () => { const c = list[+b.dataset.i]; pickDest(code, { name:c[0], en:c[1], c:[c[2], c[3]], loc:c[4], cap:c[5], slug:c[6] }); }));
+    $('city-later').addEventListener('click', () => pickDest(code, null));
+    const inp = $('city-input'), add = $('city-add'), was = $('city-was');
+    const submit = () => { const t = inp.value.trim(); if (!t) return; const known = list.find(c => c[0].toLowerCase() === t.toLowerCase()); pickDest(code, known ? { name:known[0], en:known[1], c:[known[2], known[3]], loc:known[4], cap:known[5], slug:known[6] } : { name:t, en:t, c:null, loc:null, cap:'', slug:null }); };
+    inp.addEventListener('input', () => { add.disabled = !inp.value.trim(); was.hidden = !isVisited(inp.value); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+    add.addEventListener('click', submit);
+  }
   async function wikiSummary(lang, title) {
     const r = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, '_'))}`, { headers:{ Accept:'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1213,32 +1999,46 @@ h2{font-size:clamp(26px,6vw,38px)}
   lbStage.addEventListener('dblclick', e => { if (e.pointerType === 'mouse' || !('ontouchstart' in window)) { Z.s = Z.s > 1 ? 1 : 2.5; Z.x = 0; Z.y = 0; applyZ(true); } });
 
   /* ---------- вибір країни / свого місця / сюрпризу ---------- */
-  const customInput = $('custom-input'), customField = $('custom-field'), surpriseBtn = $('surprise-where'), chosenBox = $('chosen-box');
+  const customInput = $('custom-input'), customField = $('custom-field'), surpriseBtn = $('surprise-where');
   $('surprise-ill').innerHTML = I.envelope;
-  function pickCountry(code) {
-    state.country = code; state.customText = ''; customInput.value = '';
-    drawRoute(code, true); refreshWhere(); closeSheet();
-    toast(`${C[code].name} — чудовий вибір ✈`);
+  function pickDest(code, city) {                                           // city: null = «вирішу пізніше»
+    const same = d => d.code === code && (city && d.city ? d.city.name.toLowerCase() === city.name.toLowerCase() : !city && !d.city);
+    if (state.dests.some(same)) { closeSheet(); toast(city ? 'Це місто вже в маршруті' : 'Ця країна вже в маршруті'); return; }
+    state.surprise = false;
+    const nd = { code, city, stay:null }, ci = state.dests.findIndex(d => d.custom);   // своє місце лишається останнім
+    if (ci >= 0) state.dests.splice(ci, 0, nd); else state.dests.push(nd);
+    closeSheet(); drawRoute(true); refreshWhere();
+    toast(city && isVisited(city.name) ? `${city.name} — повернення до улюбленого місця 💛` : `${city ? city.name : C[code].name} — чудовий вибір ✈`);
+    openAsk(reduced ? 300 : 1100);
+  }
+  function removeDest(i) {
+    const d = state.dests[i]; if (!d) return;
+    state.dests.splice(i, 1);
+    if (d.custom) { state.customText = ''; customInput.value = ''; }
+    syncRoute(false); refreshWhere();
+  }
+  function renderChosen() {
+    const list = $('chosen-list'), ol = $('chosen-ol');
+    list.hidden = !state.dests.length;
+    ol.innerHTML = state.dests.map((d, i) => `<li class="chosen-item"><span class="num">${i + 1}</span><div class="ill-wrap">${d.custom ? I.custom : countryThumb(d.code, destPoint(d))}</div><div class="ci-body"><b>${esc(destName(d))}</b><span class="cap">${esc(destCap(d))}</span>${d.city && isVisited(d.city.name) ? `<em class="was">${WAS_HERE}</em>` : ''}</div><button class="x" type="button" data-i="${i}" aria-label="Прибрати ${esc(destName(d))}">×</button></li>`).join('');
+    ol.querySelectorAll('button.x').forEach(b => b.addEventListener('click', () => removeDest(+b.dataset.i)));
   }
   function refreshWhere() {
-    const code = state.country;
-    const isC = !!(code && C[code]);
-    customField.classList.toggle('selected', code === 'custom' && state.customText.trim().length > 0);
-    surpriseBtn.classList.toggle('selected', code === 'surprise'); surpriseBtn.setAttribute('aria-pressed', code === 'surprise' ? 'true' : 'false');
-    chosenBox.classList.remove('show');
-    if (isC) { $('chosen-ill').innerHTML = countryThumb(code); $('chosen-name').textContent = C[code].name; $('chosen-cap').textContent = C[code].cap; void chosenBox.offsetWidth; chosenBox.classList.add('show'); }
-    else clearPin();
+    customField.classList.toggle('selected', hasCustom());
+    surpriseBtn.classList.toggle('selected', state.surprise); surpriseBtn.setAttribute('aria-pressed', state.surprise ? 'true' : 'false');
+    renderChosen();
+    if (!destCodes().length) clearPin();
     updateNext(); updateRoute();
   }
   customInput.addEventListener('input', () => {
     state.customText = customInput.value;
-    if (customInput.value.trim()) state.country = 'custom';
-    else if (state.country === 'custom') state.country = null;
+    const txt = customInput.value.trim(), has = hasCustom();
+    if (txt && !has) { state.surprise = false; state.dests.push({ custom:true, stay:null }); }
+    else if (!txt && has) state.dests = state.dests.filter(d => !d.custom);
     refreshWhere();
   });
-  customInput.addEventListener('focus', () => { if (customInput.value.trim()) { state.country = 'custom'; refreshWhere(); } });
   customInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); customInput.blur(); if (!btnNext.disabled) next(); } });
-  surpriseBtn.addEventListener('click', () => { state.country = 'surprise'; state.customText = ''; customInput.value = ''; refreshWhere(); });
+  surpriseBtn.addEventListener('click', () => { state.surprise = true; state.dests = []; state.customText = ''; customInput.value = ''; refreshWhere(); });
 
   /* ---------- пошук країни ---------- */
   const searchInput = $('search-input'), sugg = $('sugg');
@@ -1270,19 +2070,26 @@ h2{font-size:clamp(26px,6vw,38px)}
   /* ------------------------------------------------------------------ */
   /*  Фінальна дорожня карта, копіювання, конфеті                        */
   /* ------------------------------------------------------------------ */
-  function countryCard() {
-    if (state.country === 'custom') return { title:state.customText.trim(), text:'Місце, яке ти обрала сама. Найкращий вибір.', svg:I.custom };
-    if (state.country === 'surprise') return { title:'Сюрприз', tag:'обирає чоловік', text:'Дізнаєшся лише в аеропорту… або на вокзалі.', svg:I.envelope };
-    const d = C[state.country]; return d ? { title:d.name, text:d.cap, svg:countryThumb(state.country) } : null;
+  function countryCards() {
+    if (state.surprise) return [{ title:'Сюрприз', tag:'обирає чоловік', text:'Дізнаєшся лише в аеропорту… або на вокзалі.', svg:I.envelope }];
+    return state.dests.map(d => d.custom ? { title:state.customText.trim(), text:'Місце, яке ти обрала сама. Найкращий вибір.', svg:I.custom }
+                                        : { title:destName(d), text:destCap(d), svg:countryThumb(d.code, destPoint(d)) });
   }
 
   /* ------------------------------------------------------------------ */
   /*  Табло вильотів (split-flap) і звук клацання (Web Audio)           */
   /* ------------------------------------------------------------------ */
   const FLAP_CHARS = 'АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ0123456789-.:! ';
-  let soundOn = false, actx = null, lastClick = 0;
+  let soundOn = true, actx = null, lastClick = 0;
+  // створюємо/відновлюємо AudioContext у жесті користувача (кнопка «Скласти маршрут» або перемикач звуку)
+  function ensureAudio() {
+    if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; return null; } }
+    if (actx.state === 'suspended') { try { actx.resume(); } catch (e) {} }
+    try { const b = actx.createBuffer(1, 1, 22050), s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); } catch (e) {}  // «розблокування» на iOS
+    return actx;
+  }
   function clickSound() {
-    if (!soundOn || !actx) return;
+    if (!soundOn || !actx || actx.state !== 'running') return;
     const now = performance.now(); if (now - lastClick < 28) return; lastClick = now;
     const t = actx.currentTime, len = Math.floor(actx.sampleRate * 0.03), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
@@ -1293,29 +2100,36 @@ h2{font-size:clamp(26px,6vw,38px)}
   }
   $('sound-btn').addEventListener('click', () => {
     soundOn = !soundOn;
-    if (soundOn && !actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { soundOn = false; } }
-    if (actx && actx.state === 'suspended') actx.resume();
+    if (soundOn && !ensureAudio()) soundOn = false;
     const b = $('sound-btn'); b.classList.toggle('active', soundOn); b.setAttribute('aria-pressed', String(soundOn));
     if (soundOn) clickSound();
   });
   function boardRows() {
     const ak = airportKey(), via = ak === 'kishinev' ? 'КИШИНІВ' : ak === 'krakow' ? 'КРАКІВ' : ak === 'warsaw' ? 'ВАРШАВА' : '—';
-    const to = state.country === 'custom' ? state.customText.trim() : state.country === 'surprise' ? 'СЮРПРИЗ' : (C[state.country] ? (C[state.country].short || C[state.country].name) : '—');
-    return [['Рейс','МРІЯ-01'],['Звідки','ОДЕСА'],['Через',via],['Куди',to.toUpperCase()],['Пасажирка','КАССАНДРА'],['Статус','ПОСАДКА']];
+    const to = state.surprise ? 'СЮРПРИЗ' : state.dests.map(d => destShort(d).toUpperCase()).join(' · ');
+    return [['Рейс','ПРИГОДА-01'],['Звідки','ОДЕСА'],['Через',via],['Куди',to || '—'],['Пасажирка','КАССАНДРА'],['Статус','ПОСАДКА']];
   }
   let boardTimers = [];
   function runBoard(done) {
     boardTimers.forEach(clearTimeout); boardTimers = [];
     const board = $('board'); board.querySelectorAll('.brow').forEach(r => r.remove());
     $('board-clock').textContent = new Date().toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' });
-    const rows = boardRows();
     const lblw = window.innerWidth <= 420 ? 78 : 92, avail = Math.max(120, board.clientWidth - 20 - lblw - 6);
-    let maxLen = Math.max(...rows.map(r => r[1].length)), cell = Math.floor((avail - (maxLen - 1) * 2) / maxLen);
-    if (cell < 15) {                                                       // задовгий текст — обрізаємо, щоб табло не ламалося
-      const maxCells = Math.max(6, Math.floor((avail + 2) / 17));
-      rows.forEach(r => { if (r[1].length > maxCells) r[1] = r[1].slice(0, maxCells - 1) + '…'; });
-      maxLen = Math.max(...rows.map(r => r[1].length)); cell = Math.floor((avail - (maxLen - 1) * 2) / maxLen);
-    }
+    const maxCells = Math.max(6, Math.floor((avail + 2) / 17));          // стільки комірок (≥15px) вміщається в рядок
+    const rows = [];
+    boardRows().forEach(([label, value]) => {
+      if (value.length <= maxCells) { rows.push([label, value]); return; }
+      if (label === 'Куди') {                                              // кілька країн або довга назва — переносимо на кілька рядків табло
+        const lines = []; let line = '';
+        const put = (w, sep) => { const cand = line ? line + sep + w : w; if (cand.length <= maxCells) line = cand; else { lines.push(line); line = w; } };
+        value.split(' · ').forEach(part => {
+          if (part.length <= maxCells) put(part, ' · ');                      // назву не розриваємо, якщо вона вміщається в рядок
+          else part.split(' ').forEach((w, wi) => put(w.length > maxCells ? w.slice(0, maxCells - 1) + '…' : w, wi ? ' ' : ' · '));
+        });
+        lines.push(line); lines.forEach((l, i) => rows.push([i ? '' : label, l]));
+      } else rows.push([label, value.slice(0, maxCells - 1) + '…']);        // задовгий текст — обрізаємо, щоб табло не ламалося
+    });
+    const maxLen = Math.max(...rows.map(r => r[1].length)), cell = Math.floor((avail - (maxLen - 1) * 2) / maxLen);
     board.style.setProperty('--cell', Math.max(12, Math.min(30, cell)) + 'px');
     const cells = [];
     rows.forEach(([label, value], ri) => {
@@ -1332,7 +2146,7 @@ h2{font-size:clamp(26px,6vw,38px)}
     rows.forEach((_, ri) => {
       const rowCells = cells.filter(c => c.ri === ri); let remaining = rowCells.length;
       rowCells.forEach(c => {
-        const flips = 6 + c.i * 2 + Math.floor(Math.random() * 4); let n = 0;
+        const flips = 6 + Math.min(c.i, 9) * 2 + Math.floor(Math.random() * 4); let n = 0;
         const tick = () => {
           n++;
           c.el.classList.remove('tick'); void c.el.offsetWidth; c.el.classList.add('tick');
@@ -1346,33 +2160,64 @@ h2{font-size:clamp(26px,6vw,38px)}
     });
   }
 
+  const RI = {
+    plane:'<svg viewBox="0 0 40 24" aria-hidden="true"><path d="M39 12c0-2-2-3-5-3H24L16 1h-4l5 8H7L4 6H2l1 6-1 6h2l3-3h10l-5 8h4l8-8h10c3 0 5-1 5-3z" fill="currentColor"/></svg>',
+    bus:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="12" rx="3" fill="currentColor"/><rect x="5" y="8" width="4" height="4" fill="#FBF5E8"/><rect x="10" y="8" width="4" height="4" fill="#FBF5E8"/><rect x="15" y="8" width="4" height="4" fill="#FBF5E8"/><circle cx="7" cy="19" r="2.2" fill="currentColor"/><circle cx="17" cy="19" r="2.2" fill="currentColor"/></svg>',
+    train:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3" fill="currentColor"/><rect x="7" y="6" width="4" height="4" fill="#FBF5E8"/><rect x="13" y="6" width="4" height="4" fill="#FBF5E8"/><rect x="7" y="12" width="10" height="2" fill="#FBF5E8" opacity=".7"/><circle cx="8" cy="20" r="2.2" fill="currentColor"/><circle cx="16" cy="20" r="2.2" fill="currentColor"/></svg>',
+    star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8z" fill="currentColor"/></svg>',
+    city:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V9l5-3 5 3v12zM13 21V5l8 3v13z" fill="currentColor"/><path d="M6 11h2v2H6zM6 15h2v2H6zM16 10h2v2h-2zM16 14h2v2h-2zM16 18h2v2h-2z" fill="#FBF5E8"/></svg>'
+  };
+  function nodeIcon(nd) {
+    if (nd.id === 'flight' || nd.id === 'kishinev') return RI.plane;
+    if (nd.id === 'kishbus') return RI.bus;
+    if (nd.id === 'pltrain') return RI.train;
+    if (nd.id === 'plcity') return state.plAccess === 'train' ? RI.train : RI.bus;
+    if (nd.id === 'przemysl') return RI.city;
+    if (nd.id === 'rhythm') return RI.star;
+    return null;
+  }
   function buildFinal() {
     const map = $('rmap'); map.classList.remove('drawn'); map.innerHTML = '<div class="rmap-line"></div>';
     $('final-rest').classList.remove('show');
     let num = 0, delay = 0.2;
+    // одна картка на точку (місто + житло), дорога / літак / ритм — з іконками замість номерів
+    const items = [];
     chain().forEach(nd => {
-      const op = nd.id === 'country' ? countryCard() : (nd.opt || nd.fixed);
-      if (!op) return;
-      const minor = !nd.opt && nd.id !== 'country';
+      if (nd.id === 'country') {
+        const cs = countryCards();
+        if (state.surprise) { items.push({ nd, op:cs[0], step:'Точка 1', num:1, stay:state.stay ? optOf('stay', state.stay) : null }); return; }
+        state.dests.forEach((d, i) => items.push({ nd, op:cs[i], step:`Точка ${i + 1}`, num:i + 1, stay:d.stay ? optOf('stay', d.stay) : null })); return;
+      }
+      if (nd.id === 'stay') return;
+      const op = nd.opt || nd.fixed; if (op) items.push({ nd, op, step:nd.step, minor:!nd.opt, icon:nodeIcon(nd) });
+    });
+    items.forEach(({ nd, op, step, minor, num, stay, icon }) => {
       const li = document.createElement('li');
       li.className = 'ri' + (minor ? ' minor' : '');
       li.style.animationDelay = delay.toFixed(2) + 's'; delay += minor ? 0.3 : 0.5;
-      const label = minor ? '' : `<span class="lbl2">${esc(nd.step || '')}</span>`;
-      const tag = op.tag && !minor ? `<span class="lbl2" style="letter-spacing:.04em;text-transform:none;font-style:italic">${esc(op.tag)}</span>` : '';
-      li.innerHTML = `<div class="rnode">${minor ? (nd.home ? '⌂' : '·') : ++num}</div>
-        <div class="rcard"><div class="ill-wrap">${op.svg}</div><div>${label}<h3>${esc(op.title)}</h3>${tag}<p>${esc(op.text || '')}</p></div>${minor ? '' : '<span class="mini-stamp" aria-hidden="true">Обрано</span>'}</div>`;
+      const label = minor ? '' : `<span class="lbl2">${esc(step || '')}</span>`;
+      const tag = (op.tag || op.note) && !minor ? `<span class="lbl2" style="letter-spacing:.04em;text-transform:none;font-style:italic">${esc(op.tag || op.note)}</span>` : '';
+      const stayRow = stay ? `<div class="rstay"><span class="rstay-ic">${stay.svg}</span><span><b>Де жити:</b> ${esc(stay.title)}</span></div>` : '';
+      li.innerHTML = `<div class="rnode">${num != null ? num : (nd.home ? '⌂' : (icon || '·'))}</div>
+        <div class="rcard"><div class="ill-wrap">${op.svg}</div><div>${label}<h3>${esc(op.title)}</h3>${tag}<p>${esc(op.text || '')}</p>${stayRow}</div></div>`;
       map.appendChild(li);
     });
   }
   function summaryText() {
     const road = [], rest = [];
     chain().forEach(nd => {
-      if (nd.id === 'country') { const c = countryCard(); rest.push(`Куди: ${c ? c.title + (c.tag ? ` (${c.tag})` : '') : '—'}`); return; }
+      if (nd.id === 'country') {
+        const cs = countryCards(), stayOf = v => { const o = v ? optOf('stay', v) : null; return o ? ` — ${o.title.charAt(0).toLowerCase() + o.title.slice(1)}${o.tag ? ` (${o.tag})` : ''}` : ''; };
+        if (state.surprise) rest.push(`Точка 1: ${cs[0].title} (${cs[0].tag})${stayOf(state.stay)}`);
+        else state.dests.forEach((d, i) => rest.push(`Точка ${i + 1}: ${cs[i].title}${stayOf(d.stay)}`));
+        return;
+      }
+      if (nd.id === 'stay') return;
       const op = nd.opt || nd.fixed; if (!op) return;
-      if (nd.id === 'stay' || nd.id === 'rhythm') rest.push(`${nd.id === 'stay' ? 'Де жити' : 'Ритм подорожі'}: ${op.title}${op.tag ? ` (${op.tag})` : ''}`);
-      else road.push(nd.id === 'odesa' ? 'Одеса' : (op.short && nd.opt ? op.title : op.title));
+      if (nd.id === 'rhythm') rest.push(`Ритм подорожі: ${(nd.opts || []).map(r => r.title + (r.tag ? ` (${r.tag})` : '')).join(', ')}`);
+      else road.push(nd.id === 'odesa' ? 'Одеса' : nd.id === 'plcity' ? `${op.title}${nd.sub ? ` (${nd.sub} з Пшемишля)` : ''}` : op.title);
     });
-    return ['✈️ Мій маршрут', 'Дорога: ' + road.join(' → '), ...rest, '', 'Маршрут складено. Решту береш на себе ти 💛'].join('\n');
+    return ['✈️ Мій маршрут', 'Дорога: ' + road.join(' → '), ...rest, '', 'Маршрут складено.'].join('\n');
   }
   function fallbackCopy(text) {
     const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
