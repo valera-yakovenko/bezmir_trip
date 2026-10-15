@@ -368,22 +368,51 @@ button.card:not(.compact) .card-body{padding-right:18px}
 }
 .letter{margin:22px auto 0;max-width:600px;padding:22px 20px 20px;background:#FFF9EC;border:2px dashed var(--gold);border-radius:8px;position:relative;font-size:17px;line-height:1.65;text-align:left}
 .letter::before{content:'✉';position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--cream2);padding:0 12px;color:var(--bordo);font-size:24px;line-height:1}
-/* рукописний лист: папір із легкою текстурою, лінії в такт рядкам, абзаци проступають по черзі */
-.letter{font-family:var(--script);font-size:21px;line-height:1.55;color:#3B2418;padding:26px 20px 24px;
-  background-color:#FFF8E9;background-image:repeating-linear-gradient(0deg,transparent 0 calc(1.55em - 1px),rgba(140,106,60,.13) calc(1.55em - 1px) 1.55em),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.32 0 0 0 0 0.16 0.09 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:auto,auto;background-position:0 26px,0 0}
-.letter p{margin:0 0 1.55em}
-.letter p:last-child{margin-bottom:0}
-.pm-greet{font-size:32px;line-height:1.55em;color:var(--bordo2)}
-.pm-sign{text-align:right;font-size:24px;color:var(--bordo2);position:relative;padding-right:46px}
+/* ---------- сувій з особистим посланням ---------- */
+.scroll-wrap{margin:26px auto 0;max-width:600px;text-align:left}
+.scroll{position:relative;margin:0 4px}
+.scroll.closed{cursor:pointer;animation:scrollSway 3.4s ease-in-out infinite;transform-origin:50% 0}
+.scroll.closed:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:14px}
+@keyframes scrollSway{0%,100%{transform:rotate(-1.1deg) translateY(0)}50%{transform:rotate(1.1deg) translateY(2px)}}
+.scroll-roller{position:relative;height:30px;z-index:2}
+.scroll-roller .bar{position:absolute;left:14px;right:14px;top:3px;height:24px;border-radius:12px;background:linear-gradient(#B07E52,#6B4426 55%,#4A2C17);box-shadow:inset 0 2px 2px rgba(255,255,255,.22),0 3px 6px rgba(59,42,34,.35)}
+.scroll-roller .knob{position:absolute;top:0;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#EAD1A0,#B8894A 55%,#6E4F28);box-shadow:0 2px 4px rgba(59,42,34,.45)}
+.scroll-roller .knob.l{left:0}.scroll-roller .knob.r{right:0}
+.scroll-roller.bottom{margin-top:-8px}
+.scroll-roller.bottom .curl{position:absolute;left:16px;right:16px;bottom:22px;height:16px;border-radius:8px 8px 0 0;background:linear-gradient(#EFDCAE,#DCC28D 55%,#B89A64);box-shadow:inset 0 -3px 4px rgba(59,42,34,.22);opacity:0;transition:opacity .5s}
+.scroll.opening .scroll-roller.bottom .curl{opacity:1}
+.scroll.opening .scroll-roller.bottom .bar{background-image:repeating-linear-gradient(180deg,rgba(255,255,255,.12) 0 3px,transparent 3px 8px),linear-gradient(#B07E52,#6B4426 55%,#4A2C17);animation:rollBar 2.6s linear}
+@keyframes rollBar{from{background-position:0 0,0 0}to{background-position:0 160px,0 0}}
+.scroll-paper{height:0;overflow:hidden;margin:0 14px;position:relative;z-index:1;transition:height 2.6s cubic-bezier(.4,0,.2,1);
+  background-color:#F1E0B4;background-image:radial-gradient(ellipse at 18% 12%,rgba(140,106,60,.14),transparent 45%),radial-gradient(ellipse at 84% 78%,rgba(140,106,60,.16),transparent 40%),radial-gradient(ellipse at 60% 40%,rgba(255,250,235,.5),transparent 55%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.30 0 0 0 0 0.12 0.13 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  box-shadow:inset 0 0 38px rgba(110,74,30,.28),inset 0 0 3px rgba(110,74,30,.45)}
+.scroll-paper::before,.scroll-paper::after{content:'';position:absolute;top:0;bottom:0;width:10px;pointer-events:none;background:repeating-radial-gradient(circle at 0 50%,rgba(110,74,30,.22) 0 1px,transparent 1px 7px);opacity:.6}
+.scroll-paper::before{left:0}.scroll-paper::after{right:0;transform:scaleX(-1)}
+.scroll.opened .scroll-paper{height:auto}
+.scroll-text{padding:26px 22px 30px;font-family:var(--script);font-size:21px;line-height:1.55;color:#5E2222}
+.scroll-text p{margin:0 0 1.2em}
+.scroll-text p:last-child{margin-bottom:0}
+.pm-greet{font-size:32px;line-height:1.3;margin-bottom:calc(1.55em + 12px) !important;color:#4E1C1C}
+.pm-sign{text-align:right;font-size:24px;color:#4E1C1C;position:relative;padding-right:46px}
 .pm-p{opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
 .pm-p.in{opacity:1;transform:none}
 .pm-sign.in{transition-duration:1.8s}
 .pm-stamp{position:absolute;right:0;bottom:-4px;width:38px;height:38px;border-radius:50%;border:2px double #B8322C;color:#B8322C;display:grid;place-items:center;font-family:var(--serif);font-size:20px;line-height:1;transform:rotate(-14deg) scale(1.8);opacity:0;mix-blend-mode:multiply;background:radial-gradient(circle,rgba(184,50,44,.12),rgba(184,50,44,.03) 70%,transparent 72%)}
 .pm-stamp.in{animation:pmStamp .5s cubic-bezier(.2,1.4,.4,1) forwards}
 @keyframes pmStamp{0%{transform:rotate(-14deg) scale(1.8);opacity:0}60%{opacity:.95}100%{transform:rotate(-14deg) scale(1);opacity:.92}}
-@media(min-width:680px){.letter{font-size:23px;padding:30px 34px 28px;background-position:0 30px}.pm-greet{font-size:36px}.pm-sign{font-size:26px}}
-@media(prefers-reduced-motion:reduce){.pm-p{opacity:1;transform:none;transition:none}.pm-stamp{opacity:.92;transform:rotate(-14deg) scale(1);animation:none}}
+.scroll-ribbon{position:absolute;left:50%;top:-30px;width:150px;height:118px;transform:translateX(-50%);z-index:3;pointer-events:none;transition:opacity .4s ease .6s}
+.scroll-ribbon svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 2px 2px rgba(59,42,34,.35))}
+.scroll-ribbon .loop,.scroll-ribbon .tail,.scroll-ribbon .knot,.scroll-ribbon .band{transform-box:fill-box;transition:transform 1s cubic-bezier(.4,0,.6,1),opacity .9s ease}
+.scroll-ribbon .loop.l{transform-origin:100% 60%}.scroll-ribbon .loop.r{transform-origin:0% 60%}
+.scroll.untied .scroll-ribbon .loop{transform:scale(.05,.3);opacity:0}
+.scroll.untied .scroll-ribbon .tail.l{transform:translate(-90px,30px) rotate(-40deg);opacity:0}
+.scroll.untied .scroll-ribbon .tail.r{transform:translate(90px,30px) rotate(40deg);opacity:0}
+.scroll.untied .scroll-ribbon .knot{transform:scale(0);opacity:0}
+.scroll.untied .scroll-ribbon .band{opacity:0;transition-delay:.5s}
+.scroll.untied .scroll-ribbon{opacity:0}
+.scroll-hint{text-align:center;margin:46px 0 0;font-family:var(--serif);font-style:italic;color:var(--gold3);font-size:16px;letter-spacing:.06em;animation:hintPulse 2.2s ease-in-out infinite}
+@media(min-width:680px){.scroll-text{font-size:23px;padding:32px 36px 34px}.pm-greet{font-size:36px}.pm-sign{font-size:26px}.scroll-roller{height:34px}.scroll-roller .bar{height:28px;border-radius:14px;left:16px;right:16px}.scroll-roller .knob{width:34px;height:34px}.scroll-paper{margin:0 16px}}
+@media(prefers-reduced-motion:reduce){.scroll.closed{animation:none}.pm-p{opacity:1;transform:none;transition:none}.pm-stamp{opacity:.92;transform:rotate(-14deg) scale(1);animation:none}.scroll-hint{animation:none}}
 .actions{display:flex;flex-direction:column;gap:12px;margin-top:28px;align-items:stretch}
 @media(min-width:560px){.actions{flex-direction:row;justify-content:center}}
 .summary-box{margin:18px auto 0;max-width:600px;text-align:left;background:#fff;border:1px solid var(--gold2);border-radius:8px;padding:12px 14px}
@@ -533,6 +562,21 @@ button.card:not(.compact) .card-body{padding-right:18px}
 .stay-block + .stay-block{margin-top:34px;padding-top:26px;border-top:1px dashed var(--gold2)}
 .stay-h{text-align:center;font-size:clamp(20px,5vw,26px);margin:0 0 14px}
 .stay-block .stay-links{margin-top:16px}
+.stay-block.compact + .stay-block.compact{margin-top:18px;padding-top:16px}
+.stay-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stay-h.sm{font-size:19px;text-align:left;margin:0}
+.stay-mini-links a{font-family:var(--serif);font-size:14px;color:var(--bordo);text-decoration:underline dotted;text-underline-offset:3px;margin-left:12px}
+.stay-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.chip-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 9px;border:1.5px solid var(--gold2);border-radius:12px;background:var(--cream2);font:inherit;font-family:var(--serif);font-weight:700;font-size:14px;line-height:1.2;color:var(--bordo2);text-align:center;cursor:pointer;appearance:none;-webkit-appearance:none;transition:border-color .15s,background .15s,box-shadow .15s;touch-action:manipulation}
+.chip-card .ill-wrap{width:46px;display:block}
+.chip-card.selected{border-color:var(--bordo);background:#FAF0DD;box-shadow:0 0 0 3px rgba(122,46,46,.16)}
+.chip-card.selected::after{content:'✓';position:absolute;top:-8px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--bordo);color:var(--cream2);font-size:13px;line-height:22px;font-family:var(--serif)}
+.chip-card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.stay-fine{text-align:center;margin-top:18px}
+@media(max-width:379px){.chip-card{font-size:13px}.chip-card .ill-wrap{width:40px}}
+.rchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.rchip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border:1px solid var(--gold2);border-radius:999px;background:var(--cream2);font-size:12px;font-family:var(--serif);font-weight:700;color:var(--bordo2);line-height:1.2}
+.rchip i{width:26px;flex:0 0 26px;display:block}.rchip i svg{width:100%;height:auto;display:block}
 
 /* ---------- героїня з валізою під картками ---------- */
 .hero-slot{position:relative;height:225px;margin:22px auto 0;max-width:720px;overflow:visible}
@@ -743,14 +787,30 @@ button.card:not(.compact) .card-body{padding-right:18px}
           </div>
         </div>
         <p class="final-text">Маршрут складено.</p>
-        <div class="letter" id="personal-message">
-          <p class="pm-p pm-greet in">Дашуля,</p>
-          <p class="pm-p">Ти так давно мріяла поїхати кудись сама. Не втекти, а просто побути з собою: прокидатися без будильника, гуляти без маршруту, мовчати скільки захочеш і нарешті чути власні думки.</p>
-          <p class="pm-p">Я хочу, щоб ця подорож була саме такою. Твоєю від першої до останньої хвилини. Ти обрала дорогу, міста й ритм, а я обираю лише одне: вірити, що тобі там буде добре.</p>
-          <p class="pm-p">Не повертайся думками додому, тут усе буде гаразд, я подбаю. Просто дивись, пробуй, відчувай. Сиди в кав'ярнях довше, ніж планувала. Купи собі щось зовсім непотрібне і дуже гарне. Дозволь світу трохи тебе здивувати.</p>
-          <p class="pm-p">А коли повернешся, я хочу почути все: які там вулиці, яке світло вранці, що тебе розсмішило і що зворушило. І побачити в твоїх очах той самий блиск, у який я колись закохався.</p>
-          <p class="pm-p">З днем народження, моя мандрівнице 🐍<br>Я пишаюся тобою, кохаю тебе і вже чекаю твоїх історій.</p>
-          <p class="pm-p pm-sign">Твій Кохані Медвежа Голова 🐻<span class="pm-stamp" aria-hidden="true">♥</span></p>
+        <div class="scroll-wrap" id="personal-message">
+          <div class="scroll closed" id="scroll" role="button" tabindex="0" aria-label="Відкрити сувій">
+            <div class="scroll-roller top"><div class="bar"></div><div class="knob l"></div><div class="knob r"></div></div>
+            <div class="scroll-paper" id="scroll-paper"><div class="scroll-text">
+              <p class="pm-p pm-greet">Дашуля,</p>
+              <p class="pm-p">Ти так давно мріяла поїхати кудись сама. Не втекти, а просто побути з собою: прокидатися без будильника, гуляти без маршруту, мовчати скільки захочеш і нарешті чути власні думки.</p>
+              <p class="pm-p">Я хочу, щоб ця подорож була саме такою. Твоєю від першої до останньої хвилини. Ти обрала дорогу, міста й ритм, а я обираю лише одне: вірити, що тобі там буде добре.</p>
+              <p class="pm-p">Не повертайся думками додому, тут усе буде гаразд, я подбаю. Просто дивись, пробуй, відчувай. Сиди в кав'ярнях довше, ніж планувала. Купи собі щось зовсім непотрібне і дуже гарне. Дозволь світу трохи тебе здивувати.</p>
+              <p class="pm-p">А коли повернешся, я хочу почути все: які там вулиці, яке світло вранці, що тебе розсмішило і що зворушило. І побачити в твоїх очах той самий блиск, у який я колись закохався.</p>
+              <p class="pm-p">З днем народження, моя мандрівнице 🐍<br>Я пишаюся тобою, кохаю тебе і вже чекаю твоїх історій.</p>
+              <p class="pm-p pm-sign">Твій Кохані Медвежа Голова 🐻<span class="pm-stamp" aria-hidden="true">♥</span></p>
+            </div></div>
+            <div class="scroll-roller bottom"><div class="curl"></div><div class="bar"></div><div class="knob l"></div><div class="knob r"></div></div>
+            <div class="scroll-ribbon" aria-hidden="true"><svg viewBox="0 0 140 110">
+              <defs><linearGradient id="rib" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5E2222"/><stop offset=".5" stop-color="#8E3A3A"/><stop offset="1" stop-color="#5E2222"/></linearGradient></defs>
+              <rect class="band" x="58" y="0" width="24" height="110" fill="url(#rib)"/>
+              <g class="tail l"><path d="M70 60c-10 10-18 26-20 40l10-6 2 8c4-14 8-26 12-38z" fill="url(#rib)" stroke="#4E1C1C" stroke-width="1"/></g>
+              <g class="tail r"><path d="M70 60c10 10 18 26 20 40l-10-6-2 8c-4-14-8-26-12-38z" fill="url(#rib)" stroke="#4E1C1C" stroke-width="1"/></g>
+              <g class="loop l"><path d="M70 56c-14-14-36-18-42-6-4 10 12 20 42 12z" fill="#8E3A3A" stroke="#4E1C1C" stroke-width="1.2"/><path d="M40 50c8-2 18-1 28 4" fill="none" stroke="#B85A5A" stroke-width="1" opacity=".6"/></g>
+              <g class="loop r"><path d="M70 56c14-14 36-18 42-6 4 10-12 20-42 12z" fill="#8E3A3A" stroke="#4E1C1C" stroke-width="1.2"/><path d="M100 50c-8-2-18-1-28 4" fill="none" stroke="#B85A5A" stroke-width="1" opacity=".6"/></g>
+              <circle class="knot" cx="70" cy="58" r="7" fill="#7A2E2E" stroke="#4E1C1C" stroke-width="1.2"/>
+            </svg></div>
+          </div>
+          <p class="scroll-hint" id="scroll-hint">Торкнися сувою</p>
         </div>
         <div class="actions">
           <button class="btn primary" id="btn-copy" type="button">Скопіювати мій маршрут</button>
@@ -1095,12 +1155,17 @@ button.card:not(.compact) .card-body{padding-right:18px}
   function renderStay() {
     const box = $('stay-blocks'), ts = stayTargets();
     $('s-stay').querySelector('h2').textContent = ts.length === 1 ? ts[0].title : 'Де жити';
-    box.innerHTML = ts.map(t => `<section class="stay-block" data-key="${t.key}">${ts.length > 1 ? `<h3 class="stay-h">${esc(t.title)}</h3>` : ''}<div class="cards" role="group" aria-label="${esc(t.title)}">${SUB.stay.options.map(op => `<button type="button" class="card${t.get() === op.id ? ' selected' : ''}" data-id="${op.id}" aria-pressed="${t.get() === op.id ? 'true' : 'false'}"><div class="ill-wrap">${op.svg}</div><div class="card-body">${op.tag ? `<span class="tag">${esc(op.tag)}</span>` : ''}<h3>${esc(op.title)}</h3><p>${esc(op.text)}</p></div>${STAMP}</button>`).join('')}</div>${t.links ? `<div class="stay-links"><h3>Подивитися реальні варіанти</h3><div class="stay-row"><b>${esc(t.short)}</b><span class="stay-btns"><a class="lnk booking" href="${t.links.booking}" target="_blank" rel="noopener">Booking</a><a class="lnk airbnb" href="${t.links.airbnb}" target="_blank" rel="noopener">Airbnb</a></span></div><p class="fine">Просто подивитися, бронювати поки не треба 😉</p></div>` : ''}</section>`).join('');
+    const CHIP = { oldtown:'Старе місто', hotel:'Бутік-готель', surprise:'Сюрприз' };
+    if (ts.length > 1) {                                                        // кілька точок — компактні блоки
+      box.innerHTML = ts.map(t => `<section class="stay-block compact" data-key="${t.key}"><div class="stay-head"><h3 class="stay-h sm">${esc(t.title)}</h3>${t.links ? `<span class="stay-mini-links"><a href="${t.links.booking}" target="_blank" rel="noopener">Booking</a><a href="${t.links.airbnb}" target="_blank" rel="noopener">Airbnb</a></span>` : ''}</div><div class="stay-chips" role="group" aria-label="${esc(t.title)}">${SUB.stay.options.map(op => `<button type="button" class="chip-card${t.get() === op.id ? ' selected' : ''}" data-id="${op.id}" aria-pressed="${t.get() === op.id ? 'true' : 'false'}"><span class="ill-wrap">${op.svg}</span><span>${esc(CHIP[op.id] || op.short)}</span></button>`).join('')}</div></section>`).join('') + `<p class="fine stay-fine">Просто подивитися, бронювати поки не треба 😉</p>`;
+    } else {
+      box.innerHTML = ts.map(t => `<section class="stay-block" data-key="${t.key}"><div class="cards" role="group" aria-label="${esc(t.title)}">${SUB.stay.options.map(op => `<button type="button" class="card${t.get() === op.id ? ' selected' : ''}" data-id="${op.id}" aria-pressed="${t.get() === op.id ? 'true' : 'false'}"><div class="ill-wrap">${op.svg}</div><div class="card-body">${op.tag ? `<span class="tag">${esc(op.tag)}</span>` : ''}<h3>${esc(op.title)}</h3><p>${esc(op.text)}</p></div>${STAMP}</button>`).join('')}</div>${t.links ? `<div class="stay-links"><h3>Подивитися реальні варіанти</h3><div class="stay-row"><b>${esc(t.short)}</b><span class="stay-btns"><a class="lnk booking" href="${t.links.booking}" target="_blank" rel="noopener">Booking</a><a class="lnk airbnb" href="${t.links.airbnb}" target="_blank" rel="noopener">Airbnb</a></span></div><p class="fine">Просто подивитися, бронювати поки не треба 😉</p></div>` : ''}</section>`).join('');
+    }
     box.querySelectorAll('.stay-block').forEach(sec => {
       const t = ts.find(x => x.key === sec.dataset.key);
-      sec.querySelectorAll('.card').forEach(b => b.addEventListener('click', () => {
+      sec.querySelectorAll('.card, .chip-card').forEach(b => b.addEventListener('click', () => {
         t.set(b.dataset.id);
-        sec.querySelectorAll('.card').forEach(c => { const on = c === b; c.classList.toggle('selected', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+        sec.querySelectorAll('.card, .chip-card').forEach(c => { const on = c === b; c.classList.toggle('selected', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
         updateNext(); updateRoute(); heroChoose(b);
       }));
     });
@@ -1173,7 +1238,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
       runBoard(() => {
         $('final-rest').classList.add('show');
         requestAnimationFrame(() => $('rmap').classList.add('drawn'));
-        pmStart();
+        if (reduced) openScroll(true);
         if (!reduced) setTimeout(confetti, 350);
       });
     });
@@ -1427,7 +1492,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
       <path d="M84 136q18 6 36 0M82 154q20 6 40 0" stroke="#8C6A3C" stroke-width="1" fill="none" opacity=".6"/>
       <path d="M78 118h48" stroke="#7A2E2E" stroke-width="3"/><path d="M102 118l-7-6 7-2 7 8 7-8 7 2-7 6z" fill="#A8443F" stroke="#7A2E2E" stroke-width="1"/>
       <g class="h-arm r"><path d="M124 104q10 20 8 44l-8 2q-2-22-8-42z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/></g>
-      <g class="h-arm l"><path d="M80 104q-18 10-32 24l6 6q14-12 30-24z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/></g>
+      <g class="h-arm l"><path d="M77 101c-7 10-10 22-7 33 1 4 5 5 8 2 2-10 1-21 5-31z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2" stroke-linejoin="round"/><path d="M78 134c-9 2-19-1-26-7l-4 5c8 7 19 10 30 7z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2" stroke-linejoin="round"/><path d="M53 123c-4-1-7 2-7 5 0 3 3 6 7 5 2 0 3-2 3-5s-1-5-3-5z" fill="#EBD9B4" stroke="#8C6A3C" stroke-width="1.2"/><path d="M47 125.5h7M47 128.5h7" stroke="#8C6A3C" stroke-width=".8" opacity=".7"/></g>
       <g class="h-hairback"><path d="M80 70q22-12 44 0q10 36 2 84q-22 8-48 0q-8-48 2-84z" fill="url(#hHair)"/><path d="M90 90q-4 30 0 56M102 94q2 30-2 58M114 90q4 30 0 56" stroke="#7A2E2E" stroke-width="1.2" fill="none" opacity=".5"/></g>
     </g>
     <g class="h-head">
@@ -1452,7 +1517,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
   function heroPose(p) {
     HR.legL.setAttribute('transform', `rotate(${f1(p.legL)} 96 150)`); HR.legR.setAttribute('transform', `rotate(${f1(p.legR)} 108 150)`);
     HR.body.setAttribute('transform', `translate(${f1(p.lean)} ${f1(p.bob)}) rotate(${f1(p.lean * 0.4)} 102 170)`);
-    HR.armL.setAttribute('transform', `rotate(${f1(p.armL)} 80 104)`); HR.armR.setAttribute('transform', `rotate(${f1(p.armR)} 124 104)`);
+    HR.armL.setAttribute('transform', `translate(80 104) rotate(${f1(p.armL)}) scale(${f1(p.armS)}) translate(-80 -104)`); HR.armR.setAttribute('transform', `rotate(${f1(p.armR)} 124 104)`);
     HR.hairB.setAttribute('transform', `rotate(${f1(p.hair * 0.5)} 102 70)`);
     HR.head.setAttribute('transform', `translate(${f1(p.lean)} ${f1(p.bob - p.headUp)}) rotate(${f1(p.head)} 102 96)`);
     HR.hairL.setAttribute('transform', `rotate(${f1(p.hair)} 80 76)`); HR.hairR.setAttribute('transform', `rotate(${f1(p.hair)} 124 76)`);
@@ -1461,7 +1526,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
     HR.bubble.setAttribute('transform', `translate(141 40) scale(${f1(Math.max(0.01, p.bubble.s))}) translate(-141 -40)`);
     HR.q.style.opacity = p.bubble.heart ? '0' : '1'; HR.heart.style.opacity = p.bubble.heart ? '1' : '0';
   }
-  const basePose = () => ({ legL:0, legR:0, armL:46, armR:-4, head:0, headUp:3, hair:0, bob:0, lean:0, caseRot:0, caseDx:0, bubble:{ show:false, heart:false, s:1 } });
+  const basePose = () => ({ legL:0, legR:0, armL:0, armS:1, armR:-4, head:0, headUp:3, hair:0, bob:0, lean:0, caseRot:0, caseDx:0, bubble:{ show:false, heart:false, s:1 } });
   function heroFrame(now) {
     if (!HS.shown) return;
     const t = (now - HS.t0) / 1000, p = basePose();
@@ -1473,17 +1538,17 @@ button.card:not(.compact) .card-body{padding-right:18px}
       p.legL = 17 * Math.sin(w) * st; p.legR = -17 * Math.sin(w) * st;
       p.bob = -2.2 * Math.abs(Math.cos(w)) * st; p.armR = -4 + 10 * Math.sin(w) * st;
       p.hair = 5 * Math.sin(w - 0.6) * st; p.head = 2 * Math.sin(w) * st; p.headUp = 0;
-      p.armL = -12 * st; p.caseRot = -16 * st; p.caseDx = 12 * st;
+      p.armL = -2 * st; p.armS = 1 + 0.22 * st; p.caseRot = -10 * st; p.caseDx = 4 * st;          // рука витягнута назад, валіза котиться слідом
       if (u >= 1) {                                                              // прийшла: ставить валізу, відпускає ручку, піднімає голову до карток
         const v = Math.min(1, (t - W) / 0.6);
-        p.armL = -12 + 58 * v; p.headUp = 4 * v; p.caseRot = 0; p.caseDx = 0;
+        p.armL = -2 * (1 - v); p.armS = 1.22 - 0.22 * v; p.headUp = 4 * v; p.caseRot = 0; p.caseDx = 0;
         if (v >= 1) { HS.walk = false; HS.entered = true; HS.t0 = now; HS.nextQ = 1.5; if (HS.look) HS.heartAt = 0; }
       }
     } else {                                                                     // роздуми: погляд з картки на картку, переступання, волосся, хмаринка «?»
       const look = HS.look;
       p.head = look ? look.a + 1.2 * Math.sin(t * 1.1) : 8 * Math.sin(t * 0.75) * Math.sin(t * 0.31 + 1);
       p.headUp = look ? look.up : 3 + 0.6 * Math.sin(t * 0.9);
-      p.hair = 2 * Math.sin(t * 0.9 + 0.5); p.armR = -4 + 1.5 * Math.sin(t * 0.7); p.bob = 0.6 * Math.sin(t * 1.3);
+      p.hair = 2 * Math.sin(t * 0.9 + 0.5); p.armR = -4 + 1.5 * Math.sin(t * 0.7); p.armL = 1.2 * Math.sin(t * 0.8); p.bob = 0.6 * Math.sin(t * 1.3);
       const sh = t % 7.3, sw = sh > 5.4 && sh < 6.6 ? Math.sin((sh - 5.4) / 1.2 * Math.PI) : 0;   // переступає з ноги на ногу
       p.lean = 3 * sw; p.legL = 4 * sw; p.legR = -2 * sw;
       if (!look) {
@@ -1508,7 +1573,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
     if (hero.parentNode !== slot) slot.appendChild(hero);
     hero.hidden = false; cancelAnimationFrame(HS.raf);
     HS.shown = true; HS.look = null; HS.qUntil = 0; HS.nextQ = 2 + Math.random() * 3; HS.t0 = performance.now();
-    const sel = sec.querySelector('.card.selected');
+    const sel = sec.querySelector('.card.selected, .chip-card.selected');
     if (reduced) { hero.style.transform = 'translateX(-50%)'; const p = basePose(); if (sel) { heroLook(sel, false); p.head = HS.look.a; p.headUp = 5; p.bubble = { show:true, heart:true, s:1 }; } heroPose(p); return; }
     if (!HS.entered) { HS.walk = true; HS.walkFrom = window.innerWidth / 2 + 160; } else { HS.walk = false; hero.style.transform = 'translateX(-50%)'; }
     if (sel) heroLook(sel, false);
@@ -2215,8 +2280,10 @@ button.card:not(.compact) .card-body{padding-right:18px}
       const label = minor ? '' : `<span class="lbl2">${esc(step || '')}</span>`;
       const tag = (op.tag || op.note) && !minor ? `<span class="lbl2" style="letter-spacing:.04em;text-transform:none;font-style:italic">${esc(op.tag || op.note)}</span>` : '';
       const stayRow = stay ? `<div class="rstay"><span class="rstay-ic">${stay.svg}</span><span><b>Де жити:</b> ${esc(stay.title)}</span></div>` : '';
+      const multiR = nd.id === 'rhythm' && nd.opts && nd.opts.length > 1;      // кілька ритмів — окремі плашки з іконками, без описів
+      const body = multiR ? `<h3>Ритм подорожі</h3><div class="rchips">${nd.opts.map(r => `<span class="rchip"><i>${r.svg}</i>${esc(r.title)}</span>`).join('')}</div>` : `<h3>${esc(op.title)}</h3>${tag}<p>${esc(op.text || '')}</p>`;
       li.innerHTML = `<div class="rnode">${num != null ? num : (nd.home ? '⌂' : (icon || '·'))}</div>
-        <div class="rcard"><div class="ill-wrap">${op.svg}</div><div>${label}<h3>${esc(op.title)}</h3>${tag}<p>${esc(op.text || '')}</p>${stayRow}</div></div>`;
+        <div class="rcard"><div class="ill-wrap">${op.svg}</div><div>${label}${body}${stayRow}</div></div>`;
       map.appendChild(li);
     });
   }
@@ -2250,22 +2317,48 @@ button.card:not(.compact) .card-body{padding-right:18px}
     if (ok) toast('Маршрут скопійовано ✈');
     else { $('summary-pre').textContent = text; $('summary-box').hidden = false; toast('Виділи текст нижче та скопіюй'); }
   }
-  /* ---------- особистий лист: абзаци проступають по черзі під час гортання ---------- */
-  let pmStarted = false;
-  function pmStart() {
-    if (pmStarted) return; pmStarted = true;
-    const ps = [...document.querySelectorAll('#personal-message .pm-p:not(.in)')], stamp = document.querySelector('.pm-stamp');
-    if (reduced || !('IntersectionObserver' in window)) { ps.forEach(p => p.classList.add('in')); if (stamp) stamp.classList.add('in'); return; }
+  /* ---------- сувій з особистим посланням: розв'язати, розгорнути, абзаци проступають по черзі ---------- */
+  let scrollOpened = false;
+  function pmObserve(ps, stamp, paper) {
     const eligible = new Set(); let next = 0, busy = false;
+    // абзац «досягнуто», коли його верх піднявся вище 60 % висоти екрана і він уже відкритий сувоєм (не схований під нижнім валиком)
+    const atEnd = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;   // догорнула до самого кінця — решта не має чого чекати
+    const reached = p => { const r = p.getBoundingClientRect(), pr = paper.getBoundingClientRect(); return r.height > 0 && r.top < pr.bottom - 12 && (r.top < window.innerHeight * 0.6 || atEnd()); };
     const pump = () => {
-      if (busy || next >= ps.length || !eligible.has(ps[next])) return;
+      if (busy || next >= ps.length) return;
+      if (!eligible.has(ps[next]) && !reached(ps[next])) return;
       const p = ps[next++]; busy = true; p.classList.add('in');
       const sign = p.classList.contains('pm-sign');
-      setTimeout(() => { busy = false; if (sign && stamp) stamp.classList.add('in'); pump(); }, sign ? 1900 : 1300);   // наступний — лише після попереднього, з паузою
+      setTimeout(() => { busy = false; if (sign && stamp) stamp.classList.add('in'); pump(); }, sign ? 1900 : 1250);   // наступний — лише після попереднього
     };
-    const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { eligible.add(e.target); io.unobserve(e.target); } }); pump(); }, { threshold:0.25, rootMargin:'0px 0px -10% 0px' });
+    const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { eligible.add(e.target); io.unobserve(e.target); } }); pump(); }, { threshold:0, rootMargin:'0px 0px -40% 0px' });
     ps.forEach(p => io.observe(p));
+    window.addEventListener('scroll', pump, { passive:true });                       // страховка для швидкого гортання, коли абзац перестрибує лінію між кадрами
+    const tick = setInterval(() => { pump(); if (next >= ps.length) clearInterval(tick); }, 400);
   }
+  function smoothScrollTo(top) {
+    const y0 = window.scrollY, dy = top - y0, T = 1300, t0 = performance.now(), ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const step = now => { const u = Math.min(1, (now - t0) / T); window.scrollTo(0, y0 + dy * ease(u)); if (u < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  function openScroll(instant) {
+    if (scrollOpened) return; scrollOpened = true;
+    const sc = $('scroll'), paper = $('scroll-paper'), hint = $('scroll-hint');
+    const ps = [...sc.querySelectorAll('.pm-p')], stamp = sc.querySelector('.pm-stamp');
+    sc.classList.remove('closed'); sc.removeAttribute('role'); sc.removeAttribute('tabindex'); hint.hidden = true;
+    if (instant || reduced || !('IntersectionObserver' in window)) { sc.classList.add('untied', 'opened'); ps.forEach(p => p.classList.add('in')); if (stamp) stamp.classList.add('in'); return; }
+    sc.classList.add('untied');                                                     // бантик розв'язується, стрічка розлітається (1 с)
+    setTimeout(() => {
+      sc.classList.add('opening');
+      paper.style.height = paper.scrollHeight + 'px';                              // нижній валик котиться донизу (2,6 с)
+      smoothScrollTo(sc.getBoundingClientRect().top + window.scrollY - 70);                 // верх сувою — до верхньої частини екрана
+      const fin = () => { sc.classList.remove('opening'); sc.classList.add('opened'); paper.style.height = 'auto'; };
+      paper.addEventListener('transitionend', fin, { once:true }); setTimeout(fin, 3000);
+      pmObserve(ps, stamp, paper);
+    }, 1000);
+  }
+  $('scroll').addEventListener('click', () => openScroll(false));
+  $('scroll').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openScroll(false); } });
   let toastTimer;
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600); }
 
