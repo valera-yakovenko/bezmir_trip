@@ -368,8 +368,22 @@ button.card:not(.compact) .card-body{padding-right:18px}
 }
 .letter{margin:22px auto 0;max-width:600px;padding:22px 20px 20px;background:#FFF9EC;border:2px dashed var(--gold);border-radius:8px;position:relative;font-size:17px;line-height:1.65;text-align:left}
 .letter::before{content:'✉';position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:var(--cream2);padding:0 12px;color:var(--bordo);font-size:24px;line-height:1}
-.letter-placeholder{margin:0;color:var(--bordo);font-weight:600;font-family:var(--serif);background:rgba(217,183,122,.38);padding:14px 12px;border-radius:6px;text-align:center;font-size:16px}
-.letter-placeholder code{font-family:var(--mono);font-size:13px;background:rgba(255,255,255,.6);padding:1px 5px;border-radius:4px}
+/* рукописний лист: папір із легкою текстурою, лінії в такт рядкам, абзаци проступають по черзі */
+.letter{font-family:var(--script);font-size:21px;line-height:1.55;color:#3B2418;padding:26px 20px 24px;
+  background-color:#FFF8E9;background-image:repeating-linear-gradient(0deg,transparent 0 calc(1.55em - 1px),rgba(140,106,60,.13) calc(1.55em - 1px) 1.55em),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.32 0 0 0 0 0.16 0.09 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:auto,auto;background-position:0 26px,0 0}
+.letter p{margin:0 0 1.55em}
+.letter p:last-child{margin-bottom:0}
+.pm-greet{font-size:32px;line-height:1.55em;color:var(--bordo2)}
+.pm-sign{text-align:right;font-size:24px;color:var(--bordo2);position:relative;padding-right:46px}
+.pm-p{opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
+.pm-p.in{opacity:1;transform:none}
+.pm-sign.in{transition-duration:1.8s}
+.pm-stamp{position:absolute;right:0;bottom:-4px;width:38px;height:38px;border-radius:50%;border:2px double #B8322C;color:#B8322C;display:grid;place-items:center;font-family:var(--serif);font-size:20px;line-height:1;transform:rotate(-14deg) scale(1.8);opacity:0;mix-blend-mode:multiply;background:radial-gradient(circle,rgba(184,50,44,.12),rgba(184,50,44,.03) 70%,transparent 72%)}
+.pm-stamp.in{animation:pmStamp .5s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes pmStamp{0%{transform:rotate(-14deg) scale(1.8);opacity:0}60%{opacity:.95}100%{transform:rotate(-14deg) scale(1);opacity:.92}}
+@media(min-width:680px){.letter{font-size:23px;padding:30px 34px 28px;background-position:0 30px}.pm-greet{font-size:36px}.pm-sign{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.pm-p{opacity:1;transform:none;transition:none}.pm-stamp{opacity:.92;transform:rotate(-14deg) scale(1);animation:none}}
 .actions{display:flex;flex-direction:column;gap:12px;margin-top:28px;align-items:stretch}
 @media(min-width:560px){.actions{flex-direction:row;justify-content:center}}
 .summary-box{margin:18px auto 0;max-width:600px;text-align:left;background:#fff;border:1px solid var(--gold2);border-radius:8px;padding:12px 14px}
@@ -729,13 +743,15 @@ button.card:not(.compact) .card-body{padding-right:18px}
           </div>
         </div>
         <p class="final-text">Маршрут складено.</p>
-        <!-- ======================================================== -->
-        <!--  ОСОБИСТЕ ПОСЛАННЯ: заміни вміст цього блоку своїм текстом  -->
-        <!-- ======================================================== -->
         <div class="letter" id="personal-message">
-          <p class="letter-placeholder">✎ ТУТ БУДЕ ТВОЄ ОСОБИСТЕ ПОСЛАННЯ.<br>Заміни цей текст у файлі — блок <code>id="personal-message"</code>.</p>
+          <p class="pm-p pm-greet in">Дашуля,</p>
+          <p class="pm-p">Ти так давно мріяла поїхати кудись сама. Не втекти, а просто побути з собою: прокидатися без будильника, гуляти без маршруту, мовчати скільки захочеш і нарешті чути власні думки.</p>
+          <p class="pm-p">Я хочу, щоб ця подорож була саме такою. Твоєю від першої до останньої хвилини. Ти обрала дорогу, міста й ритм, а я обираю лише одне: вірити, що тобі там буде добре.</p>
+          <p class="pm-p">Не повертайся думками додому, тут усе буде гаразд, я подбаю. Просто дивись, пробуй, відчувай. Сиди в кав'ярнях довше, ніж планувала. Купи собі щось зовсім непотрібне і дуже гарне. Дозволь світу трохи тебе здивувати.</p>
+          <p class="pm-p">А коли повернешся, я хочу почути все: які там вулиці, яке світло вранці, що тебе розсмішило і що зворушило. І побачити в твоїх очах той самий блиск, у який я колись закохався.</p>
+          <p class="pm-p">З днем народження, моя мандрівнице 🐍<br>Я пишаюся тобою, кохаю тебе і вже чекаю твоїх історій.</p>
+          <p class="pm-p pm-sign">Твій Кохані Медвежа Голова 🐻<span class="pm-stamp" aria-hidden="true">♥</span></p>
         </div>
-        <!-- ======================================================== -->
         <div class="actions">
           <button class="btn primary" id="btn-copy" type="button">Скопіювати мій маршрут</button>
           <button class="btn ghost" id="btn-change" type="button">Змінити вибір</button>
@@ -1157,6 +1173,7 @@ button.card:not(.compact) .card-body{padding-right:18px}
       runBoard(() => {
         $('final-rest').classList.add('show');
         requestAnimationFrame(() => $('rmap').classList.add('drawn'));
+        pmStart();
         if (!reduced) setTimeout(confetti, 350);
       });
     });
@@ -2232,6 +2249,22 @@ button.card:not(.compact) .card-body{padding-right:18px}
     if (!ok) ok = fallbackCopy(text);
     if (ok) toast('Маршрут скопійовано ✈');
     else { $('summary-pre').textContent = text; $('summary-box').hidden = false; toast('Виділи текст нижче та скопіюй'); }
+  }
+  /* ---------- особистий лист: абзаци проступають по черзі під час гортання ---------- */
+  let pmStarted = false;
+  function pmStart() {
+    if (pmStarted) return; pmStarted = true;
+    const ps = [...document.querySelectorAll('#personal-message .pm-p:not(.in)')], stamp = document.querySelector('.pm-stamp');
+    if (reduced || !('IntersectionObserver' in window)) { ps.forEach(p => p.classList.add('in')); if (stamp) stamp.classList.add('in'); return; }
+    const eligible = new Set(); let next = 0, busy = false;
+    const pump = () => {
+      if (busy || next >= ps.length || !eligible.has(ps[next])) return;
+      const p = ps[next++]; busy = true; p.classList.add('in');
+      const sign = p.classList.contains('pm-sign');
+      setTimeout(() => { busy = false; if (sign && stamp) stamp.classList.add('in'); pump(); }, sign ? 1900 : 1300);   // наступний — лише після попереднього, з паузою
+    };
+    const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { eligible.add(e.target); io.unobserve(e.target); } }); pump(); }, { threshold:0.25, rootMargin:'0px 0px -10% 0px' });
+    ps.forEach(p => io.observe(p));
   }
   let toastTimer;
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600); }
